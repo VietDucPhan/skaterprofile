@@ -18,7 +18,8 @@
     "mongodb":"~2.0.x",
     "express-session":"~1.11.x",
     "connect-mongo" : "~0.8.x",
-    "bcrypt" : "~0.8.x"
+    "bcrypt" : "~0.8.x",
+    "bindings" : "*"
   },
   "engines": {
     "node": "0.12.2"

@@ -3,6 +3,7 @@
  */
 var AppModel = require('./AppModel');
 var bcrypt = require('bcrypt');
+
 module.exports = function () {
   this.collection = AppModel.db.collection('users');
   this.err = null;
