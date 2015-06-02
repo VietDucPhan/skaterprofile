@@ -19,7 +19,8 @@
     "express-session":"~1.11.x",
     "connect-mongo" : "~0.8.x",
     "bcrypt" : "~0.8.x",
-    "bindings" : "*"
+    "bindings" : "*",
+    "email-templates":"~1.2.x"
   },
   "engines": {
     "node": "0.12.2"

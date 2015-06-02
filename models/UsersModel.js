@@ -2,15 +2,20 @@
  * Created by Administrator on 5/29/2015.
  */
 var AppModel = require('./AppModel');
-var bcrypt = require('bcrypt');
+var Validate = require('./lib/Validate');
 
-module.exports = function () {
-  this.collection = AppModel.db.collection('users');
-  this.err = null;
-  this.save = function(data, callback){
-    this.collection.insert(data);
-    if(typeof callback == 'function'){
-      return callback('abc')
+var UsersModel = module.exports = {};
+UsersModel.getCollection = function(){
+  return AppModel.db.collection('users');
+}
+UsersModel.save = function(data, callback){
+  var users = this.getCollection();
+  Validate.sanitizeUsers(data,function(err, res){
+    console.log(err);
+    if(err.length == 0){
+      users.insert(res);
     }
-  }
-};
+    return callback(err);
+  });
+
+}

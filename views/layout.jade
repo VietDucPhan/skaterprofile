@@ -4,4 +4,7 @@ html
     title= title
     link(rel='stylesheet', href='/stylesheets/skaterprofile.css')
   body
-    block content
+    if flash
+      include ./flash.jade
+    div.container-fluid
+      block content

@@ -3,7 +3,7 @@
  */
 var MongoClient = require('mongodb').MongoClient;
 var config = require("../config");
-var Db = null;
+var model = require('./lib/Validate');
 module.exports.init = function (callback) {
   MongoClient.connect(config.db_url, function(err, db){
     module.exports.db = db;
@@ -11,5 +11,4 @@ module.exports.init = function (callback) {
       callback(err);
     }
   });
-
 };
