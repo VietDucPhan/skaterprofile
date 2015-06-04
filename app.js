@@ -35,6 +35,15 @@ app.use(session({
   cookie: { maxAge: config.lifetime }
 }));
 
+app.use(function(req, res, next) {
+  app.locals.flash = null;
+  if(req.session.flash){
+    app.locals.flash = req.session.flash;
+    req.session.flash = null;
+  }
+  next();
+});
+
 app.use('/', routes);
 app.use('/users', users);
 

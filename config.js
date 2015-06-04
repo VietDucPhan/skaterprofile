@@ -4,7 +4,7 @@ var config = {
   session_secret : process.env.SESSION_SECRECTS || 'something',
   meta_desc: "",
   meta_key: "",
-  lifetime: 15000, // milisecond
+  lifetime: 15*(1000*60), // milisecond
   clear_expire_sessions: 3600,// second
 };
 
