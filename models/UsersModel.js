@@ -3,6 +3,7 @@
  */
 var AppModel = require('./AppModel');
 var Validate = require('./lib/Validate');
+var emailTemplates = require('email-templates');
 
 var UsersModel = module.exports = {};
 UsersModel.getCollection = function(){
