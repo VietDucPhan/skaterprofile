@@ -21,11 +21,7 @@ email.sendEmail = function(callback){
 
       // Prepare nodemailer transport object
       var transport = nodemailer.createTransport({
-        service: config.smtphost,
-        host:config.smtphost,
-        port:config.smtpport,
-        secureConnection: true,
-        requiresAuth: true,
+        service: 'Zoho',
         auth: {
           user: config.smtpuser,
           pass: config.smtppass
@@ -47,7 +43,7 @@ email.sendEmail = function(callback){
           console.log(err);
         } else {
           transport.sendMail({
-            from: config.fromname,
+            from: config.mailfrom,
             to: locals.email,
             subject: 'Mangia gli spaghetti con polpette!',
             html: html,
