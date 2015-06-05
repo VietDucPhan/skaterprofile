@@ -14,7 +14,7 @@ v.sanitizeUsers = function(data, callback){
   var safeData = {};
   var error = [];
   if(!this.isEmail(data.email)){
-    error.push('Please input valid email address');
+    error.push('Please input valid emails address');
   } else  {
     safeData.email = data.email;
   }

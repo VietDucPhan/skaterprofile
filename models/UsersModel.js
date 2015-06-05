@@ -3,7 +3,7 @@
  */
 var AppModel = require('./AppModel');
 var Validate = require('./lib/Validate');
-var emailTemplates = require('email-templates');
+var email = require('./lib/Email');
 
 var UsersModel = module.exports = {};
 UsersModel.getCollection = function(){
@@ -12,7 +12,7 @@ UsersModel.getCollection = function(){
 UsersModel.save = function(data, callback){
   var users = this.getCollection();
   Validate.sanitizeUsers(data,function(err, res){
-    console.log(err);
+    email.sendEmail();
     if(err.length == 0){
       users.insert(res);
     }
