@@ -8,7 +8,8 @@ var email = require('./lib/Email');
 var UsersModel = module.exports = {};
 UsersModel.getCollection = function(){
   return AppModel.db.collection('users');
-}
+};
+
 UsersModel.save = function(data, callback){
   var users = this.getCollection();
   Validate.sanitizeUsers(data,function(err, res){
@@ -19,4 +20,4 @@ UsersModel.save = function(data, callback){
     return callback(err);
   });
 
-}
+};

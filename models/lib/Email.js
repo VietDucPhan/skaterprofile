@@ -60,4 +60,4 @@ email.sendEmail = function(callback){
       });
     }
   });
-}
+};
