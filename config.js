@@ -1,7 +1,7 @@
 var config = {
   db_url : process.env.MONGOLAB_URI || 'mongodb://localhost:27017/skaterprofile',
   app_name : "SkaterProfile",
-  session_secret : process.env.SESSION_SECRECTS || 1231231,
+  session_secret : process.env.SESSION_SECRECTS || '1231231',
   meta_desc: "",
   meta_key: "",
   lifetime: 15*(1000*60), // milisecond
@@ -9,7 +9,7 @@ var config = {
   mailfrom: 'no-reply@skaterprofile.com',
   fromname: 'No Reply',
   smtpuser: 'no-reply@skaterprofile.com',
-  smtppass: '!Noreply)5',
+  smtppass: process.env.SMTP_PASS,
   smtphost: 'smtp.zoho.com',
   smtpport: 465,
 

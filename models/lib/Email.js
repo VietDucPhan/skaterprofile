@@ -59,4 +59,4 @@ email.sendEmail = function(callback){
       });
     }
   });
-}
+};
