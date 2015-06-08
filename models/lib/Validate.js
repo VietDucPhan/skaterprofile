@@ -8,6 +8,7 @@ var v = module.exports = {};
 /**
  * Validate all user data, return safe data to store
  * @param data
+ * @callback return error in arrays or null, safeData with data ready to be stored
  * @returns {}
  */
 v.sanitizeUsers = function(data, callback){
@@ -22,15 +23,16 @@ v.sanitizeUsers = function(data, callback){
   if(!this.isValidPassword(data.password)){
     error.push('Please input valid password');
   } else {
-    safeData.password = data.password;
+    safeData.raw_password = data.password;
   }
 
 
   bcrypt.genSalt(10, function(err, salt) {
     bcrypt.hash(data.password, salt, function(err, hash) {
-      safeData.hashedPassword = hash;
+      safeData.password = hash;
       //there is a callback and no errors happen
       if(typeof callback == 'function' && error.length == 0){
+        error = null;
         return callback(error,safeData);
       } else {
         return callback(error);

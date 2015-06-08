@@ -10,15 +10,17 @@ var emailTemplates = require('email-templates');
 
 var email = module.exports = {};
 
-email.sendEmail = function(callback){
+/**
+ *
+ * @param locals email, template, subject is always required
+ * @param callback
+ */
+email.sendEmail = function(locals,callback){
   emailTemplates(templatesDir, function(err, template) {
 
-    if (err) {
-      console.log(err);
+    if (err || !locals.template || !locals.email || !locals.subject) {
+      return callback(err);
     } else {
-
-      // ## Send a single emails
-      // Prepare nodemailer transport object
       var transport = nodemailer.createTransport({
         service: 'Zoho',
         auth: {
@@ -26,33 +28,27 @@ email.sendEmail = function(callback){
           pass: config.smtppass
         }
       });
-
-      // An example users object with formatted emails function
-      var locals = {
-        email: 'joomdaily@gmail.com',
-        name: {
-          first: 'Mamma',
-          last: 'Mia'
-        }
-      };
-
-      // Send a single emails
-      template('confirm', locals, function (err, html, text) {
+      template(locals.template, locals, function (err, html, text) {
         if (err) {
-          console.log(err);
+          return callback(err);
         } else {
           transport.sendMail({
-            from: config.mailfrom,
+            from: config.fromname + '< ' + config.mailfrom + '>',
             to: locals.email,
-            subject: 'Mangia gli spaghetti con polpette!',
+            subject: locals.subject,
             html: html,
             // generateTextFromHTML: true,
             text: text
           }, function (err, responseStatus) {
             if (err) {
-              console.log(err);
+              if(typeof callback == 'function'){
+                return callback(err);
+              }
+
             } else {
-              console.log(responseStatus.message);
+              if(typeof callback == 'function'){
+                return callback(err,responseStatus.message);
+              }
             }
           });
         }
@@ -60,3 +56,4 @@ email.sendEmail = function(callback){
     }
   });
 };
+

@@ -1,7 +1,7 @@
 var config = {
-  db_url : process.env.MONGOLAB_URI || 'mongodb://localhost:27017/skaterprofile',
+  db_url : process.env.MONGOLAB_URI,
   app_name : "SkaterProfile",
-  session_secret : process.env.SESSION_SECRECTS || '1231231',
+  session_secret : process.env.SESSION_SECRECTS,
   meta_desc: "",
   meta_key: "",
   lifetime: 15*(1000*60), // milisecond

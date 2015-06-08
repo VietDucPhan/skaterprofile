@@ -13,9 +13,24 @@ UsersModel.getCollection = function(){
 UsersModel.save = function(data, callback){
   var users = this.getCollection();
   Validate.sanitizeUsers(data,function(err, res){
-    email.sendEmail();
-    if(err.length == 0){
-      users.insert(res);
+
+    if(!err){
+      //store and delete raw password to use latter
+      var password = res.raw_password;
+      delete res.raw_password;
+      users.insert(res,function(err, rec){
+        //email data to send to register user
+        var emailData = {
+          template:'confirm',
+          subject:'Welcome to Skaterprofile',
+          password:password,
+          email:rec.ops[0].email
+        }
+
+        email.sendEmail(emailData,function(err){
+          return callback(err);
+        });
+      });
     }
     return callback(err);
   });
