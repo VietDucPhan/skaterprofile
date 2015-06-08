@@ -18,7 +18,6 @@ email.sendEmail = function(callback){
     } else {
 
       // ## Send a single emails
-
       // Prepare nodemailer transport object
       var transport = nodemailer.createTransport({
         service: 'Zoho',
