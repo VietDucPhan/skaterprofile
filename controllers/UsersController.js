@@ -13,7 +13,7 @@ router.get('/signup', function(req, res, next) {
 });
 router.post('/signup',function(req,res){
   Users.save({email:req.body.email,password:req.body.password},function(err){
-    console.log(err);
+    //console.log(err);
     req.session.flash = err;
     res.redirect('/users/signup');
   });
