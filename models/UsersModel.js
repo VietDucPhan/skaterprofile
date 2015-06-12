@@ -4,9 +4,9 @@
 var AppModel = require('./AppModel');
 var Validate = require('./lib/Validate');
 var email = require('./lib/Email');
-var Url = require('url');
 
 var UsersModel = module.exports = {};
+
 UsersModel.getCollection = function(){
   return AppModel.db.collection('users');
 };
@@ -27,7 +27,7 @@ UsersModel.save = function(data, callback){
           subject:'Welcome to Skaterprofile',
           password:password,
           email:rec.ops[0].email,
-          validateLink: Url.protocol + Url.host
+          activate_url: data.domain + '/users/activate/' + rec.ops[0].activate
         }
 
         email.sendEmail(emailData,function(err){
@@ -43,3 +43,16 @@ UsersModel.save = function(data, callback){
   });
 
 };
+
+UsersModel.edit = function(criteria,update,callback){
+  var users = this.getCollection();
+  if(typeof criteria == 'object' && typeof update == 'object'){
+    users.update(criteria,update, function(err,rec){
+      if(typeof callback == 'function'){
+        return callback(err);
+      }
+      return err;
+    });
+  }
+
+}
