@@ -4,6 +4,7 @@
 var AppModel = require('./AppModel');
 var Validate = require('./lib/Validate');
 var email = require('./lib/Email');
+var async = require('async');
 
 var UsersModel = module.exports = {};
 
@@ -55,4 +56,26 @@ UsersModel.edit = function(criteria,update,callback){
     });
   }
 
+};
+
+UsersModel.authenticate = function(username,password,callback){
+  var users = this.getCollection();
+  async.waterfall([
+      function(callback){
+        users.findOne({email:username},function(err,rec){
+          if(typeof err == 'object'){
+            callback(null,err);
+          } else {
+            callback(null,rec);
+          }
+
+        });
+      },
+      function(res,callback){
+        console.log(res);
+        callback(null,res);
+      }
+  ],function(err,record,callback){
+    return callback(err);
+  });
 }
