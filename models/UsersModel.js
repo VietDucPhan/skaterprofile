@@ -12,7 +12,7 @@ UsersModel.getCollection = function(){
   return AppModel.db.collection('users');
 };
 
-UsersModel.save = function(data, callback){
+UsersModel.addNewUser = function(data, callback){
   var users = this.getCollection();
   Validate.sanitizeUsers(data,function(err, res){
 
@@ -45,12 +45,12 @@ UsersModel.save = function(data, callback){
 
 };
 
-UsersModel.edit = function(criteria,update,callback){
+UsersModel.update = function(criteria,update,callback){
   var users = this.getCollection();
   if(typeof criteria == 'object' && typeof update == 'object'){
     users.update(criteria,update, function(err,rec){
       if(typeof callback == 'function'){
-        return callback(err);
+        return callback(err,rec);
       }
       return err;
     });
@@ -58,24 +58,3 @@ UsersModel.edit = function(criteria,update,callback){
 
 };
 
-UsersModel.authenticate = function(username,password,callback){
-  var users = this.getCollection();
-  async.waterfall([
-      function(callback){
-        users.findOne({email:username},function(err,rec){
-          if(typeof err == 'object'){
-            callback(null,err);
-          } else {
-            callback(null,rec);
-          }
-
-        });
-      },
-      function(res,callback){
-        console.log(res);
-        callback(null,res);
-      }
-  ],function(err,record,callback){
-    return callback(err);
-  });
-}

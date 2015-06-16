@@ -30,7 +30,7 @@ v.sanitizeUsers = function(data, callback){
     },
     function(error, safeData, callback){
       v.isEmailExisted(safeData.email, function(flag,email){
-        console.log(flag);
+        //console.log(flag);
         if(flag){
           error.push('Email already in used');
         }
@@ -40,19 +40,18 @@ v.sanitizeUsers = function(data, callback){
     function(error, safeData, callback){
       v.isValidPassword(data.password,function(flag,password){
         safeData.raw_password = password;
-        bcrypt.genSalt(10, function(err, salt) {
-          bcrypt.hash(data.password, salt, function(err, hash) {
-            safeData.password = hash;
-            //there is a callback and no errors happen
-            if(!flag){
-              error.push('Password must be more than 6 characters');
-            }
-
-            callback(null, error, safeData);
+        if(!flag){
+          error.push('Password must be more than 6 characters');
+          callback(null, error, safeData);
+        } else {
+          bcrypt.genSalt(10, function(err, salt) {
+            bcrypt.hash(data.password, salt, function(err, hash) {
+              safeData.password = hash;
+              //there is a callback and no errors happen
+              callback(null, error, safeData);
+            });
           });
-        });
-
-
+        }
       });
     }
   ],function(err,error,safeData){
@@ -91,7 +90,7 @@ v.isEmailExisted = function(email, callback){
   var users = AppModel.db.collection('users');
   var flag = false;
   users.find({email:email}).limit(1).toArray(function(err, explanation) {
-    console.log(explanation);
+    //console.log(explanation);
     if (explanation.length > 0) {
       flag = true;
     }
