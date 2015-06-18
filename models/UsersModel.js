@@ -3,7 +3,7 @@
  */
 var AppModel = require('./AppModel');
 var Validate = require('./lib/Validate');
-var email = require('./lib/Email');
+var Email = require('./lib/Email');
 var async = require('async');
 
 var UsersModel = module.exports = {};
@@ -31,7 +31,7 @@ UsersModel.addNewUser = function(data, callback){
           activate_url: data.domain + '/users/activate/' + rec.ops[0].activate
         }
 
-        email.sendEmail(emailData,function(err){
+        Email.sendEmail(emailData,function(err){
           if(typeof callback == 'function'){
             return callback(err);
           }
@@ -45,6 +45,62 @@ UsersModel.addNewUser = function(data, callback){
 
 };
 
+UsersModel.recovery = function(data,callback){
+  var date = new Date(),
+      users = this.getCollection(),
+      error = [],
+      numberOfDaysToAdd = 1;//could not reset password after 1 day
+
+  date.setDate(date.getDate() + numberOfDaysToAdd);
+  var expirationDate = new Date(date.toISOString());
+  var resetCode = AppModel.guid();
+  async.waterfall([
+      function(callback){
+        Validate.isEmail(data.email,function(flag,email){
+          if(!flag){
+            error.push('Email is not valid');
+            callback(true,error,email);
+          } else {
+            callback(null,error,email);
+          }
+
+        });
+      },
+      function(err,email,callback){
+        users.update(
+            {email:email},
+            {$set:{recovery:{code:resetCode,expire:expirationDate}}},
+            function(err,count){
+              if(count.result.n == 0){
+                error.push('Account not found');
+                callback(true,error);
+              }else {
+                callback(null, email, resetCode);
+              }
+
+            }
+        );
+      },
+      function(email, resetCode, callback){
+        var emailData = {
+          email:email,
+          recovery_url:data.domain + '/users/email-reset-password/' +  resetCode,
+          template:"recovery",
+          subject:"Password Recovery"
+        };
+        Email.sendEmail(emailData,function(err,message){
+          callback(null,error);
+        });
+      }
+  ],function(err,error){
+    callback(error);
+    //users.update(
+    //    {email:email},
+    //    {$set:{recovery:{code:AppModel.guid(),expire:expirationDate}}}
+    //);
+  });
+}
+
 UsersModel.update = function(criteria,update,callback){
   var users = this.getCollection();
   if(typeof criteria == 'object' && typeof update == 'object'){
@@ -55,6 +111,5 @@ UsersModel.update = function(criteria,update,callback){
       return err;
     });
   }
-
 };
 

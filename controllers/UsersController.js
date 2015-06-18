@@ -85,12 +85,18 @@ router.get('/recovery',function(req,res){
  */
 router.post('/recovery',function(req,res){
   if(!req.session.recovery){
-    Users.update({email:req.body.email},{$set:{recovery:AppModel.guid()}},function(err,rec){
-      console.log(rec);
-    });
+    Users.recovery({email:req.body.email,domain:req.protocol + '://' + req.headers.host},
+        function(err){
+          if(err.length != 0){
+            req.session.flash = err;
+          }
+
+          res.redirect('/users/recovery');
+        }
+    );
   }
 
-  res.redirect('/users/recovery');
+
 });
 /**
  * show users profile

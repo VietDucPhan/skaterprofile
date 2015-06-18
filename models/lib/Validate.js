@@ -72,6 +72,13 @@ v.sanitizeUsers = function(data, callback){
   //});
 
 }
+
+/**
+ *
+ * @param email
+ * @param callback had two parameter, first parameter true if email is valid vice versa, second parameter is the email
+ * @returns {*} true or false
+ */
 v.isEmail = function(email,callback){
   var EmailRegExp = /^([\w.-]+)\@([\w-]+)(\.([a-z]{2,3})){1,2}$/g;
   var flag = false;

@@ -12,7 +12,7 @@ var email = module.exports = {};
 
 /**
  *
- * @param locals email, template, subject is always required
+ * @param locals Object that have email, template, subject is always required
  * @param callback
  */
 email.sendEmail = function(locals,callback){
