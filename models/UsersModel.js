@@ -45,7 +45,19 @@ UsersModel.addNewUser = function(data, callback){
 
 };
 
-UsersModel.recovery = function(data,callback){
+UsersModel.resetPassByRecoveryCode = function(data, callback){
+  var date = new Date();
+  var users = this.getCollection();
+  date.setDate(date.getDate());
+  var currentDate = new Date(date.toISOString());
+  users.update({'recovery.code':data.code,'recovery.expire':{$gte:currentDate}},{$set:{abc:currentDate}},function(err){
+    if(typeof callback == 'function'){
+      return callback(err);
+    }
+  })
+}
+
+UsersModel.requestRecoveryCode = function(data,callback){
   var date = new Date(),
       users = this.getCollection(),
       error = [],

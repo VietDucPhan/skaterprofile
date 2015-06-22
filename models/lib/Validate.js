@@ -2,7 +2,7 @@
  * Created by Administrator on 6/2/2015.
  * Helper for model before insert data to mongodb
  */
-var bcrypt = require('bcrypt');
+var Auth = require('./Auth');
 var AppModel = require('../AppModel');
 var async = require('async');
 var v = module.exports = {};
@@ -44,13 +44,11 @@ v.sanitizeUsers = function(data, callback){
           error.push('Password must be more than 6 characters');
           callback(null, error, safeData);
         } else {
-          bcrypt.genSalt(10, function(err, salt) {
-            bcrypt.hash(data.password, salt, function(err, hash) {
-              safeData.password = hash;
-              //there is a callback and no errors happen
-              callback(null, error, safeData);
-            });
-          });
+          Auth.generatePassword(data.password,function(err,hashedPassword){
+            safeData.password = hashedPassword;
+            //there is a callback and no errors happen
+            callback(null, error, safeData);
+          })
         }
       });
     }

@@ -47,3 +47,16 @@ A.auth = function(username,password,callback){
     }
   });
 }
+
+A.generatePassword = function(password,callback){
+  bcrypt.genSalt(10, function(err, salt) {
+    bcrypt.hash(password, salt, function(err, hash) {
+      if(typeof callback == 'function'){
+        return callback(err, hash);
+      } else {
+        return hash
+      }
+
+    });
+  });
+}

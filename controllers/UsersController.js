@@ -80,12 +80,25 @@ router.get('/recovery',function(req,res){
   res.render('users/recovery');
 });
 
+
+/**
+ * Change password with provided code
+ */
+router.get('/email-reset-password/:code',function(req,res){
+  res.render('users/email-reset-password',{code:req.params.code});
+});
+router.post('/email-reset-password/:code',function(req,res){
+  console.log(req.body.code);
+  Users.resetPassByRecoveryCode({code:req.body.code},function(err){
+    res.redirect('/users/email-reset-password/'+req.body.code);
+  });
+});
+
 /**
  * recovery password process
  */
 router.post('/recovery',function(req,res){
-  if(!req.session.recovery){
-    Users.recovery({email:req.body.email,domain:req.protocol + '://' + req.headers.host},
+    Users.requestRecoveryCode({email:req.body.email,domain:req.protocol + '://' + req.headers.host},
         function(err){
           if(err.length != 0){
             req.session.flash = err;
@@ -94,10 +107,8 @@ router.post('/recovery',function(req,res){
           res.redirect('/users/recovery');
         }
     );
-  }
-
-
 });
+
 /**
  * show users profile
  */
