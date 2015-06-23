@@ -38,7 +38,13 @@ app.use(session({
 app.use(function(req, res, next) {
   app.locals.flash = null;
   if(req.session.flash){
-    app.locals.flash = req.session.flash;
+    app.locals.flash_class = 'info';
+    if(Array.isArray(req.session.flash)){
+      app.locals.flash = req.session.flash;
+    } else {
+      app.locals.flash_class = req.session.flash.template;
+      app.locals.flash = req.session.flash.message;
+    }
     req.session.flash = null;
   }
   next();

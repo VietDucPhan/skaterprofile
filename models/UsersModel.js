@@ -5,6 +5,7 @@ var AppModel = require('./AppModel');
 var Validate = require('./lib/Validate');
 var Email = require('./lib/Email');
 var async = require('async');
+var Auth = require('./lib/Auth');
 
 var UsersModel = module.exports = {};
 
@@ -50,11 +51,48 @@ UsersModel.resetPassByRecoveryCode = function(data, callback){
   var users = this.getCollection();
   date.setDate(date.getDate());
   var currentDate = new Date(date.toISOString());
-  users.update({'recovery.code':data.code,'recovery.expire':{$gte:currentDate}},{$set:{abc:currentDate}},function(err){
+  var error = [];
+  async.waterfall([
+      function(callback){
+        Validate.isValidPassword(data.password,function(flag,password){
+          if(flag){
+            callback(null,error,password);
+          } else {
+            error.push('Please enter a valid password');
+            callback(true,error)
+          }
+        })
+      },
+      function(error, password, callback){
+        if(password == data.repassword){
+          callback(null, error, password);
+        } else {
+          error.push("These passwords don't match, Please try again ");
+          callback(true,error);
+        }
+      },
+      function(error, password, callback){
+        Auth.generatePassword(password,function(err,hash){
+          callback(null,error,hash)
+        });
+      },
+      function(error,hash,callback){
+        users.update({'recovery.code':data.code,'recovery.expire':{$gte:currentDate}},{$set:{password:hash,recovery:{}}},function(err,rec){
+          if(rec.result.n == 0){
+            error.push('Your request code expired, Please request a new one');
+            callback(true,error);
+          } else {
+            callback(null,error);
+          }
+
+        })
+      }
+  ],function(err,error){
     if(typeof callback == 'function'){
-      return callback(err);
+      return callback(error);
     }
   })
+
 }
 
 UsersModel.requestRecoveryCode = function(data,callback){

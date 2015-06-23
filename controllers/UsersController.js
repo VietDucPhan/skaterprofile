@@ -88,9 +88,15 @@ router.get('/email-reset-password/:code',function(req,res){
   res.render('users/email-reset-password',{code:req.params.code});
 });
 router.post('/email-reset-password/:code',function(req,res){
-  console.log(req.body.code);
-  Users.resetPassByRecoveryCode({code:req.body.code},function(err){
-    res.redirect('/users/email-reset-password/'+req.body.code);
+  Users.resetPassByRecoveryCode({code:req.body.code,password:req.body.password,repassword:req.body.repassword},function(err){
+    if(err.length != 0){
+      req.session.flash = err;
+      res.redirect('/users/email-reset-password/'+req.body.code);
+    } else {
+      req.session.flash = {template:'success',message:['You successfully changed password']};
+      res.redirect('/users/login');
+    }
+
   });
 });
 
