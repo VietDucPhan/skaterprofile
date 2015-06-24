@@ -1,11 +1,14 @@
 doctype html
-html
+html(ng-app="app")
   head
     title= title
-    link(rel='stylesheet', href='/stylesheets/skaterprofile.css')
-  body
+  body(data-twttr-rendered="true")
     include ./elements/menues/mainmenu.jade
     if flash
       include ./flash.jade
     div.container-fluid
       block content
+
+    link(rel='stylesheet', href='/stylesheets/skaterprofile.css')
+    script(src='/javascripts/angular.min.js')
+    script(src='/javascripts/App.js')
