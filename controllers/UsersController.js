@@ -4,12 +4,10 @@ var Users = require('../models/UsersModel');
 var os = require('os');
 var Auth = require('../models/lib/Auth');
 var AppModel = require('../models/AppModel');
-/**
- * Show user profile
- */
-router.get('/', function(req, res, next) {
-  res.render('users/users', { title: 'general' });
-  
+
+/* GET home page. */
+router.get('/partials/:page', function(req, res, next) {
+  res.render('users/' + req.params.page);
 });
 
 
@@ -17,7 +15,7 @@ router.get('/', function(req, res, next) {
  * Show sign up page
  */
 router.get('/signup', function(req, res, next) {
-  res.render('users/signup', { title: 'Sign up' });
+  res.render('layout', { title: 'Sign up' });
 });
 
 /**
@@ -55,7 +53,7 @@ router.get('/login',function(req,res){
   if(req.session.user){
     res.redirect('/');
   }
-  res.render('users/login', { title: 'Login' });
+  res.render('layout', { title: 'Login' });
 });
 
 /**
@@ -96,7 +94,6 @@ router.post('/email-reset-password/:code',function(req,res){
       req.session.flash = {template:'success',message:['You successfully changed password']};
       res.redirect('/users/login');
     }
-
   });
 });
 

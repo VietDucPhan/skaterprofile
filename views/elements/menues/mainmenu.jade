@@ -1,7 +1,7 @@
 nav.navbar.navbar-default
   div.container-fluid()
     div.navbar-header
-      button(type="button",class="navbar-toggle collapsed",data-toggle="collapse",data-target="#main-menu",aria-expanded="false",ng-click="isCollapsed = !isCollapsed")
+      button(type="button",class="navbar-toggle collapsed",data-toggle="collapse",data-target="#main-menu",aria-expanded="false")
         span.sr-only Toggle navigation
         span.icon-bar
         span.icon-bar
@@ -12,8 +12,6 @@ nav.navbar.navbar-default
       ul.nav.navbar-nav
         li
           a(href="/posts/hot") Hot
-        li
-          a Full Name: {{fullName()}}
       if user
         include ./loggedin-right-mainmenu.jade
       else

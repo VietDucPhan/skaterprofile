@@ -1,14 +1,18 @@
 doctype html
-html(ng-app="app")
+html(ng-app="App")
   head
     title= title
+    base(href="/")
   body(data-twttr-rendered="true")
     include ./elements/menues/mainmenu.jade
     if flash
       include ./flash.jade
-    div.container-fluid
-      block content
+    div(ng-view).container-fluid
+      block centent
 
     link(rel='stylesheet', href='/stylesheets/skaterprofile.css')
     script(src='/javascripts/angular.min.js')
+    script(src='/javascripts/angular-route.min.js')
+    script(src='/javascripts/angular-resource.min.js')
     script(src='/javascripts/App.js')
+    script(src='/javascripts/controllers.js')

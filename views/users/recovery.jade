@@ -1,8 +1,9 @@
 extends ../layout
 
 block content
-  h1= title
-  form(method='post')
-    input(name='email')
-    br
-    button log in
+  div(ng-view)
+    h1= title
+    form(method='post')
+      input(name='email')
+      br
+      button log in
