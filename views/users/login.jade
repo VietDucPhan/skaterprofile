@@ -1,7 +1,9 @@
-h1= title
-  form(method='post')
-    input(name='email')
-    br
-    input(name='password',type='password')
-    br
-    button log in
+div(ng-controller="LoginController")
+  h1
+    form(name="login",method='post',novalidate)
+      div(class="form-group")
+        input(type="email",name='email',ng-model="data.email",required,class="form-control",ng-class="")
+      br
+      input(name='password',type='password',ng-model="data.password",required,min="6",class="form-control")
+      br
+      button(ng-click="loginSubmit(data)").btn log in
