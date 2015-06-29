@@ -1,4 +1,4 @@
-var App = angular.module('App', ['ngRoute', 'AppController']);
+var App = angular.module('App', ['ngRoute','AppController']);
 App.config(['$routeProvider','$locationProvider',
     function ($routeProvider, $locationProvider) {
         $routeProvider.
@@ -12,7 +12,7 @@ App.config(['$routeProvider','$locationProvider',
             }).
             when('/users/signup', {
                 templateUrl: 'ang/users/signup',
-                controller: 'IndexController'
+                controller: 'SignupController'
             }).
             when('/404-error-page-not-fucking-found',{
                 templateUrl:'ang/pages/error',

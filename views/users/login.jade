@@ -1,9 +1,10 @@
 div(ng-controller="LoginController")
-  h1
+  h1 {{text}}
     form(name="login",method='post',novalidate)
       div(class="form-group")
         input(type="email",name='email',ng-model="data.email",required,class="form-control",ng-class="")
+        small(class="error" ng-show="login.email.$dirty && login.email.$invalid") Please input a username
       br
       input(name='password',type='password',ng-model="data.password",required,min="6",class="form-control")
       br
-      button(ng-click="loginSubmit(data)").btn log in
+      button(ng-click="loginSubmit(data)",ng-disabled="login.$invalid").btn log in

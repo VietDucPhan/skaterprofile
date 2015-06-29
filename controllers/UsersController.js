@@ -5,11 +5,6 @@ var os = require('os');
 var Auth = require('../models/lib/Auth');
 var AppModel = require('../models/AppModel');
 
-/* GET home page. */
-router.get('/partials/:page', function(req, res, next) {
-  res.render('users/' + req.params.page);
-});
-
 
 /**
  * Show sign up page
@@ -60,14 +55,15 @@ router.get('/login',function(req,res){
  * Process login
  */
 router.post('/login',function(req,res){
+  console.log(req.body.email);
   Auth.auth(req.body.email, req.body.password, function(err,rec){
     if(err.length == 0){
       delete rec.password;
-      req.session.user = rec;
+      res.json({some:rec})
     } else {
-      req.session.flash = err;
+      res.json({some:err})
     }
-    res.redirect('/users/login');
+
   });
 });
 

@@ -9,4 +9,4 @@ div(ng-controller="IndexController")
         li(ng-repeat="phone in phones | filter:query | orderBy:orderProp")
             span {{phone.name}}
     h1= title
-    p Welcome to #{title}
+    p Welcome to {{text}}

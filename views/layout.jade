@@ -1,9 +1,11 @@
 doctype html
 html(ng-app="App")
   head
+    meta(charset="UTF-8")
     title= title
     base(href="/")
-  body(data-twttr-rendered="true")
+    meta(ng-repeat="meta in metas",name="af",content='fasd')
+  body()
     include ./elements/menues/mainmenu.jade
     if flash
       include ./flash.jade
@@ -15,4 +17,4 @@ html(ng-app="App")
     script(src='/javascripts/angular-route.min.js')
     script(src='/javascripts/angular-resource.min.js')
     script(src='/javascripts/App.js')
-    script(src='/javascripts/controllers.js')
+    script(src='/javascripts/Controllers.js')
