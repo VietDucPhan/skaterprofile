@@ -2,9 +2,10 @@ doctype html
 html(ng-app="App")
   head
     meta(charset="UTF-8")
-    title= title
+    meta(name="viewport",content="width=device-width, initial-scale=1, maximum-scale=1")
+    title {{head.title}}
     base(href="/")
-    meta(ng-repeat="meta in metas",name="af",content='fasd')
+    meta(ng-repeat="meta in head.metas",name='{{meta.name}}',property='{{meta.property}}',content='{{meta.content}}')
   body()
     include ./elements/menues/mainmenu.jade
     if flash

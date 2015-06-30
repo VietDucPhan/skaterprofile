@@ -21,9 +21,15 @@ router.post('/signup',function(req,res){
     email:req.body.email,
     password:req.body.password,
     domain:req.protocol + '://' + req.headers.host},function(err){
-    //console.log(err);
-    req.session.flash = err;
-    res.redirect('/users/signup');
+    console.log(err);
+    var jsonObj = {
+      errMessage : err,
+      success : true
+    };
+    if(err.length > 0){
+      jsonObj.success = false;
+    }
+    res.json(jsonObj);
   });
 });
 
@@ -35,7 +41,7 @@ router.get('/activate/:code',function(req,res,next){
     if(err){
       req.session.flash = ['Wrong activate code, Please try again'];
     } else {
-      req.session.flash = ['Congratulation, Your account have been activated']
+      req.session.flash = ['Congratulation, Your account have been activated'];
     }
     res.redirect('/users/login');
   });
@@ -55,7 +61,6 @@ router.get('/login',function(req,res){
  * Process login
  */
 router.post('/login',function(req,res){
-  console.log(req.body.email);
   Auth.auth(req.body.email, req.body.password, function(err,rec){
     if(err.length == 0){
       delete rec.password;

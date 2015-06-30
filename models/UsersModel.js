@@ -34,7 +34,7 @@ UsersModel.addNewUser = function(data, callback){
 
         Email.sendEmail(emailData,function(err){
           if(typeof callback == 'function'){
-            return callback(err);
+            return callback([]);
           }
         });
       });

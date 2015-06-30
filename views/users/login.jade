@@ -1,10 +1,12 @@
 div(ng-controller="LoginController")
   h1 {{text}}
-    form(name="login",method='post',novalidate)
-      div(class="form-group")
-        input(type="email",name='email',ng-model="data.email",required,class="form-control",ng-class="")
-        small(class="error" ng-show="login.email.$dirty && login.email.$invalid") Please input a username
-      br
-      input(name='password',type='password',ng-model="data.password",required,min="6",class="form-control")
-      br
-      button(ng-click="loginSubmit(data)",ng-disabled="login.$invalid").btn log in
+  form(name="login",method='post',novalidate)
+    div(class="form-group has-feedback",ng-class="login.email.$invalid ? 'has-error' : 'has-success'" )
+      input(type="email",name='email',ng-model="data.email",required,class="form-control")
+      span(class="glyphicon form-control-feedback",aria-hidden="true",ng-class="login.email.$invalid ? 'glyphicon-remove' : 'glyphicon-ok'",ng-show="login.email.$dirty")
+    br
+    div(class="form-group has-feedback",ng-class="login.password.$invalid ? 'has-error' : 'has-success'" )
+      input(name='password',type='password',ng-model="data.password",required,minlength="6",class="form-control")
+      span(class="glyphicon form-control-feedback",aria-hidden="true",ng-class="login.password.$invalid ? 'glyphicon-remove' : 'glyphicon-ok'",ng-show="login.password.$dirty")
+    br
+    button(ng-click="loginSubmit(data)",ng-disabled="login.$invalid").btn log in

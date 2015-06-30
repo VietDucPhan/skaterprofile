@@ -1,7 +1,9 @@
-h1= title
-  form(method='post')
-    input(name='email')
+div(ng-controller='SignupController')
+  h1 {{title}}
+  form(name="signup",method='post',novalidate)
+    input(name='email',ng-model="data.email",type="email",required,class="form-control")
     br
-    input(name='password',type='password')
+    input(name='password',ng-model="data.password",type='password',minlength="6",required,class="form-control")
     br
-    button sign up
+    button(ng-click="signUpSubmit(data)",ng-disabled="signup.$invalid").btn Sign up
+
