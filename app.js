@@ -36,6 +36,9 @@ app.use(session({
 
 app.use(function(req, res, next) {
   app.locals.flash = null;
+  if(req.session.user){
+    app.locals.user = req.session.user;
+  }
   if(req.session.flash){
     app.locals.flash_class = 'info';
     if(Array.isArray(req.session.flash)){

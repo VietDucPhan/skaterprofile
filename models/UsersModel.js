@@ -29,7 +29,7 @@ UsersModel.addNewUser = function(data, callback){
           subject:'Welcome to Skaterprofile',
           password:password,
           email:rec.ops[0].email,
-          activate_url: data.domain + '/users/activate/' + rec.ops[0].activate
+          activate_url: data.domain + '/api/users/activate/' + rec.ops[0].activate
         }
 
         Email.sendEmail(emailData,function(err){

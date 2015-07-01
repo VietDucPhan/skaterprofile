@@ -1,5 +1,5 @@
 doctype html
-html(ng-app="App")
+html(ng-app="App",ng-controller="AppController")
   head
     meta(charset="UTF-8")
     meta(name="viewport",content="width=device-width, initial-scale=1, maximum-scale=1")
@@ -8,8 +8,8 @@ html(ng-app="App")
     meta(ng-repeat="meta in head.metas",name='{{meta.name}}',property='{{meta.property}}',content='{{meta.content}}')
   body()
     include ./elements/menues/mainmenu.jade
-    if flash
-      include ./flash.jade
+
+    alert(ng-repeat="alert in alerts",type="{{alert.type}}",close="closeAlert($index)") {{alert.msg}}
     div(ng-view).container-fluid
 
     link(rel='stylesheet', href='/stylesheets/skaterprofile.css')
@@ -17,5 +17,8 @@ html(ng-app="App")
     script(src='/javascripts/angular.min.js')
     script(src='/javascripts/angular-route.min.js')
     script(src='/javascripts/angular-resource.min.js')
+    script(src='/javascripts/ui-bootstrap-tpls-0.13.0.min.js')
     script(src='/javascripts/App.js')
-    script(src='/javascripts/Controllers.js')
+    script(src='/javascripts/IndexController.js')
+    script(src='/javascripts/LoginController.js')
+    script(src='/javascripts/SignupController.js')

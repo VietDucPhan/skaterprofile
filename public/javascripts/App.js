@@ -1,4 +1,4 @@
-var App = angular.module('App', ['ngRoute','AppController']);
+var App = angular.module('App', ['ngRoute','ViewController','ui.bootstrap']);
 App.config(['$routeProvider','$locationProvider',
     function ($routeProvider, $locationProvider) {
         $routeProvider.
@@ -14,6 +14,10 @@ App.config(['$routeProvider','$locationProvider',
                 templateUrl: 'ang/users/signup',
                 controller: 'SignupController'
             }).
+            when('/users/activate/:id', {
+                templateUrl: 'ang/users/signup',
+                controller: 'SignupController'
+            }).
             when('/404-error-page-not-fucking-found',{
                 templateUrl:'ang/pages/error',
                 controller: 'ErrorController'
@@ -24,3 +28,8 @@ App.config(['$routeProvider','$locationProvider',
         $locationProvider.html5Mode(true);
     }
 ]);
+App.controller('AppController', function ($scope, $http, $rootScope) {
+    $scope.closeAlert = function(index) {
+        $scope.alerts.splice(index, 1);
+    };
+});

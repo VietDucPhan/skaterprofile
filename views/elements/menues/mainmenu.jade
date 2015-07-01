@@ -1,14 +1,15 @@
 nav.navbar.navbar-default
   div.container-fluid()
     div.navbar-header
-      button(type="button",class="navbar-toggle collapsed",data-toggle="collapse",data-target="#main-menu",aria-expanded="false")
+      button(type="button",class="navbar-toggle collapsed",data-toggle="collapse",data-target="#main-menu",
+      aria-expanded="false", ng-init="isCollapsed = true", ng-click="isCollapsed = !isCollapsed")
         span.sr-only Toggle navigation
         span.icon-bar
         span.icon-bar
         span.icon-bar
       a(href="/",class="navbar-brand") Skaterprofile
 
-    div.collapse.navbar-collapse#main-menu
+    div(collapse="isCollapsed").collapse.navbar-collapse#main-menu
       ul.nav.navbar-nav
         li
           a(href="/posts/hot") Hot

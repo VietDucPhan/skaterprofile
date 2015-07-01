@@ -1,7 +1,7 @@
-//Login Controller
-AppController.controller('LoginController', function ($scope, $http, $rootScope,$window) {
+//Users Controller
+AppController.controller('SignupController', function ($scope, $http, $rootScope, $location) {
     $rootScope.head = {
-        title: 'Login',
+        title: 'Users',
         metas: [
             {
                 name: 'keywords',
@@ -14,18 +14,17 @@ AppController.controller('LoginController', function ($scope, $http, $rootScope,
         ]
     };
 
-    $scope.text = 'page';
-    $scope.loginSubmit = function (data) {
+    $scope.text = 'Users';
+    $scope.signUpSubmit = function (data) {
         $http({
             method: 'POST',
-            url: '/api/users/login',
+            url: '/api/users/signup',
             data: data,  // pass in data as strings
-            headers: {'Content-Type': 'application/json'}  // set the headers so angular passing info as form data (not request payload)
+            headers: {'Content-Type': 'application/json'}  // set the headers so angular passing info as form data (not
+            // request payload)
         }).success(function (data) {
             if(data.success){
-                $window.location.href = '/';
-            } else {
-                $rootScope.alerts = data.msg;
+                $location.path('/users/login');
             }
         });
     }

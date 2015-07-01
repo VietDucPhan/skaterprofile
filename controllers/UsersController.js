@@ -61,12 +61,20 @@ router.get('/login',function(req,res){
  * Process login
  */
 router.post('/login',function(req,res){
+  console.log(req.body.password);
   Auth.auth(req.body.email, req.body.password, function(err,rec){
+    var respond = {
+      success:false
+    }
     if(err.length == 0){
       delete rec.password;
-      res.json({some:rec})
+      respond.success = true;
+      respond.userid = rec._id;
+      req.session.user = respond;
+      res.json(respond)
     } else {
-      res.json({some:err})
+      respond.msg = err;
+      res.json(respond);
     }
 
   });

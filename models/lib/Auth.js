@@ -14,7 +14,7 @@ A.auth = function(username,password,callback){
     function(callback){
       users.findOne({email:username},function(err,rec){
         if(rec == undefined){
-          error.push('User name not found!');
+          error.push({msg:'User name not found!',type:'warning'});
           callback(true,error);
         } else {
           callback(null, rec);
@@ -26,7 +26,7 @@ A.auth = function(username,password,callback){
       if(respond.activate == 0){
         callback(null, respond);
       } else {
-        error.push('Please activate your account');
+        error.push({msg:'Please activate your account',type:'warning'});
         callback(true,error);
       }
     },
@@ -35,7 +35,7 @@ A.auth = function(username,password,callback){
         if(res){
           callback(null,error,respond);
         } else {
-          error.push('Wrong password!');
+          error.push({msg:'Wrong password!',type:'warning'});
           callback(true,error);
         }
 
