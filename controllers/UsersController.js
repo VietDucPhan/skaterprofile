@@ -2,10 +2,10 @@ var express = require('express');
 var router = express.Router();
 var Users = require('../models/UsersModel');
 var os = require('os');
-var Auth = require('../models/lib/Auth');
-var AppModel = require('../models/AppModel');
-
-
+var Auth = require('../lib/Auth');
+var AppModel = require('../lib/Model');
+var Socket = require('../lib/Socket');
+var jwt = require('jsonwebtoken');
 /**
  * Show sign up page
  */
@@ -47,46 +47,33 @@ router.get('/activate/:code',function(req,res,next){
   });
 });
 
-/**
- * Show login page
- */
-router.get('/login',function(req,res){
-  if(req.session.user){
-    res.redirect('/');
-  }
-  res.render('layout', { title: 'Login' });
-});
 
 /**
  * Process login
  */
 router.post('/login',function(req,res){
-  console.log(req.body.password);
   Auth.auth(req.body.email, req.body.password, function(err,rec){
     var respond = {
       success:false
     }
     if(err.length == 0){
-      delete rec.password;
       respond.success = true;
-      respond.userid = rec._id;
       req.session.user = respond;
+      respond.token = jwt.sign({ userid : rec._id }, req.session_secret);
       res.json(respond)
     } else {
+      Socket.sendEmit('test','1')
       respond.msg = err;
       res.json(respond);
     }
-
   });
 });
 
-/**
- * recovery password views
- */
-router.get('/recovery',function(req,res){
-  res.render('users/recovery');
-});
 
+router.get('/logout',function(req,res){
+  req.session.user = null;
+  res.redirect('/');
+});
 
 /**
  * Change password with provided code

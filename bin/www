@@ -7,7 +7,9 @@
 var app = require('../app');
 var debug = require('debug')('skaterprofile:server');
 var http = require('http');
-var AppModel = require('../models/AppModel');
+var AppModel = require('../lib/Model');
+var Socket = require('../lib/Socket');
+require('events').EventEmitter.prototype._maxListeners = 0;
 /**
  * Get port from environment and store in Express.
  */
@@ -20,13 +22,16 @@ app.set('port', port);
  */
 
 var server = http.createServer(app);
-
+Socket.listen(server,function(){
+  console.log('Socket is on')
+})
 /**
  * Listen on provided port, on all network interfaces.
  */
-AppModel.init(function (error) {
+AppModel.init(server,function (error) {
   if (error)
     throw error;
+
 
   server.listen(port);
   server.on('error', onError);

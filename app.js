@@ -7,6 +7,8 @@ var bodyParser = require('body-parser');
 var session = require('express-session');
 var MongoStore = require('connect-mongo')(session);
 var config = require('./config');
+var jwt = require('jsonwebtoken');
+var Socket = require('./lib/Socket');
 
 var users = require('./controllers/UsersController');
 var ang = require('./controllers/AngController');
@@ -15,6 +17,7 @@ var app = express();
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
+
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(__dirname + '/public/favicon.ico'));
@@ -35,9 +38,12 @@ app.use(session({
 }));
 
 app.use(function(req, res, next) {
+  req.session_secret = config.session_secret;
   app.locals.flash = null;
   if(req.session.user){
     app.locals.user = req.session.user;
+  } else {
+    app.locals.user = null;
   }
   if(req.session.flash){
     app.locals.flash_class = 'info';

@@ -1,7 +1,7 @@
 //Login Controller
-AppController.controller('LoginController', function ($scope, $http, $rootScope,$window , AuthService) {
+AppController.controller('ErrorController', function ($scope, $http, $rootScope,$window , AuthService) {
     $rootScope.head = {
-        title: 'Login',
+        title: 'Error',
         metas: [
             {
                 name: 'keywords',
@@ -13,9 +13,4 @@ AppController.controller('LoginController', function ($scope, $http, $rootScope,
             }
         ]
     };
-
-    $scope.text = 'page';
-    $scope.loginSubmit = function (data) {
-        AuthService.login(data);
-    }
 });

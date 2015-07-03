@@ -1,11 +1,13 @@
 /**
  * Created by Administrator on 5/29/2015.
  */
-var AppModel = require('./AppModel');
-var Validate = require('./lib/Validate');
-var Email = require('./lib/Email');
+var AppModel = require('./../lib/Model');
+var Validate = require('../lib/Validate');
+var Email = require('../lib/Email');
 var async = require('async');
-var Auth = require('./lib/Auth');
+var Auth = require('../lib/Auth');
+
+
 
 var UsersModel = module.exports = {};
 
