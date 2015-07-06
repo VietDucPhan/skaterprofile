@@ -1,5 +1,5 @@
 //Login Controller
-AppController.controller('LoginController', function ($scope, $http, $rootScope,$window , AuthService) {
+angular.module('App').controller('LoginController', function ($scope, $http, $rootScope,$window , Auth) {
     $rootScope.head = {
         title: 'Login',
         metas: [
@@ -16,6 +16,6 @@ AppController.controller('LoginController', function ($scope, $http, $rootScope,
 
     $scope.text = 'page';
     $scope.loginSubmit = function (data) {
-        AuthService.login(data);
+        Auth.login(data);
     }
 });

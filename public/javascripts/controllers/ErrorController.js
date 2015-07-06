@@ -1,9 +1,7 @@
-var AppController = angular.module('ViewController', []);
-
-//Index Controller
-AppController.controller('IndexController', function ($scope, $http, $rootScope) {
+//Login Controller
+angular.module('App').controller('ErrorController', function ($scope, $http, $rootScope,$window , AuthService) {
     $rootScope.head = {
-        title: 'Index',
+        title: 'Error',
         metas: [
             {
                 name: 'keywords',
@@ -15,9 +13,4 @@ AppController.controller('IndexController', function ($scope, $http, $rootScope)
             }
         ]
     };
-
-    $scope.text = 'page';
 });
-
-
-

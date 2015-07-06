@@ -9,6 +9,8 @@ var MongoStore = require('connect-mongo')(session);
 var config = require('./config');
 var jwt = require('jsonwebtoken');
 var Socket = require('./lib/Socket');
+var Auth = require('./lib/Auth');
+var Session = require('./lib/Session');
 
 var users = require('./controllers/UsersController');
 var ang = require('./controllers/AngController');
@@ -38,23 +40,7 @@ app.use(session({
 }));
 
 app.use(function(req, res, next) {
-  req.session_secret = config.session_secret;
-  app.locals.flash = null;
-  if(req.session.user){
-    app.locals.user = req.session.user;
-  } else {
-    app.locals.user = null;
-  }
-  if(req.session.flash){
-    app.locals.flash_class = 'info';
-    if(Array.isArray(req.session.flash)){
-      app.locals.flash = req.session.flash;
-    } else {
-      app.locals.flash_class = req.session.flash.template;
-      app.locals.flash = req.session.flash.message;
-    }
-    req.session.flash = null;
-  }
+  req.token = req.body.token || req.query.token || req.headers['token'];
   next();
 });
 

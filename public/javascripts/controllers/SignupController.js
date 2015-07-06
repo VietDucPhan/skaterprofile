@@ -1,5 +1,5 @@
 //Users Controller
-AppController.controller('SignupController', function ($scope, $http, $rootScope, $location) {
+angular.module('App').controller('SignupController', function ($scope, $http, $rootScope, $location) {
     $rootScope.head = {
         title: 'Users',
         metas: [

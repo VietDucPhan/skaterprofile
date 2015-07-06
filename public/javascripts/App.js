@@ -1,4 +1,4 @@
-var App = angular.module('App', ['ngRoute','ViewController','ui.bootstrap']);
+var App = angular.module('App', ['ngRoute','ui.bootstrap']);
 var socket = io.connect();
 var i = 0;
 socket.on('message', function (data) {
@@ -10,11 +10,11 @@ socket.on('test', function (data) {
 $(document).click(function(){
     socket.emit('send',{i:i++});
 });
-App.run(function ($rootScope,AuthService,$window,Session) {
-
+App.run(function ($rootScope,Auth,$window,Session,$http,$interval) {
+    $http.defaults.headers.common.token = Session.get();
     $rootScope.$on('$routeChangeStart', function (event, next) {
-        console.log(Session.get());
-        if(next.$$route.data.requireLogin && !AuthService.isAuthenticated()){
+        Session.refresh();
+        if(next.$$route.data.requireLogin && !Auth.isAuthenticated()){
             $window.location.href = '/users/login';
         }
     });
@@ -66,50 +66,7 @@ App.config(['$routeProvider','$locationProvider',
     }
 ]);
 
-App.factory('AuthService', function ($http, Session, $window,$rootScope) {
-    var authService = {};
 
-    authService.login = function (credentials) {
-        return $http({
-            method: 'POST',
-            url: '/api/users/login',
-            data: credentials,  // pass in data as strings
-            headers: {'Content-Type': 'application/json'}  // set the headers so angular passing info as form data (not request payload)
-        }).success(function (data) {
-            if(data.success){
-                Session.set(data.token,function(){
-                    return $window.location.href = '/'+data.token;
-                });
-
-            } else {
-                $rootScope.alerts = data.msg;
-            }
-        });
-    };
-
-    authService.isAuthenticated = function () {
-        return !!Session.get();
-    };
-
-    return authService;
-});
-
-App.factory('Session', function () {
-    var Session = {};
-    Session.set = function(token,callback){
-        localStorage.setItem('token',token);
-        if(typeof callback == 'function'){
-            return callback();
-        }
-    };
-    Session.get = function(){
-        return localStorage.getItem('token');
-    }
-    Session.destroy = function(){
-        localStorage.removeItem("token");
-    }
-    return Session;
-})
 
 App.controller('AppController', function ($scope, $http, $rootScope) {
     $scope.closeAlert = function(index) {

@@ -3,14 +3,27 @@ var router = express.Router();
 var Users = require('../models/UsersModel');
 var os = require('os');
 var Auth = require('../lib/Auth');
+var Session = require('../lib/Session');
 var AppModel = require('../lib/Model');
 var Socket = require('../lib/Socket');
-var jwt = require('jsonwebtoken');
+var config = require('../config')
 /**
  * Show sign up page
  */
 router.get('/signup', function(req, res, next) {
   res.render('layout', { title: 'Sign up' });
+});
+
+/**
+ * get data from sign up page process save data
+ */
+router.post('/refresh',function(req,res){
+  Session.decode(req.token,function(decoded){
+    Session.refresh(decoded,function(result){
+      return res.json(result);
+    })
+  })
+
 });
 
 /**
@@ -52,26 +65,29 @@ router.get('/activate/:code',function(req,res,next){
  * Process login
  */
 router.post('/login',function(req,res){
+  var dateObj = new Date();
+
   Auth.auth(req.body.email, req.body.password, function(err,rec){
     var respond = {
       success:false
-    }
+    };
+
     if(err.length == 0){
       respond.success = true;
-      req.session.user = respond;
-      respond.token = jwt.sign({ userid : rec._id }, req.session_secret);
-      res.json(respond)
+      Session.encode({ userid : rec._id, remember: req.body.remember },function(token){
+        respond.token = token;
+        return res.json(respond);
+      });
     } else {
       Socket.sendEmit('test','1')
       respond.msg = err;
-      res.json(respond);
+      return res.json(respond);
     }
   });
 });
 
 
 router.get('/logout',function(req,res){
-  req.session.user = null;
   res.redirect('/');
 });
 
