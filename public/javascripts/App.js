@@ -1,21 +1,28 @@
 var App = angular.module('App', ['ngRoute','ui.bootstrap']);
-var socket = io.connect();
+var socket = io.connect('http://localhost:5000');
 var i = 0;
-socket.on('message', function (data) {
-    console.log(data);
-});
+
 socket.on('test', function (data) {
     console.log(data);
 });
+
+socket.on('click', function (data) {
+    console.log(data);
+});
 $(document).click(function(){
-    socket.emit('send',{i:i++});
+    socket.emit('click',{i:i++});
 });
 App.run(function ($rootScope,Auth,$window,Session,$http,$interval) {
+    //Session.destroy();
     $http.defaults.headers.common.token = Session.get();
+
     $rootScope.$on('$routeChangeStart', function (event, next) {
+        console.log(Session.get());
         Session.refresh();
-        if(next.$$route.data.requireLogin && !Auth.isAuthenticated()){
-            $window.location.href = '/users/login';
+        if(next.$$route.data.requireLogin){
+            if(!Auth.isAuthenticated()){
+                $window.location.href = '/users/login';
+            }
         }
     });
 });
@@ -68,8 +75,16 @@ App.config(['$routeProvider','$locationProvider',
 
 
 
-App.controller('AppController', function ($scope, $http, $rootScope) {
+App.controller('AppController', function ($scope, $http, $rootScope, Auth) {
     $scope.closeAlert = function(index) {
         $scope.alerts.splice(index, 1);
     };
+
+    $scope.notifications = function(){
+        return null
+    };
+
+    $scope.logout =  function(){
+        return Auth.logout();
+    }
 });

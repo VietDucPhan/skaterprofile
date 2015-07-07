@@ -8,7 +8,6 @@ var session = require('express-session');
 var MongoStore = require('connect-mongo')(session);
 var config = require('./config');
 var jwt = require('jsonwebtoken');
-var Socket = require('./lib/Socket');
 var Auth = require('./lib/Auth');
 var Session = require('./lib/Session');
 
@@ -38,7 +37,6 @@ app.use(session({
   saveUninitialized:false,
   cookie: { maxAge: config.lifetime }
 }));
-
 app.use(function(req, res, next) {
   req.token = req.body.token || req.query.token || req.headers['token'];
   next();

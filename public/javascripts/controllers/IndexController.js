@@ -1,5 +1,5 @@
 //Index Controller
-angular.module('App').controller('IndexController', function ($scope, $http, $rootScope) {
+angular.module('App').controller('IndexController', function ($scope, $http, $rootScope,Session) {
     $rootScope.head = {
         title: 'Index',
         metas: [

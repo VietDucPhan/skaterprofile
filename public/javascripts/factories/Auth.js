@@ -1,7 +1,7 @@
-angular.module('App').factory('Auth', function ($http, Session, $window,$rootScope) {
-    var authService = {};
+angular.module('App').factory('Auth', function ($http, Session, $window ,$rootScope) {
+    var Auth = {};
 
-    authService.login = function (credentials) {
+    Auth.login = function (credentials) {
         return $http({
             method: 'POST',
             url: '/api/users/login',
@@ -19,9 +19,14 @@ angular.module('App').factory('Auth', function ($http, Session, $window,$rootSco
         });
     };
 
-    authService.isAuthenticated = function () {
+    Auth.isAuthenticated = function () {
         return !!Session.get();
     };
 
-    return authService;
+    Auth.logout = function(){
+        if(Session.destroy()){
+            return $window.location.href = '/';
+        }
+    }
+    return Auth;
 });

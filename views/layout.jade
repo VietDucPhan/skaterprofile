@@ -7,7 +7,7 @@ html(ng-app="App",ng-controller="AppController")
     base(href="/")
     meta(ng-repeat="meta in head.metas",name='{{meta.name}}',property='{{meta.property}}',content='{{meta.content}}')
   body()
-    include ./elements/menues/mainmenu.jade
+    main-menu
 
     alert(ng-repeat="alert in alerts",type="{{alert.type}}",close="closeAlert($index)") {{alert.msg}}
     div(ng-view).container-fluid
@@ -21,6 +21,7 @@ html(ng-app="App",ng-controller="AppController")
     script(src='/javascripts/ui-bootstrap-tpls-0.13.0.min.js')
     script(src='/javascripts/App.js')
     script(src='/javascripts/factories/Session.js')
+    script(src='/javascripts/directives/MainmenuDirective.js')
     script(src='/javascripts/factories/Auth.js')
     script(src='/javascripts/controllers/IndexController.js')
     script(src='/javascripts/controllers/LoginController.js')

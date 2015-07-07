@@ -46,6 +46,7 @@ angular.module('App').factory('Session', function ($http,$interval) {
     }
     Session.destroy = function(){
         localStorage.removeItem("token");
+        return true;
     };
     return Session;
 })

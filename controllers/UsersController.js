@@ -5,7 +5,6 @@ var os = require('os');
 var Auth = require('../lib/Auth');
 var Session = require('../lib/Session');
 var AppModel = require('../lib/Model');
-var Socket = require('../lib/Socket');
 var config = require('../config')
 /**
  * Show sign up page
@@ -19,6 +18,7 @@ router.get('/signup', function(req, res, next) {
  */
 router.post('/refresh',function(req,res){
   Session.decode(req.token,function(decoded){
+    console.log(decoded);
     Session.refresh(decoded,function(result){
       return res.json(result);
     })
@@ -79,7 +79,6 @@ router.post('/login',function(req,res){
         return res.json(respond);
       });
     } else {
-      Socket.sendEmit('test','1')
       respond.msg = err;
       return res.json(respond);
     }

@@ -1,1 +1,19 @@
 @import "_bootstrap";
+
+.navbar-default{
+  .navbar-nav{
+    li{
+      a.btn{
+        @extend .btn;
+        color:white;
+        padding:6px 12px;
+      }
+    }
+    &.navbar-right{
+      li{
+        padding:0 5px;
+      }
+    }
+  }
+
+}
