@@ -1,8 +1,7 @@
 ul.nav.navbar-nav.navbar-right
-
   li
     button.btn.navbar-btn.btn-primary Submit
   li
-    button.btn.navbar-btn.btn-default
+    button(ng-click="logout()").btn.navbar-btn.btn-default
       span(class="glyphicon glyphicon-bell")
-      sapn(class="badge"){{notifications}}
+      span(class="badge") {{notifications}}

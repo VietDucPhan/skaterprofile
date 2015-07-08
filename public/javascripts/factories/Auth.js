@@ -10,6 +10,7 @@ angular.module('App').factory('Auth', function ($http, Session, $window ,$rootSc
         }).success(function (data) {
             if(data.success){
                 Session.set(data.token,function(){
+
                     return $window.location.href = '/';
                 });
 

@@ -1,0 +1,12 @@
+table.table
+  tr
+    td#chat-box
+    td
+      table.table-hover
+        tr(ng-repeat="(id,UserData) in users_list")#users-list
+          td {{UserData.email}}
+
+select(ng-model="chatData.id")
+  option(ng-repeat="(id,UserData) in users_list",value="{{id}}") {{UserData.email}}
+input(type="text",ng-model="chatData.message")
+button(ng-click="send(chatData)") Send

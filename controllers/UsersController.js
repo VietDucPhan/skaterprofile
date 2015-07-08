@@ -74,7 +74,7 @@ router.post('/login',function(req,res){
 
     if(err.length == 0){
       respond.success = true;
-      Session.encode({ userid : rec._id, remember: req.body.remember },function(token){
+      Session.encode({ userid : rec._id, remember: req.body.remember, email:rec.email },function(token){
         respond.token = token;
         return res.json(respond);
       });

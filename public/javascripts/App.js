@@ -1,17 +1,5 @@
 var App = angular.module('App', ['ngRoute','ui.bootstrap']);
-var socket = io.connect('http://localhost:5000');
 var i = 0;
-
-socket.on('test', function (data) {
-    console.log(data);
-});
-
-socket.on('click', function (data) {
-    console.log(data);
-});
-$(document).click(function(){
-    socket.emit('click',{i:i++});
-});
 App.run(function ($rootScope,Auth,$window,Session,$http,$interval) {
     //Session.destroy();
     $http.defaults.headers.common.token = Session.get();
