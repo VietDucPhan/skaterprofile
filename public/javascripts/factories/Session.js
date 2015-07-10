@@ -1,41 +1,44 @@
-angular.module('App').factory('Session', function ($http,$interval) {
+angular.module('App').factory('Session', function ($http, $interval, $rootScope) {
     var Session = {};
     var refreshFirstTime = 1;
-    Session.set = function(token,callback){
+    Session.set = function (token, callback) {
 
-        localStorage.setItem('token',token);
+       // $rootScope.$apply(function () {
+            localStorage.setItem('token', token);
+            $rootScope.user = token;
+            if (typeof callback == 'function') {
+                return callback();
+            }
+        //})
 
-        if(typeof callback == 'function'){
-            return callback();
-        }
     };
-    Session.get = function(){
-        if(localStorage.getItem('token')){
+    Session.get = function () {
+        if (localStorage.getItem('token')) {
             return localStorage.getItem('token');
         }
         return false;
     };
 
-    Session.refresh = function(){
+    Session.refresh = function () {
 
-        if(refreshFirstTime == 1){
+        if (refreshFirstTime == 1) {
             Session._getNewToken();
             refreshFirstTime++;
         }
     }
 
-    Session._getNewToken = function(){
+    Session._getNewToken = function () {
         $http({
             method: 'POST',
             url: '/api/users/refresh',
-            data: {token:Session.get()},  // pass in data as strings
+            data: {token: Session.get()},  // pass in data as strings
             headers: {'Content-Type': 'application/json'}  // set the headers so angular passing info as form data (not
             // request payload)
         }).success(function (data) {
             //if token expired => destroy session in client
-            if(!data.err){
-                if(data.refreshed){
-                    Session.set(data.token,function(){
+            if (!data.err) {
+                if (data.refreshed) {
+                    Session.set(data.token, function () {
                         return true;
                     });
                 }
@@ -44,8 +47,9 @@ angular.module('App').factory('Session', function ($http,$interval) {
             }
         });
     }
-    Session.destroy = function(){
+    Session.destroy = function () {
         localStorage.removeItem("token");
+        $rootScope.user = null;
         return true;
     };
     return Session;

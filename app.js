@@ -39,6 +39,11 @@ app.use(session({
 }));
 app.use(function(req, res, next) {
   req.token = req.body.token || req.query.token || req.headers['token'];
+
+  Session.decode(req.token,function(decoded){
+    app.locals.user = decoded.data
+  })
+
   next();
 });
 

@@ -1,4 +1,4 @@
-angular.module('App').factory('Auth', function ($http, Session, $window ,$rootScope) {
+angular.module('App').factory('Auth', function ($http, Session, $location ,$rootScope) {
     var Auth = {};
 
     Auth.login = function (credentials) {
@@ -10,8 +10,7 @@ angular.module('App').factory('Auth', function ($http, Session, $window ,$rootSc
         }).success(function (data) {
             if(data.success){
                 Session.set(data.token,function(){
-
-                    return $window.location.href = '/';
+                    return $location.url('/');
                 });
 
             } else {
@@ -26,7 +25,7 @@ angular.module('App').factory('Auth', function ($http, Session, $window ,$rootSc
 
     Auth.logout = function(){
         if(Session.destroy()){
-            return $window.location.href = '/';
+            return $location.url('/');
         }
     }
     return Auth;

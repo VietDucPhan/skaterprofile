@@ -7,7 +7,7 @@ html(ng-app="App",ng-controller="AppController")
     base(href="/")
     meta(ng-repeat="meta in head.metas",name='{{meta.name}}',property='{{meta.property}}',content='{{meta.content}}')
   body()
-    main-menu
+    include ./elements/menues/mainmenu
 
     alert(ng-repeat="alert in alerts",type="{{alert.type}}",close="closeAlert($index)") {{alert.msg}}
     div(ng-view).container-fluid
@@ -23,8 +23,8 @@ html(ng-app="App",ng-controller="AppController")
     script(src='/javascripts/factories/Session.js')
     script(src='/javascripts/factories/Auth.js')
     script(src='/javascripts/factories/Socket.js')
-    script(src='/javascripts/directives/MainmenuDirective.js')
     script(src='/javascripts/directives/ChatDirective.js')
+    script(src='/javascripts/directives/RightmenuDirective.js')
     script(src='/javascripts/controllers/IndexController.js')
     script(src='/javascripts/controllers/LoginController.js')
     script(src='/javascripts/controllers/SignupController.js')

@@ -36,14 +36,14 @@ App.config(['$routeProvider','$locationProvider',
                 templateUrl: 'ang/users/signup',
                 controller: 'SignupController',
                 data:{
-                    requireLogin:true
+                    requireLogin:false
                 }
             }).
             when('/users/activate/:id', {
                 templateUrl: 'ang/users/signup',
                 controller: 'SignupController',
                 data:{
-                    requireLogin:true
+                    requireLogin:false
                 }
             }).
             when('/404-error-page-not-fucking-found',{
