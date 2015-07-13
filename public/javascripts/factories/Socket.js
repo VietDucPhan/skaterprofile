@@ -1,12 +1,10 @@
-angular.module('App').factory('Socket', function ($http, Auth, Session , $window, $rootScope) {
+angular.module('App').factory('Socket', function ($http, Session,  $window, $rootScope) {
     var Socket = {};
-    var LoggedIn = Auth.isAuthenticated();
-
+    var LoggedIn = Session.get();
+    var socket = io.connect();
     if (!LoggedIn) {
         return null;
     }
-
-    var socket = io.connect();
 
     socket.emit('token',Session.get());
 

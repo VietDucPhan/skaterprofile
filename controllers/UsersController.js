@@ -71,11 +71,13 @@ router.post('/login',function(req,res){
     var respond = {
       success:false
     };
-
+    delete rec.password;
+    delete rec.activate;
     if(err.length == 0){
       respond.success = true;
-      Session.encode({ userid : rec._id, remember: req.body.remember, email:rec.email },function(token){
+      Session.encode(rec,function(token){
         respond.token = token;
+        respond.data = rec;
         return res.json(respond);
       });
     } else {

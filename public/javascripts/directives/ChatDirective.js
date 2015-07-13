@@ -12,7 +12,6 @@ angular.module('App').directive('chat', function (Socket, $rootScope) {
             return false;
         }
         Socket.getAllOnlineUsers(function (data) {
-            console.log(data);
             $scope.users_list = data;
             $rootScope.notifications = data.length;
         });
@@ -21,7 +20,6 @@ angular.module('App').directive('chat', function (Socket, $rootScope) {
         }
 
         Socket.listen('chat', function (data) {
-            console.log(data);
             var element = angular.element(document.querySelector("td#chat-box"));
             element.append('<blockquote><p>'+data.msg+'</p><footer>From <cite title="Source Title">'+data.sender+'</cite></footer></blockquote>');
         })

@@ -1,6 +1,6 @@
-angular.module('App').factory('Auth', function ($http, Session, $location ,$rootScope) {
+angular.module('App').factory('Auth', function ($http, Session, $location ,$rootScope, Socket) {
     var Auth = {};
-
+    var refreshFirstTime = 1;
     Auth.login = function (credentials) {
         return $http({
             method: 'POST',
@@ -9,7 +9,8 @@ angular.module('App').factory('Auth', function ($http, Session, $location ,$root
             headers: {'Content-Type': 'application/json'}  // set the headers so angular passing info as form data (not request payload)
         }).success(function (data) {
             if(data.success){
-                Session.set(data.token,function(){
+                Session.set(data,function(){
+                    Socket.emit('token',data.token);
                     return $location.url('/');
                 });
 
@@ -24,9 +25,10 @@ angular.module('App').factory('Auth', function ($http, Session, $location ,$root
     };
 
     Auth.logout = function(){
-        if(Session.destroy()){
+        Session.destroy(function(){
+            Socket.emit('disconnect');
             return $location.url('/');
-        }
+        })
     }
     return Auth;
 });

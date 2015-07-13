@@ -5,9 +5,8 @@ App.run(function ($rootScope,Auth,$window,Session,$http,$interval) {
     $http.defaults.headers.common.token = Session.get();
 
     $rootScope.$on('$routeChangeStart', function (event, next) {
-        console.log(Session.get());
         Session.refresh();
-        if(next.$$route.data.requireLogin){
+        if(next.$$route && next.$$route.data && next.$$route.data.requireLogin){
             if(!Auth.isAuthenticated()){
                 $window.location.href = '/users/login';
             }
@@ -54,7 +53,10 @@ App.config(['$routeProvider','$locationProvider',
                 }
             }).
             otherwise({
-                redirectTo: '/404-error-page-not-fucking-found'
+                redirectTo: '/404-error-page-not-fucking-found',
+                data:{
+                    requireLogin:false
+                }
             });
 
         $locationProvider.html5Mode(true);
