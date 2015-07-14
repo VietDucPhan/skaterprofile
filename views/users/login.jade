@@ -1,5 +1,5 @@
-div(ng-controller="LoginController")
-  h1 {{text}}
+div(class="modal-body")
+  alert(ng-repeat="alert in popUpLoginAlerts",type="{{alert.type}}",close="closeLoginPopUpAlert($index)") {{alert.msg}}
   form(name="login",method='post',novalidate)
     div(class="form-group has-feedback",ng-class="login.email.$invalid ? 'has-error' : 'has-success'" )
       input(type="email",name='email',ng-model="data.email",required,class="form-control")

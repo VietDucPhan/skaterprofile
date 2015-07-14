@@ -5661,4 +5661,8 @@ button.close {
 .navbar-default .navbar-nav.navbar-right li {
   padding: 0 5px; }
 
+.page-loading {
+  height: 3px;
+  margin-bottom: 0; }
+
 /*# sourceMappingURL=skaterprofile.css.map */

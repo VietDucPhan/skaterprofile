@@ -1,6 +1,8 @@
-div(ng-controller='SignupController')
-  h1 {{title}}
+div(class='modal-body')
+  alert(ng-repeat="alert in signUpPopUpAlerts",type="{{alert.type}}",close="closeSignUpPopUpAlert($index)") {{alert.msg}}
   form(name="signup",method='post',novalidate)
+    input(name='username',ng-model="data.username",type="text",required,class="form-control")
+    br
     input(name='email',ng-model="data.email",type="email",required,class="form-control")
     br
     input(name='password',ng-model="data.password",type='password',minlength="6",required,class="form-control")

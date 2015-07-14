@@ -6,12 +6,6 @@ var Auth = require('../lib/Auth');
 var Session = require('../lib/Session');
 var AppModel = require('../lib/Model');
 var config = require('../config')
-/**
- * Show sign up page
- */
-router.get('/signup', function(req, res, next) {
-  res.render('layout', { title: 'Sign up' });
-});
 
 /**
  * get data from sign up page process save data
@@ -34,14 +28,15 @@ router.post('/signup',function(req,res){
     email:req.body.email,
     password:req.body.password,
     domain:req.protocol + '://' + req.headers.host},function(err){
-    console.log(err);
+
     var jsonObj = {
-      errMessage : err,
+      msg : err,
       success : true
     };
     if(err.length > 0){
       jsonObj.success = false;
     }
+    console.log(jsonObj);
     res.json(jsonObj);
   });
 });
@@ -71,9 +66,10 @@ router.post('/login',function(req,res){
     var respond = {
       success:false
     };
-    delete rec.password;
-    delete rec.activate;
+
     if(err.length == 0){
+      delete rec.password;
+      delete rec.activate;
       respond.success = true;
       Session.encode(rec,function(token){
         respond.token = token;
@@ -82,6 +78,7 @@ router.post('/login',function(req,res){
       });
     } else {
       respond.msg = err;
+      console.log(respond);
       return res.json(respond);
     }
   });

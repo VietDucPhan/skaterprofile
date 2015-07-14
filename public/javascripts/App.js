@@ -69,11 +69,9 @@ App.controller('AppController', function ($scope, $http, $rootScope, Auth) {
     $scope.closeAlert = function(index) {
         $scope.alerts.splice(index, 1);
     };
-
     $scope.notifications = function(){
         return null
     };
-
     $scope.logout =  function(){
         return Auth.logout();
     }

@@ -25,6 +25,8 @@ angular.module('App').controller('SignupController', function ($scope, $http, $r
         }).success(function (data) {
             if(data.success){
                 $location.path('/users/login');
+            } else {
+                $rootScope.signUpPopUpAlerts = data.msg
             }
         });
     }

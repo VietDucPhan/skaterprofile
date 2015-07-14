@@ -16,6 +16,11 @@ angular.module('App').controller('LoginController', function ($scope, $http, $ro
 
     $scope.text = 'page';
     $scope.loginSubmit = function (data) {
-        Auth.login(data);
+        Auth.login(data,function(msg){
+            if(msg.length > 0){
+             return $rootScope.popUpLoginAlerts = msg;
+            }
+            $modalInstance.close();
+        });
     }
 });

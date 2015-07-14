@@ -1,7 +1,7 @@
 angular.module('App').factory('Auth', function ($http, Session, $location ,$rootScope, Socket) {
     var Auth = {};
     var refreshFirstTime = 1;
-    Auth.login = function (credentials) {
+    Auth.login = function (credentials,callback) {
         return $http({
             method: 'POST',
             url: '/api/users/login',
@@ -10,12 +10,14 @@ angular.module('App').factory('Auth', function ($http, Session, $location ,$root
         }).success(function (data) {
             if(data.success){
                 Session.set(data,function(){
-                    Socket.emit('token',data.token);
-                    return $location.url('/');
+                    if(typeof callback == 'function'){
+                        return callback([],true)
+                    }
                 });
 
             } else {
-                $rootScope.alerts = data.msg;
+                return callback(data.msg)
+
             }
         });
     };
