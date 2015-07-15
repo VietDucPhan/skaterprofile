@@ -11,6 +11,7 @@ var jwt = require('jsonwebtoken');
 var Auth = require('./lib/Auth');
 var Session = require('./lib/Session');
 
+var home = require('./controllers/HomeController');
 var users = require('./controllers/UsersController');
 var ang = require('./controllers/AngController');
 var app = express();
@@ -47,6 +48,7 @@ app.use(function(req, res, next) {
   next();
 });
 
+app.use('/', home);
 app.use('/ang', ang);
 app.use('/api/users/', users);
 // catch 404 and forward to error handler
