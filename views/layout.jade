@@ -6,6 +6,7 @@ html(ng-app="App",ng-controller="AppController")
     title {{head.title}}
     base(href="/")
     meta(ng-repeat="meta in head.metas",name='{{meta.name}}',property='{{meta.property}}',content='{{meta.content}}')
+    meta(name="google-site-verification",content="49SlhrdBWXsqASgWBAQl-4Sa6KW1ynOsf3Y_vg_G2j4")
   body()
     include ./elements/menues/mainmenu
 
