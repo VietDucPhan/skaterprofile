@@ -2,14 +2,14 @@ angular.module('App').factory('Socket', function ($http, Session,  $window, $roo
     var Socket = {};
     var LoggedIn = Session.get();
     var socket = io.connect();
-    if (!LoggedIn) {
-        return null;
-    }
 
     socket.emit('token',Session.get());
 
-    Socket.emit = function (name, data) {
-        socket.emit(name, data)
+    Socket.emit = function (name, data,callback) {
+        socket.emit(name, data);
+        if(typeof callback == 'function'){
+            return callback();
+        }
     }
 
     Socket.listen = function (name, callback) {

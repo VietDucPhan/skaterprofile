@@ -25,7 +25,9 @@ angular.module('App').directive('rightMenu',function(Auth,$modal,$rootScope,$loc
                 controller: LoginController
             });
         }
-
+        scope.alias = {
+            profile_img:false//"https://lh6.googleusercontent.com/-zkNCtidqyL0/AAAAAAAAAAI/AAAAAAAAAAA/tFR30lDzjiw/w48-h48/photo.jpg"
+        };
 
     }
     rightMenu.template = '<ul class="nav navbar-nav navbar-right" ng-include="template()"/>';

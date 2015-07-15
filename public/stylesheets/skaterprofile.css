@@ -5660,9 +5660,33 @@ button.close {
   padding: 6px 12px; }
 .navbar-default .navbar-nav.navbar-right li {
   padding: 0 5px; }
+.navbar-default .profile-picture {
+  display: inline-block;
+  vertical-align: middle;
+  touch-action: manipulation;
+  cursor: pointer;
+  text-align: center;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  padding: 3px 8px;
+  font-size: 17px;
+  line-height: 1.42857;
+  border-radius: 4px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  background-color: #fff;
+  border: 1px solid transparent;
+  border-color: #ccc;
+  border-radius: 4px; }
+  .navbar-default .profile-picture img {
+    width: 25px; }
 
-.page-loading {
+.bar {
   height: 3px;
-  margin-bottom: 0; }
+  margin-bottom: 0;
+  position: fixed;
+  top: 0;
+  z-index: 99999; }
 
 /*# sourceMappingURL=skaterprofile.css.map */

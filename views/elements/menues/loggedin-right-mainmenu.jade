@@ -2,5 +2,8 @@ li
     button.btn.navbar-btn.btn-primary Submit
 li
     button(ng-click="logout()").btn.navbar-btn.btn-default
-        span(class="glyphicon glyphicon-bell")
-        span(class="badge") {{notifications}}
+        span(ng-if="!notifications", class="glyphicon glyphicon-bell")
+        span(ng-if="notifications", class="badge") {{notifications}}
+li(ng-if="alias")
+    span(ng-class="{glyphicon:!alias.profile_img,'glyphicon-user':!alias.profile_img}",class="profile-picture")
+        img(ng-if="alias.profile_img",ng-src="{{alias.profile_img}}")

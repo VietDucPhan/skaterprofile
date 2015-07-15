@@ -10,6 +10,8 @@ angular.module('App').factory('Auth', function ($http, Session, $location ,$root
         }).success(function (data) {
             if(data.success){
                 Session.set(data,function(){
+                    console.log(data);
+                    Socket.emit('token',data.token);
                     if(typeof callback == 'function'){
                         return callback([],true)
                     }
@@ -27,10 +29,13 @@ angular.module('App').factory('Auth', function ($http, Session, $location ,$root
     };
 
     Auth.logout = function(){
-        Session.destroy(function(){
-            Socket.emit('disconnect');
-            return $location.url('/');
-        })
+        Socket.emit('logout',{},function(){
+            Session.destroy(function(){
+
+                return $location.url('/');
+            })
+        });
+
     }
     return Auth;
 });

@@ -13,7 +13,6 @@ angular.module('App').controller('IndexController', function ($scope, $http, $ro
             }
         ]
     };
-
     $scope.text = 'page';
 });
 
