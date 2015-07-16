@@ -1,4 +1,5 @@
 div(class='modal-body')
+  button(ng-click="fbLogin()").btn Facebook
   alert(ng-repeat="alert in signUpPopUpAlerts",type="{{alert.type}}",close="closeSignUpPopUpAlert($index)") {{alert.msg}}
   form(name="signup",method='post',novalidate)
     input(name='email',ng-model="data.email",type="email",required,class="form-control")

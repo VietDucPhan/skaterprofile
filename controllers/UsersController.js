@@ -57,6 +57,21 @@ router.get('/activate/:code',function(req,res,next){
 
 
 /**
+ * Facebook login
+ */
+router.post('/fblogin',function(req,res){
+  var response = {
+    req:req.body.a,
+    status:false
+  }
+  return res.json(response);
+});
+
+router.get('/logout',function(req,res){
+  res.redirect('/');
+});
+
+/**
  * Process login
  */
 router.post('/login',function(req,res){
@@ -85,9 +100,6 @@ router.post('/login',function(req,res){
 });
 
 
-router.get('/logout',function(req,res){
-  res.redirect('/');
-});
 
 /**
  * Change password with provided code

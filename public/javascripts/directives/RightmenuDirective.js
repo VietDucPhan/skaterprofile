@@ -29,12 +29,18 @@ angular.module('App').directive('rightMenu',function(Auth,$modal,$rootScope,$loc
             profile_img:false//"https://lh6.googleusercontent.com/-zkNCtidqyL0/AAAAAAAAAAI/AAAAAAAAAAA/tFR30lDzjiw/w48-h48/photo.jpg"
         };
 
+
+
     }
     rightMenu.template = '<ul class="nav navbar-nav navbar-right" ng-include="template()"/>';
     return rightMenu;
 });
 
-var SignUpController = function (Auth, $scope, $modalInstance, $rootScope, $location,$http) {
+var SignUpController = function (Auth, $scope, $modalInstance, $rootScope, $location,$http, Facebook) {
+    $scope.fbLogin = function(){
+        Facebook.login();
+    }
+
     $scope.signUpSubmit = function (data) {
         $http({
             method: 'POST',
