@@ -24,7 +24,9 @@
     "nodemailer":"1.3.4",
     "async":"1.2.1",
     "socket.io": "1.3.5",
-    "jsonwebtoken":"5.0.1"
+    "jsonwebtoken":"5.0.1",
+    "request": "2.9.x",
+    "crypto": "0.0.3"
   },
   "engines": {
     "node": "0.12.2"

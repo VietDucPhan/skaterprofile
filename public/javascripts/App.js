@@ -1,6 +1,5 @@
 var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar']).config(['$routeProvider', '$locationProvider', 'cfpLoadingBarProvider',
     function ($routeProvider, $locationProvider, cfpLoadingBarProvider) {
-        console.log();
         cfpLoadingBarProvider.loadingBarTemplate = '<div id="loading-bar" class="progress page-loading"> <div class="bar progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100"> </div> </div>';
         cfpLoadingBarProvider.includeSpinner = false;
         $routeProvider.
@@ -26,8 +25,8 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
                 }
             }).
             when('/users/activate/:id', {
-                templateUrl: 'ang/users/signup',
-                controller: 'SignupController',
+                templateUrl: 'ang/pages/index',
+                controller: 'IndexController',
                 data: {
                     requireLogin: false
                 }
@@ -48,7 +47,7 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
 
         $locationProvider.html5Mode(true);
     }
-]).run(function ($rootScope, Auth, $window, Session, $http, $interval) {
+]).run(function ($rootScope, Auth, $window, Session, $http, $interval,cfpLoadingBar) {
 
     //Session.destroy();
     $http.defaults.headers.common.token = Session.get();

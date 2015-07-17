@@ -1,5 +1,5 @@
 //Index Controller
-angular.module('App').controller('IndexController', function ($scope, $http, $rootScope,Session) {
+angular.module('App').controller('IndexController', function ($scope, $http, $rootScope, $routeParams, $location) {
     $rootScope.head = {
         title: 'Index',
         metas: [
@@ -13,6 +13,19 @@ angular.module('App').controller('IndexController', function ($scope, $http, $ro
             }
         ]
     };
+    if ($routeParams.id) {
+        $http.post('/api/users/activate', {code: $routeParams.id}).
+            success(function (data) {
+                if (data.error) {
+                    $rootScope.alerts = data.error.message;
+
+                } else {
+                    $rootScope.alerts = data.message;
+                    $location.url('/');
+                }
+
+            });
+    }
     $scope.text = 'page';
 });
 

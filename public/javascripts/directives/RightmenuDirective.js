@@ -30,13 +30,12 @@ angular.module('App').directive('rightMenu',function(Auth,$modal,$rootScope,$loc
         };
 
 
-
     }
     rightMenu.template = '<ul class="nav navbar-nav navbar-right" ng-include="template()"/>';
     return rightMenu;
 });
 
-var SignUpController = function (Auth, $scope, $modalInstance, $rootScope, $location,$http, Facebook) {
+var SignUpController = function (Auth, $scope, $modalInstance, $rootScope, $location,$http, Facebook,$timeout) {
     $scope.fbLogin = function(){
         Facebook.login();
     }
@@ -49,10 +48,14 @@ var SignUpController = function (Auth, $scope, $modalInstance, $rootScope, $loca
             headers: {'Content-Type': 'application/json'}  // set the headers so angular passing info as form data (not
             // request payload)
         }).success(function (data) {
-            if(data.success){
-                $modalInstance.close();
+
+            if(data && data.error){
+                console.log(data);
+                $rootScope.signUpPopUpAlerts = data.error.message
+
             } else {
-                $rootScope.signUpPopUpAlerts = data.msg
+                $rootScope.signUpPopUpAlerts = data.message
+                $timeout(function(){$modalInstance.close()},3000);
             }
         });
     }

@@ -6,6 +6,7 @@ var Auth = require('../lib/Auth');
 var Session = require('../lib/Session');
 var AppModel = require('../lib/Model');
 var config = require('../config')
+var FB = require('../FB');
 
 /**
  * get data from sign up page process save data
@@ -24,19 +25,16 @@ router.post('/refresh',function(req,res){
  * get data from sign up page process save data
  */
 router.post('/signup',function(req,res){
+  var jsonObj = {message:[{msg:"Congratulation, you have successfully sign up. Please check your email to verify" +
+  " your account",type:'success'}]};
   Users.addNewUser({
     email:req.body.email,
     password:req.body.password,
     domain:req.protocol + '://' + req.headers.host},function(err){
 
-    var jsonObj = {
-      msg : err,
-      success : true
-    };
     if(err.length > 0){
-      jsonObj.success = false;
+      jsonObj= {error:{message:err}}
     }
-    console.log(jsonObj);
     res.json(jsonObj);
   });
 });
@@ -44,14 +42,13 @@ router.post('/signup',function(req,res){
 /**
  * Process activate users
  */
-router.get('/activate/:code',function(req,res,next){
-  Users.update({activate:req.params.code},{$set:{activate:0}},function(err){
-    if(err){
-      req.session.flash = ['Wrong activate code, Please try again'];
-    } else {
-      req.session.flash = ['Congratulation, Your account have been activated'];
+router.post('/activate',function(req,res){
+  var jsonObj = {message:[{msg:"Congratulation, You have successfully activate your account",type:'success'}]};
+  Users.update({activate:req.body.code},{$set:{activate:0}},function(err){
+    if(!err){
+      jsonObj = {error:{message:[{msg:"Activation failed, Please try again", type:'warning'}]}}
     }
-    res.redirect('/users/login');
+    return res.json(jsonObj);
   });
 });
 
@@ -60,11 +57,40 @@ router.get('/activate/:code',function(req,res,next){
  * Facebook login
  */
 router.post('/fblogin',function(req,res){
-  var response = {
-    req:req.body.a,
-    status:false
-  }
-  return res.json(response);
+  console.log();
+  FB.setAccessToken(req.body.accessToken);
+  FB.api('/me?fields=email', function (response) {
+    if(!response || response.error) {
+      console.log(!response ? 'error occurred' : response.error);
+    }
+    return res.json(response);
+  });
+
+});
+
+/**
+ * add Facebook user
+ */
+router.post('/addfbuser',function(req,res){
+  data = {};
+  FB.setAccessToken(req.body.accessToken);
+  FB.api('/me', function (response) {
+    if(!response || response.error) {
+      console.log(!response ? 'error occurred' : response.error);
+      return res.json(response);
+    }
+
+    return res.json(response);
+    data.socialID = response.id;
+    data.social_link = response.link;
+    data.name = response.name;
+    data.locale = response.locale;
+    Users.addFacebookUser(data,function(respond){
+      return res.json(respond);
+    })
+
+  });
+
 });
 
 router.get('/logout',function(req,res){

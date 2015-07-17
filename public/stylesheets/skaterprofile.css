@@ -5660,6 +5660,8 @@ button.close {
   padding: 6px 12px; }
 .navbar-default .navbar-nav.navbar-right li {
   padding: 0 5px; }
+  .navbar-default .navbar-nav.navbar-right li .glyphicon {
+    position: static; }
 .navbar-default .profile-picture {
   display: inline-block;
   vertical-align: middle;
@@ -5682,11 +5684,14 @@ button.close {
   .navbar-default .profile-picture img {
     width: 25px; }
 
-.bar {
-  height: 3px;
-  margin-bottom: 0;
+#loading-bar {
   position: fixed;
-  top: 0;
-  z-index: 99999; }
+  top: 0; }
+  #loading-bar .bar {
+    height: 3px;
+    margin-bottom: 0;
+    position: fixed;
+    top: 0;
+    z-index: 99999; }
 
 /*# sourceMappingURL=skaterprofile.css.map */

@@ -24,17 +24,23 @@ angular.module('App').factory('Facebook', function ($http, $window, $q) {
 
     f.login = function () {
         FB.getLoginStatus(function(res){
+            console.log(res);
             if(res.status === 'connected'){
-                $http.post('/api/users/fblogin',{accessToken:res.accessToken}).
+                $http.post('/api/users/fblogin',{accessToken:res.authResponse.accessToken}).
                     success(function(data) {
                         if(data){
-                            
+                            console.log(data)
                         }
                     })
             } else {
                 FB.login(function(res){
                     if(res.status === 'connected'){
-
+                        $http.post('/api/users/addfbuser',{accessToken:res.authResponse.accessToken}).
+                            success(function(data) {
+                                if(data){
+                                    console.log(data)
+                                }
+                            })
                     }
                 });
             }

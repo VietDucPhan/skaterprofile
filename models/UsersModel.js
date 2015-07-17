@@ -31,7 +31,7 @@ UsersModel.addNewUser = function(data, callback){
           subject:'Welcome to Skaterprofile',
           password:password,
           email:rec.ops[0].email,
-          activate_url: data.domain + '/api/users/activate/' + rec.ops[0].activate
+          activate_url: data.domain + '/users/activate/' + rec.ops[0].activate
         }
 
         Email.sendEmail(emailData,function(err){
@@ -47,6 +47,18 @@ UsersModel.addNewUser = function(data, callback){
   });
 
 };
+
+UsersModel.addFacebookUser = function(data,callback){
+  var users = this.getCollection();
+  users.insert(data,function(err,res){
+    if(!err){
+
+    } else {
+      return callback([{msg:"Could not login, please remove our app on facebook and login again",type:'warning'}]);
+    }
+
+  });
+}
 
 UsersModel.resetPassByRecoveryCode = function(data, callback){
   var date = new Date();
