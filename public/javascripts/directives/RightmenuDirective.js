@@ -26,7 +26,7 @@ angular.module('App').directive('rightMenu',function(Auth,$modal,$rootScope,$loc
             });
         }
         scope.alias = {
-            profile_img:false//"https://lh6.googleusercontent.com/-zkNCtidqyL0/AAAAAAAAAAI/AAAAAAAAAAA/tFR30lDzjiw/w48-h48/photo.jpg"
+            //profile_img:"https://lh6.googleusercontent.com/-zkNCtidqyL0/AAAAAAAAAAI/AAAAAAAAAAA/tFR30lDzjiw/w48-h48/photo.jpg"
         };
 
 
@@ -50,7 +50,6 @@ var SignUpController = function (Auth, $scope, $modalInstance, $rootScope, $loca
         }).success(function (data) {
 
             if(data && data.error){
-                console.log(data);
                 $rootScope.signUpPopUpAlerts = data.error.message
 
             } else {

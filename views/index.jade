@@ -1,12 +1,12 @@
 div(ng-controller="IndexController")
-    | Search:
-    input(ng-model="query")
-    | Sort by:
-    select(ng-model="orderProp")
-        option(value="name") Alphabetical
-        option(value="age") newest
-    ul
-        li(ng-repeat="phone in phones | filter:query | orderBy:orderProp")
-            span {{phone.name}}
-    h1= title
-    p Welcome to #{title}
+  | Search:
+  input(ng-model="query")
+  | Sort by:
+  select(ng-model="orderProp")
+    option(value="name") Alphabetical
+    option(value="age") newest
+  ul
+    li(ng-repeat="phone in phones | filter:query | orderBy:orderProp")
+      span {{phone.name}}
+  h1= title
+  p Welcome to #{title}

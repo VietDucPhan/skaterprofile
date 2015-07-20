@@ -6,7 +6,7 @@ var Validate = require('../lib/Validate');
 var Email = require('../lib/Email');
 var async = require('async');
 var Auth = require('../lib/Auth');
-
+var AliasModel = require('./AliasModel')
 
 
 var UsersModel = module.exports = {};
@@ -14,6 +14,14 @@ var UsersModel = module.exports = {};
 UsersModel.getCollection = function(){
   return AppModel.db.collection('users');
 };
+
+
+UsersModel.createProfile = function(data,callback){
+  AliasModel.createSkaterAlias(data,function(response){
+    return callback(response);
+  })
+};
+
 
 UsersModel.addNewUser = function(data, callback){
   var users = this.getCollection();

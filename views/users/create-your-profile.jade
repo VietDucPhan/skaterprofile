@@ -1,0 +1,28 @@
+div(ng-controller="SettingController")
+  div.row
+    div.col-md-3
+      include ../elements/menues/settingMenu/default
+    div.col-md-9
+      form(novalidate).form-horizontal.control-label-left
+        div.form-group
+          label.col-md-2.control-label Name:
+          div.col-md-10
+            input(type="text",ng-model="profile.name",required).form-control
+            br
+            | {{suggestUsername()}}
+        div.form-group
+          label.col-md-2.control-label Username:
+          div.col-md-10
+            input(type="text",ng-model="profile.username",required).form-control
+        div.form-group
+          label.col-md-2.control-label Sex:
+          div.col-md-10.btn-group
+            label(class="btn btn-primary",ng-model="profile.sex",btn-radio="0") Others
+            label(class="btn btn-primary",ng-model="profile.sex",btn-radio="1") Male
+            label(class="btn btn-primary",ng-model="profile.sex",btn-radio="2") Female
+        div.form-group
+          label.col-md-2.control-label Bio:
+          div.col-md-10.btn-group
+            textarea(rows="5").form-control
+      hr
+      button(ng-click="profileSubmit(profile)").btn.btn-default Submit

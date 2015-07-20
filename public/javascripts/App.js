@@ -17,6 +17,15 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
                     requireLogin: false
                 }
             }).
+            when('/users/setting/:page', {
+                templateUrl: function(currentRoute){
+                    return 'ang/users/'+currentRoute.page
+                },
+                controller: 'SettingController',
+                data: {
+                    requireLogin: true
+                }
+            }).
             when('/users/signup', {
                 templateUrl: 'ang/users/signup',
                 controller: 'SignupController',
@@ -44,16 +53,15 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
                     requireLogin: false
                 }
             });
-
         $locationProvider.html5Mode(true);
     }
-]).run(function ($rootScope, Auth, $window, Session, $http, $interval,cfpLoadingBar) {
+]).run(function ($rootScope, Auth, $window, Session, $http, $interval,cfpLoadingBar,$location) {
 
     //Session.destroy();
     $http.defaults.headers.common.token = Session.get();
     $rootScope.$on('$routeChangeStart', function (event, next) {
         Session.refresh();
-
+        console.log($location.path());
         if (next.$$route && next.$$route.data && next.$$route.data.requireLogin) {
             if (!Auth.isAuthenticated()) {
                 $window.location.href = '/users/login';
@@ -61,6 +69,19 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
         }
     });
 }).controller('AppController', function ($scope, $http, $rootScope, Auth) {
+    $rootScope.head = {
+        title: 'SkaterProfile',
+        metas: [
+            {
+                name: 'keywords',
+                content: 'Skateboarding, skaterprofile'
+            },
+            {
+                name: 'description',
+                content: 'Skaterprofile page research'
+            }
+        ]
+    };
     $scope.closeAlert = function (index) {
         $scope.alerts.splice(index, 1);
     };
@@ -68,5 +89,19 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
     $scope.notifications = null;
     $scope.logout = function () {
         return Auth.logout();
+    }
+}).controller('SettingController', function ($scope, $http, $location,$rootScope) {
+    $scope.profile = {}
+    $scope.profile.sex = 1;
+    $scope.suggestUsername = function(){
+        return $scope.profile.name
+    }
+    $scope.profileSubmit = function(profile){
+        $http.post('/api/users/create/profile',profile).success(function(data){
+            if(data.error){
+                $rootScope.alerts = data.error.message;
+            }
+        })
+
     }
 });

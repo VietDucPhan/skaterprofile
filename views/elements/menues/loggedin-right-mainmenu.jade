@@ -1,17 +1,23 @@
+li(dropdown="").dropdown
+  button(class="dropdown-toggle", dropdown-toggle="").btn.navbar-btn.btn-primary Submit
+  ul(role="menu").dropdown-menu
+    li
+      a(href="#") Upload an image
+    li
+      a(href="#") Upload a video
 li
-    button(class="dropdown-toggle", dropdown-toggle="",dropdown="").btn.navbar-btn.btn-primary Submit
-        ul(role="menu").dropdown-menu
-            li Something
-            li somthing 2
-li
-    button().btn.navbar-btn.btn-default
-        span(ng-if="!notifications", class="glyphicon glyphicon-bell")
-        span(ng-if="notifications", class="badge") {{notifications}}
-li(ng-if="alias")
-    button(ng-class="{glyphicon:!alias.profile_img,'glyphicon-user':!alias.profile_img}",dropdown="",
-    class="btn navbar-btn btn-primary dropdown-toggle", dropdown-toggle="")
-        img(ng-if="alias.profile_img",ng-src="{{alias.profile_img}}")
-        ul(role="menu").dropdown-menu
-            li Something
-            li
-                a(ng-click="logout()") logout
+  button().btn.navbar-btn.btn-default
+    span(ng-if="!notifications", class="glyphicon glyphicon-bell")
+    span(ng-if="notifications", class="badge") {{notifications}}
+li(ng-if="alias",dropdown="").dropdown
+  button(ng-class="{glyphicon:!alias.profile_picture,'glyphicon-user':!alias.profile_picture,'profile-picture':alias" +
+  ".profile_picture}",
+  class="btn navbar-btn btn-primary dropdown-toggle ", dropdown-toggle="")
+    img(ng-if="alias.profile_img",ng-src="{{alias.profile_img}}")
+  ul(role="menu").dropdown-menu
+    li(ng-if="!alias.user_type")
+      a(href="/users/setting/create-your-profile") Create profile
+    li
+      a(href="#") Setting
+    li
+      a(ng-click="logout()",href="#") Logout

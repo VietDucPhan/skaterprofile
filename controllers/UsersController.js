@@ -24,6 +24,29 @@ router.post('/refresh',function(req,res){
 /**
  * get data from sign up page process save data
  */
+router.post('/create/profile',function(req,res){
+  Session.decode(req.token,function(decoded){
+    if(decoded){
+      req.body.admin = decoded.data._id
+      Users.createProfile(req.body,function(response){
+        res.json(response);
+      })
+    } else {
+      res.json(
+          {error: {
+              message:[
+                {msg:'Please login',type:'warning'}
+              ]
+            }
+          })
+    }
+  })
+});
+
+
+/**
+ * get data from sign up page process save data
+ */
 router.post('/signup',function(req,res){
   var jsonObj = {message:[{msg:"Congratulation, you have successfully sign up. Please check your email to verify" +
   " your account",type:'success'}]};
