@@ -15,8 +15,8 @@ li(ng-if="alias",dropdown="").dropdown
   class="btn navbar-btn btn-primary dropdown-toggle ", dropdown-toggle="")
     img(ng-if="alias.profile_img",ng-src="{{alias.profile_img}}")
   ul(role="menu").dropdown-menu
-    li(ng-if="!alias.user_type")
-      a(href="/users/setting/create-your-profile") Create profile
+    li
+      a(href="/users/setting/your-profile") {{!user.profile.type ? 'Create Profile' : user.profile.username}}
     li
       a(href="#") Setting
     li

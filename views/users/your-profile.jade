@@ -3,7 +3,11 @@ div(ng-controller="SettingController")
     div.col-md-3
       include ../elements/menues/settingMenu/default
     div.col-md-9
-      form(novalidate).form-horizontal.control-label-left
+      form(novalidate,name="profileForm").form-horizontal.control-label-left
+        div(ng-if="profile._id").form-group
+          label.col-md-2.control-label Profile picture:
+          div.col-md-10
+            input(type="file").form-control
         div.form-group
           label.col-md-2.control-label Name:
           div.col-md-10
@@ -25,4 +29,4 @@ div(ng-controller="SettingController")
           div.col-md-10.btn-group
             textarea(rows="5").form-control
       hr
-      button(ng-click="profileSubmit(profile)").btn.btn-default Submit
+      button(ng-click="profileSubmit(profile)",ng-disabled="profileForm.$invalid").btn.btn-default Submit

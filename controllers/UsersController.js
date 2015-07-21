@@ -7,6 +7,7 @@ var Session = require('../lib/Session');
 var AppModel = require('../lib/Model');
 var config = require('../config')
 var FB = require('../FB');
+var ObjectID = require('mongodb').ObjectID;
 
 /**
  * get data from sign up page process save data
@@ -27,8 +28,9 @@ router.post('/refresh',function(req,res){
 router.post('/create/profile',function(req,res){
   Session.decode(req.token,function(decoded){
     if(decoded){
-      req.body.admin = decoded.data._id
+      req.body.admin = new ObjectID(decoded.data._id);
       Users.createProfile(req.body,function(response){
+        //console.log(response)
         res.json(response);
       })
     } else {
@@ -43,6 +45,26 @@ router.post('/create/profile',function(req,res){
   })
 });
 
+/**
+ * get data from sign up page process save data
+ */
+router.get('/profile',function(req,res){
+  Session.decode(req.token,function(decoded){
+    if(!decoded.tokenExp){
+      Users.getProfileByAdmin(decoded.data._id,function(data){
+        if(data){
+
+          res.json(data);
+        } else{
+
+          res.json({error:{message:[{msg:'There are no matched profile',type:'warning'}]},status:'normal'});
+        }
+      })
+    } else {
+      res.json({error:{message:[{msg:'Session expired',type:'warning'}],status:'session_expired'}});
+    }
+  })
+});
 
 /**
  * get data from sign up page process save data

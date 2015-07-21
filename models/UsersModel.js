@@ -15,9 +15,21 @@ UsersModel.getCollection = function(){
   return AppModel.db.collection('users');
 };
 
+UsersModel.getProfileByAdmin = function(adminId,callback){
+  AliasModel.getSkaterAlias(adminId,function(response){
+    if(response){
+      return callback({response:response});
+    } else {
+      return callback(false);
+    }
+
+  })
+};
+
 
 UsersModel.createProfile = function(data,callback){
   AliasModel.createSkaterAlias(data,function(response){
+    //console.log(response);
     return callback(response);
   })
 };
