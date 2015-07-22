@@ -26,7 +26,9 @@
     "socket.io": "1.3.5",
     "jsonwebtoken":"5.0.1",
     "request": "2.9.x",
-    "crypto": "0.0.3"
+    "crypto": "0.0.3",
+    "multer": "1.0.x",
+    "request": "2.60.0"
   },
   "engines": {
     "node": "0.12.2"

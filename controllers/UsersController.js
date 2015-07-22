@@ -8,19 +8,49 @@ var AppModel = require('../lib/Model');
 var config = require('../config')
 var FB = require('../FB');
 var ObjectID = require('mongodb').ObjectID;
+var fs = require('fs');
+var path = require('path');
+var request = require('request');
 
 /**
  * get data from sign up page process save data
  */
 router.post('/refresh',function(req,res){
   Session.decode(req.token,function(decoded){
-    console.log(decoded);
+    console.log(process.env.SMTP_PASS);
     Session.refresh(decoded,function(result){
       return res.json(result);
     })
   })
 
 });
+
+router.post('/upload-picture',function(req,res){
+  console.log(req.file);
+  FB.setAccessToken('CAAF8cFIP0xIBAMuZAopEmUmmj77rmVJxEvvA9xXGXMKUhx2vNymikZAlOgBONGI0IG7kaw2FZAPKkD1CPcgVMNntmKXDPpxODgMFbxSIpZA4iSj39kZAkqM3I9sHnvTAr7TaI27c06ffZCDYjdh0t4QQ70Eq0zDcuZCdPJ6oFKAPMzFtgnFnZAuF9xodZClhHuIZBFPRuPZAZBlJb0oKse9bZC7Q9');
+  var access_token = 'CAAF8cFIP0xIBAMuZAopEmUmmj77rmVJxEvvA9xXGXMKUhx2vNymikZAlOgBONGI0IG7kaw2FZAPKkD1CPcgVMNntmKXDPpxODgMFbxSIpZA4iSj39kZAkqM3I9sHnvTAr7TaI27c06ffZCDYjdh0t4QQ70Eq0zDcuZCdPJ6oFKAPMzFtgnFnZAuF9xodZClhHuIZBFPRuPZAZBlJb0oKse9bZC7Q9',
+    pageid = 'me',
+    fburl = 'https://graph.facebook.com/'
+      + pageid
+      + '/photos?access_token='
+      + access_token,
+    reqModule,
+    form;
+
+  reqModule = request.post(fburl, function(err, res, body) {
+    if (err)
+      return console.error('Upload failed:', err);
+    console.log('Upload successful! Server responded with:', body);
+  });
+  form = reqModule.form()
+// append a normal literal text field ...
+  form.append('message', 'My photo!');
+
+// append a file field by streaming a file from disk ...
+  form.append('source', fs.createReadStream(path.join(__dirname, '..\\'+req.file.path)));
+
+  res.json({});
+})
 
 /**
  * get data from sign up page process save data

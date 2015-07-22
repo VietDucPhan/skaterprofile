@@ -7,7 +7,13 @@ div(ng-controller="SettingController")
         div(ng-if="profile._id").form-group
           label.col-md-2.control-label Profile picture:
           div.col-md-10
-            input(type="file").form-control
+            input(type="file",nv-file-select="",uploader="uploadPicture").form-control
+            button(ng-click="uploadPicture.upload()")
+            input(name="photo",type="file",nv-file-select="photo",uploader="uploader")
+            ul
+              li(ng-repeat="item in uploader.queue")
+                |Name: <span ng-bind="item.file.name"></span><br/>
+                button(ng-click="item.upload()") upload
         div.form-group
           label.col-md-2.control-label Name:
           div.col-md-10

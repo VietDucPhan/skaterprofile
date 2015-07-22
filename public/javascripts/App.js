@@ -1,4 +1,4 @@
-var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar']).config(['$routeProvider', '$locationProvider', 'cfpLoadingBarProvider',
+var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar','angularFileUpload']).config(['$routeProvider', '$locationProvider', 'cfpLoadingBarProvider',
   function ($routeProvider, $locationProvider, cfpLoadingBarProvider) {
     cfpLoadingBarProvider.loadingBarTemplate = '<div id="loading-bar" class="progress page-loading"> <div class="bar progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100"> </div> </div>';
     cfpLoadingBarProvider.includeSpinner = false;
@@ -68,7 +68,7 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
       }
     }
   });
-}).controller('AppController', function ($scope, $http, $rootScope, Auth) {
+}).controller('AppController', function ($scope, $http, $rootScope, Auth,Facebook) {
   $rootScope.head = {
     title: 'SkaterProfile',
     metas: [
@@ -82,6 +82,10 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
       }
     ]
   };
+  $scope.testFacebookApi = function(){
+    console.log('abc')
+    Facebook.post();
+  }
   $scope.closeAlert = function (index) {
     $scope.alerts.splice(index, 1);
   };
@@ -90,7 +94,7 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
   $scope.logout = function () {
     return Auth.logout();
   }
-}).controller('SettingController', function ($scope, $http, $location, $rootScope) {
+}).controller('SettingController', function ($scope, $http, $location, $rootScope,FileUploader) {
   $scope.profile = {
     sex:1
   };
@@ -107,6 +111,16 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
   $scope.suggestUsername = function () {
     return $scope.profile.name
   }
+
+
+  $scope.uploader = new FileUploader({
+    url: '/api/users/upload-picture'
+  });
+
+  $scope.uploadPicture = new FileUploader({
+    url: '/api/users/upload-picture'
+  });
+
   $scope.profileSubmit = function (profile) {
     $http.post('/api/users/create/profile', profile).success(function (data) {
       if (data.error) {

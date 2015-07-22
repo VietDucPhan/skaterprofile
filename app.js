@@ -10,6 +10,16 @@ var config = require('./config');
 var jwt = require('jsonwebtoken');
 var Auth = require('./lib/Auth');
 var Session = require('./lib/Session');
+var Model = require('./lib/Model');
+var multer  = require('multer')
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, './public/uploads/')
+  },
+  filename: function (req, file, cb) {
+    cb(null, Model.guid()+"_"+Date.now()+"_"+file.originalname)
+  }
+})
 
 var home = require('./controllers/HomeController');
 var users = require('./controllers/UsersController');
@@ -25,9 +35,11 @@ app.set('view engine', 'jade');
 //app.use(favicon(__dirname + '/public/favicon.ico'));
 //app.use(logger('dev'));
 app.use(bodyParser.json());
+
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(multer({storage:storage,limits:{fileSize:1000000}}).single('file'))
 app.use(session({
   secret: config.session_secret,
   resave:false,
