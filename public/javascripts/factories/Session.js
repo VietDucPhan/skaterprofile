@@ -6,7 +6,7 @@ angular.module('App').factory('Session', function ($http, $interval, $rootScope)
     // $rootScope.$apply(function () {
     localStorage.setItem('token', data.token);
     $http.defaults.headers.common.token = data.token;
-    $rootScope.user = data.data;
+    $rootScope.user = data.response;
     if (typeof callback == 'function') {
       return callback();
     }

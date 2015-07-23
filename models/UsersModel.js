@@ -7,6 +7,7 @@ var Email = require('../lib/Email');
 var async = require('async');
 var Auth = require('../lib/Auth');
 var AliasModel = require('./AliasModel')
+var ObjectID = require('mongodb').ObjectID;
 
 
 var UsersModel = module.exports = {};
@@ -26,6 +27,9 @@ UsersModel.getProfileByAdmin = function(adminId,callback){
   })
 };
 
+UsersModel.updateProfilePicture = function (profileId,picture,callback){
+  AliasModel.updateProfile({_id:new ObjectID(profileId)},{picture:picture})
+}
 
 UsersModel.createProfile = function(data,callback){
   AliasModel.createSkaterAlias(data,function(response){

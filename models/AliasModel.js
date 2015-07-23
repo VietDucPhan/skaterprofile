@@ -22,6 +22,15 @@ AliasModel.getSkaterAlias = function(adminId, callback){
   });
 }
 
+AliasModel.updateProfile = function(condition,update, callback){
+  var Alias = AliasModel.getCollection();
+  Alias.findandmodify(condition,{$set: update},function(err,rec){
+    if(typeof callback == "function"){
+      return callback(rec);
+    }
+  });
+}
+
 AliasModel.createSkaterAlias = function (data, callback) {
   async.waterfall([function (callback) {
     data.type = 'user';

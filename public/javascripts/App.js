@@ -58,7 +58,7 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
 ]).run(function ($rootScope, Auth, $window, Session, $http, $interval, cfpLoadingBar, $location) {
 
   //Session.destroy();
-
+  $http.defaults.headers.common.token = Session.get();
   $rootScope.$on('$routeChangeStart', function (event, next) {
     Session.refresh();
     console.log($location.path());
@@ -94,7 +94,7 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
   $scope.logout = function () {
     return Auth.logout();
   }
-}).controller('SettingController', function ($scope, $http, $location, $rootScope,FileUploader) {
+}).controller('SettingController', function ($scope, $http, $location, $rootScope,FileUploader,Session) {
   $scope.profile = {
     sex:1
   };
@@ -113,9 +113,26 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
   }
 
 
-  $scope.uploader = new FileUploader({
+  var uploader = $scope.uploader = new FileUploader({
     url: '/api/users/upload-picture'
   });
+
+  $scope.uploadAll = function (){
+    uploader.uploadAll();
+  }
+
+  uploader.onBeforeUploadItem = function(item) {
+    item.headers.token = Session.get();
+    //console.info('onBeforeUploadItem', item);
+  };
+  uploader.onSuccessItem = function(fileItem, response, status, headers) {
+    if(response.error){
+      $rootScope.alerts = response.error.message;
+    } else {
+      $rootScope.alerts = response.response.message
+    }
+  };
+
 
   $scope.uploadPicture = new FileUploader({
     url: '/api/users/upload-picture'
@@ -127,8 +144,8 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
         $rootScope.alerts = data.error.message;
       } else {
         $rootScope.alerts = data.message;
-        $scope.profile = data.data;
-        $rootScope.user.profile = data.data;
+        $scope.profile = data.response;
+        $rootScope.user.profile = data.response;
       }
     })
   }

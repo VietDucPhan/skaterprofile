@@ -16,18 +16,16 @@ var Image = require('../lib/Image');
 /**
  * get data from sign up page process save data
  */
-router.post('/refresh',function(req,res){
-  Session.decode(req.token,function(decoded){
-    console.log(process.env.SMTP_PASS);
-    Session.refresh(decoded,function(result){
+router.post('/refresh', function (req, res) {
+  Session.decode(req.token, function (decoded) {
+    Session.refresh(decoded, function (result) {
       return res.json(result);
     })
   })
 
 });
 
-router.post('/upload-picture',Image.singleUpload,function(req,res){
-  return console.log(req.file);
+router.post('/upload-picture', function (req, res) {
   FB.setAccessToken(config.fb_access_token);
   var pageid = 'me',
     fburl = 'https://graph.facebook.com/'
@@ -36,39 +34,64 @@ router.post('/upload-picture',Image.singleUpload,function(req,res){
       + config.fb_access_token,
     reqModule,
     form;
-
-  reqModule = request.post(fburl, function(err, res, body) {
-    FB.api()
-  });
-  form = reqModule.form()
+  Session.decode(req.token, function (decoded) {
+    if (decoded && decoded.data._id) {
+      Users.getProfileByAdmin(decoded.data._id, function (resData) {
+        if (resData) {
+          var uploader = Image.singleUpload;
+          uploader(req, res, function (err) {
+            reqModule = request.post(fburl, function (err, response, body) {
+              request.get('https://graph.facebook.com/v2.4/'+body.id+'?fields=source,link,created_time,height,width,from,name,picture&access_token='+config.fb_access_token,function(err, response, body){
+                console.log(body)
+              })
+              return res.json(response);
+            });
+            form = reqModule.form()
 // append a normal literal text field ...
-  form.append('message', 'My photo!');
-
+            form.append('message', resData.username + 'Updated profile picture');
 // append a file field by streaming a file from disk ...
-  form.append('source', fs.createReadStream(path.join(__dirname, '..\\'+req.file.path)));
-
-  res.json({});
+            form.append('source', fs.createReadStream(path.join(__dirname, '..\\' + req.file.path)));
+          })
+        } else {
+          return res.json({
+            error: {
+              message: [{msg: "Please create profile first", type: 'danger'}],
+              status: 'session_expired'
+            }
+          });
+        }
+      })
+    } else {
+      return res.json({
+        error: {
+          message: [{msg: "Session expired, Please login again", type: 'warning'}],
+          status: 'session_expired'
+        }
+      });
+    }
+  })
 })
 
 /**
  * get data from sign up page process save data
  */
-router.post('/create/profile',function(req,res){
-  Session.decode(req.token,function(decoded){
-    if(decoded){
+router.post('/create/profile', function (req, res) {
+  Session.decode(req.token, function (decoded) {
+    if (decoded) {
       req.body.admin = new ObjectID(decoded.data._id);
-      Users.createProfile(req.body,function(response){
+      Users.createProfile(req.body, function (response) {
         //console.log(response)
         res.json(response);
       })
     } else {
       res.json(
-          {error: {
-              message:[
-                {msg:'Please login',type:'warning'}
-              ]
-            }
-          })
+        {
+          error: {
+            message: [
+              {msg: 'Please login', type: 'warning'}
+            ]
+          }
+        })
     }
   })
 });
@@ -76,20 +99,20 @@ router.post('/create/profile',function(req,res){
 /**
  * get data from sign up page process save data
  */
-router.get('/profile',function(req,res){
-  Session.decode(req.token,function(decoded){
-    if(!decoded.tokenExp){
-      Users.getProfileByAdmin(decoded.data._id,function(data){
-        if(data){
+router.get('/profile', function (req, res) {
+  Session.decode(req.token, function (decoded) {
+    if (!decoded.tokenExp) {
+      Users.getProfileByAdmin(decoded.data._id, function (data) {
+        if (data) {
 
           res.json(data);
-        } else{
+        } else {
 
-          res.json({error:{message:[{msg:'There are no matched profile',type:'warning'}]},status:'normal'});
+          res.json({error: {message: [{msg: 'There are no matched profile', type: 'warning'}]}, status: 'normal'});
         }
       })
     } else {
-      res.json({error:{message:[{msg:'Session expired',type:'warning'}],status:'session_expired'}});
+      res.json({error: {message: [{msg: 'Session expired', type: 'warning'}], status: 'session_expired'}});
     }
   })
 });
@@ -97,16 +120,21 @@ router.get('/profile',function(req,res){
 /**
  * get data from sign up page process save data
  */
-router.post('/signup',function(req,res){
-  var jsonObj = {message:[{msg:"Congratulation, you have successfully sign up. Please check your email to verify" +
-  " your account",type:'success'}]};
+router.post('/signup', function (req, res) {
+  var jsonObj = {
+    message: [{
+      msg: "Congratulation, you have successfully sign up. Please check your email to verify" +
+      " your account", type: 'success'
+    }]
+  };
   Users.addNewUser({
-    email:req.body.email,
-    password:req.body.password,
-    domain:req.protocol + '://' + req.headers.host},function(err){
+    email: req.body.email,
+    password: req.body.password,
+    domain: req.protocol + '://' + req.headers.host
+  }, function (err) {
 
-    if(err.length > 0){
-      jsonObj= {error:{message:err}}
+    if (err.length > 0) {
+      jsonObj = {error: {message: err}}
     }
     res.json(jsonObj);
   });
@@ -115,11 +143,11 @@ router.post('/signup',function(req,res){
 /**
  * Process activate users
  */
-router.post('/activate',function(req,res){
-  var jsonObj = {message:[{msg:"Congratulation, You have successfully activate your account",type:'success'}]};
-  Users.update({activate:req.body.code},{$set:{activate:0}},function(err){
-    if(!err){
-      jsonObj = {error:{message:[{msg:"Activation failed, Please try again", type:'warning'}]}}
+router.post('/activate', function (req, res) {
+  var jsonObj = {message: [{msg: "Congratulation, You have successfully activate your account", type: 'success'}]};
+  Users.update({activate: req.body.code}, {$set: {activate: 0}}, function (err) {
+    if (!err) {
+      jsonObj = {error: {message: [{msg: "Activation failed, Please try again", type: 'warning'}]}}
     }
     return res.json(jsonObj);
   });
@@ -129,11 +157,11 @@ router.post('/activate',function(req,res){
 /**
  * Facebook login
  */
-router.post('/fblogin',function(req,res){
+router.post('/fblogin', function (req, res) {
   console.log();
   FB.setAccessToken(req.body.accessToken);
   FB.api('/me?fields=email', function (response) {
-    if(!response || response.error) {
+    if (!response || response.error) {
       console.log(!response ? 'error occurred' : response.error);
     }
     return res.json(response);
@@ -144,11 +172,11 @@ router.post('/fblogin',function(req,res){
 /**
  * add Facebook user
  */
-router.post('/addfbuser',function(req,res){
+router.post('/addfbuser', function (req, res) {
   data = {};
   FB.setAccessToken(req.body.accessToken);
   FB.api('/me', function (response) {
-    if(!response || response.error) {
+    if (!response || response.error) {
       console.log(!response ? 'error occurred' : response.error);
       return res.json(response);
     }
@@ -158,7 +186,7 @@ router.post('/addfbuser',function(req,res){
     data.social_link = response.link;
     data.name = response.name;
     data.locale = response.locale;
-    Users.addFacebookUser(data,function(respond){
+    Users.addFacebookUser(data, function (respond) {
       return res.json(respond);
     })
 
@@ -166,53 +194,55 @@ router.post('/addfbuser',function(req,res){
 
 });
 
-router.get('/logout',function(req,res){
+router.get('/logout', function (req, res) {
   res.redirect('/');
 });
 
 /**
  * Process login
  */
-router.post('/login',function(req,res){
+router.post('/login', function (req, res) {
   var dateObj = new Date();
 
-  Auth.auth(req.body.email, req.body.password, function(err,rec){
+  Auth.auth(req.body.email, req.body.password, function (err, rec) {
     var respond = {
-      success:false
+      success: false
     };
 
-    if(err.length == 0){
+    if (err.length == 0) {
       delete rec.password;
       delete rec.activate;
       respond.success = true;
-      Session.encode(rec,function(token){
+      Session.encode(rec, function (token) {
         respond.token = token;
-        respond.data = rec;
+        respond.response = rec;
         return res.json(respond);
       });
     } else {
       respond.msg = err;
-      console.log(respond);
       return res.json(respond);
     }
   });
 });
 
 
-
 /**
  * Change password with provided code
  */
-router.get('/email-reset-password/:code',function(req,res){
-  res.render('users/email-reset-password',{code:req.params.code});
+router.get('/email-reset-password/:code', function (req, res) {
+  res.render('users/email-reset-password', {code: req.params.code});
 });
-router.post('/email-reset-password/:code',function(req,res){
-  Users.resetPassByRecoveryCode({code:req.body.code,password:req.body.password,repassword:req.body.repassword},function(err){
-    if(err.length != 0){
+router.post('/email-reset-password/:code', function (req, res) {
+  Users.resetPassByRecoveryCode({
+    code: req.body.code,
+    password: req.body.password,
+    repassword: req.body.repassword
+  }, function (err) {
+    if (err.length != 0) {
       req.session.flash = err;
-      res.redirect('/users/email-reset-password/'+req.body.code);
+      res.redirect('/users/email-reset-password/' + req.body.code);
     } else {
-      req.session.flash = {template:'success',message:['You successfully changed password']};
+      req.session.flash = {template: 'success', message: ['You successfully changed password']};
       res.redirect('/users/login');
     }
   });
@@ -221,23 +251,23 @@ router.post('/email-reset-password/:code',function(req,res){
 /**
  * recovery password process
  */
-router.post('/recovery',function(req,res){
-    Users.requestRecoveryCode({email:req.body.email,domain:req.protocol + '://' + req.headers.host},
-        function(err){
-          if(err.length != 0){
-            req.session.flash = err;
-          }
+router.post('/recovery', function (req, res) {
+  Users.requestRecoveryCode({email: req.body.email, domain: req.protocol + '://' + req.headers.host},
+    function (err) {
+      if (err.length != 0) {
+        req.session.flash = err;
+      }
 
-          res.redirect('/users/recovery');
-        }
-    );
+      res.redirect('/users/recovery');
+    }
+  );
 });
 
 /**
  * show users profile
  */
-router.get('/:id', function(req, res, next) {
-  res.render('users/users', { title: 'user profile' });
+router.get('/:id', function (req, res, next) {
+  res.render('users/users', {title: 'user profile'});
 
 });
 //export all routes
