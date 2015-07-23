@@ -11,6 +11,7 @@ var ObjectID = require('mongodb').ObjectID;
 var fs = require('fs');
 var path = require('path');
 var request = require('request');
+var Image = require('../lib/Image');
 
 /**
  * get data from sign up page process save data
@@ -25,22 +26,19 @@ router.post('/refresh',function(req,res){
 
 });
 
-router.post('/upload-picture',function(req,res){
-  console.log(req.file);
-  FB.setAccessToken('CAAF8cFIP0xIBAMuZAopEmUmmj77rmVJxEvvA9xXGXMKUhx2vNymikZAlOgBONGI0IG7kaw2FZAPKkD1CPcgVMNntmKXDPpxODgMFbxSIpZA4iSj39kZAkqM3I9sHnvTAr7TaI27c06ffZCDYjdh0t4QQ70Eq0zDcuZCdPJ6oFKAPMzFtgnFnZAuF9xodZClhHuIZBFPRuPZAZBlJb0oKse9bZC7Q9');
-  var access_token = 'CAAF8cFIP0xIBAMuZAopEmUmmj77rmVJxEvvA9xXGXMKUhx2vNymikZAlOgBONGI0IG7kaw2FZAPKkD1CPcgVMNntmKXDPpxODgMFbxSIpZA4iSj39kZAkqM3I9sHnvTAr7TaI27c06ffZCDYjdh0t4QQ70Eq0zDcuZCdPJ6oFKAPMzFtgnFnZAuF9xodZClhHuIZBFPRuPZAZBlJb0oKse9bZC7Q9',
-    pageid = 'me',
+router.post('/upload-picture',Image.singleUpload,function(req,res){
+  return console.log(req.file);
+  FB.setAccessToken(config.fb_access_token);
+  var pageid = 'me',
     fburl = 'https://graph.facebook.com/'
       + pageid
       + '/photos?access_token='
-      + access_token,
+      + config.fb_access_token,
     reqModule,
     form;
 
   reqModule = request.post(fburl, function(err, res, body) {
-    if (err)
-      return console.error('Upload failed:', err);
-    console.log('Upload successful! Server responded with:', body);
+    FB.api()
   });
   form = reqModule.form()
 // append a normal literal text field ...
