@@ -7,9 +7,9 @@ var bodyParser = require('body-parser');
 var session = require('express-session');
 var MongoStore = require('connect-mongo')(session);
 var config = require('./config');
-var jwt = require('jsonwebtoken');
 var Auth = require('./lib/Auth');
 var Session = require('./lib/Session');
+
 
 
 var home = require('./controllers/HomeController');

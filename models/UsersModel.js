@@ -17,9 +17,9 @@ UsersModel.getCollection = function(){
 };
 
 UsersModel.getProfileByAdmin = function(adminId,callback){
-  AliasModel.getSkaterAlias(adminId,function(response){
+  AliasModel.getAlias({"admin":new ObjectID(adminId)},function(response){
     if(response){
-      return callback({response:response});
+      return callback(response);
     } else {
       return callback(false);
     }
@@ -28,7 +28,12 @@ UsersModel.getProfileByAdmin = function(adminId,callback){
 };
 
 UsersModel.updateProfilePicture = function (profileId,picture,callback){
-  AliasModel.updateProfile({_id:new ObjectID(profileId)},{picture:picture})
+  AliasModel.updateProfile({_id:new ObjectID(profileId)},{picture:picture},function (rec){
+    if(typeof callback == 'function'){
+      return callback(rec.value.picture);
+    }
+    return rec;
+  })
 }
 
 UsersModel.createProfile = function(data,callback){

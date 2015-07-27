@@ -1,10 +1,8 @@
 var express = require('express');
 var router = express.Router();
 var Users = require('../models/UsersModel');
-var os = require('os');
 var Auth = require('../lib/Auth');
 var Session = require('../lib/Session');
-var AppModel = require('../lib/Model');
 var config = require('../config')
 var FB = require('../FB');
 var ObjectID = require('mongodb').ObjectID;
@@ -35,22 +33,49 @@ router.post('/upload-picture', function (req, res) {
     reqModule,
     form;
   Session.decode(req.token, function (decoded) {
-    if (decoded && decoded.data._id) {
-      Users.getProfileByAdmin(decoded.data._id, function (resData) {
-        if (resData) {
+    if (decoded && decoded.data && decoded.data._id) {
+      Users.getProfileByAdmin(decoded.data._id, function (profileData) {
+        if (profileData) {
           var uploader = Image.singleUpload;
           uploader(req, res, function (err) {
-            reqModule = request.post(fburl, function (err, response, body) {
-              request.get('https://graph.facebook.com/v2.4/'+body.id+'?fields=source,link,created_time,height,width,from,name,picture&access_token='+config.fb_access_token,function(err, response, body){
-                console.log(body)
-              })
-              return res.json(response);
-            });
-            form = reqModule.form()
-// append a normal literal text field ...
-            form.append('message', resData.username + 'Updated profile picture');
-// append a file field by streaming a file from disk ...
-            form.append('source', fs.createReadStream(path.join(__dirname, '..\\' + req.file.path)));
+            if (err) {
+              //console.log(err);
+              return res.json({error: {message: [{msg: "File too large", type: 'danger'}]}});
+            } else {
+              reqModule = request.post(fburl, function (err, response, body) {
+                var fbPostResponse = JSON.parse(body);
+                request.get('https://graph.facebook.com/v2.4/' + fbPostResponse.id + '?fields=source,link,created_time,height,width,from,name,picture&access_token=' + config.fb_access_token,
+                  function (err, response, body) {
+                    var fbGetResponse = JSON.parse(body);
+
+                    if (fbGetResponse && fbGetResponse.error) {
+                      return res.json({
+                        error: {message: [{msg: fbGetResponse.error.message, type: 'danger'}]},
+                        type: 'facebook_error'
+                      });
+                    } else {
+                      fbGetResponse.type = "facebook";
+                      Users.updateProfilePicture(profileData._id, fbGetResponse, function (rec) {
+                        decoded.data.profile.picture = rec
+                        Session.encode(decoded.data, function (encoded) {
+                          return res.json({
+                            token: encoded,
+                            message: [{msg: 'Successfully update profile picture', type: 'success'}],
+                            success: true,
+                            response: decoded.data
+                          });
+                        })
+
+                      })
+                    }
+                  })
+
+              });
+              form = reqModule.form()
+              form.append('message', profileData.username + ' Updated profile picture');
+              form.append('source', fs.createReadStream(path.join(__dirname, '..\\' + req.file.path)));
+            }
+
           })
         } else {
           return res.json({
@@ -80,7 +105,7 @@ router.post('/create/profile', function (req, res) {
     if (decoded) {
       req.body.admin = new ObjectID(decoded.data._id);
       Users.createProfile(req.body, function (response) {
-        //console.log(response)
+        //console.log(response);
         res.json(response);
       })
     } else {
@@ -90,7 +115,8 @@ router.post('/create/profile', function (req, res) {
             message: [
               {msg: 'Please login', type: 'warning'}
             ]
-          }
+          },
+          type: 'session_expired'
         })
     }
   })
@@ -105,14 +131,14 @@ router.get('/profile', function (req, res) {
       Users.getProfileByAdmin(decoded.data._id, function (data) {
         if (data) {
 
-          res.json(data);
+          res.json({response: data});
         } else {
 
-          res.json({error: {message: [{msg: 'There are no matched profile', type: 'warning'}]}, status: 'normal'});
+          res.json({error: {message: [{msg: 'There are no matched profile', type: 'warning'}]}, type: 'normal'});
         }
       })
     } else {
-      res.json({error: {message: [{msg: 'Session expired', type: 'warning'}], status: 'session_expired'}});
+      res.json({error: {message: [{msg: 'Session expired', type: 'warning'}], type: 'session_expired'}});
     }
   })
 });

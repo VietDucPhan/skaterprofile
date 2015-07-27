@@ -1,4 +1,4 @@
-var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar','angularFileUpload']).config(['$routeProvider', '$locationProvider', 'cfpLoadingBarProvider',
+var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar', 'angularFileUpload']).config(['$routeProvider', '$locationProvider', 'cfpLoadingBarProvider',
   function ($routeProvider, $locationProvider, cfpLoadingBarProvider) {
     cfpLoadingBarProvider.loadingBarTemplate = '<div id="loading-bar" class="progress page-loading"> <div class="bar progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100"> </div> </div>';
     cfpLoadingBarProvider.includeSpinner = false;
@@ -61,14 +61,13 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
   $http.defaults.headers.common.token = Session.get();
   $rootScope.$on('$routeChangeStart', function (event, next) {
     Session.refresh();
-    console.log($location.path());
     if (next.$$route && next.$$route.data && next.$$route.data.requireLogin) {
       if (!Auth.isAuthenticated()) {
         $window.location.href = '/users/login';
       }
     }
   });
-}).controller('AppController', function ($scope, $http, $rootScope, Auth,Facebook) {
+}).controller('AppController', function ($scope, $http, $rootScope, Auth, Facebook) {
   $rootScope.head = {
     title: 'SkaterProfile',
     metas: [
@@ -82,8 +81,8 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
       }
     ]
   };
-  $scope.testFacebookApi = function(){
-    console.log('abc')
+  $scope.testFacebookApi = function () {
+    //console.log('abc')
     Facebook.post();
   }
   $scope.closeAlert = function (index) {
@@ -94,9 +93,9 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
   $scope.logout = function () {
     return Auth.logout();
   }
-}).controller('SettingController', function ($scope, $http, $location, $rootScope,FileUploader,Session) {
+}).controller('SettingController', function ($scope, $http, $location, $rootScope, FileUploader, Session) {
   $scope.profile = {
-    sex:1
+    sex: 1
   };
   (function () {
     $http.get('/api/users/profile').success(function (data) {
@@ -114,28 +113,31 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
 
 
   var uploader = $scope.uploader = new FileUploader({
-    url: '/api/users/upload-picture'
+    url: '/api/users/upload-picture',
+    autoUpload: true,
+    removeAfterUpload: true
   });
 
-  $scope.uploadAll = function (){
-    uploader.uploadAll();
-  }
-
-  uploader.onBeforeUploadItem = function(item) {
+  uploader.onBeforeUploadItem = function (item) {
     item.headers.token = Session.get();
     //console.info('onBeforeUploadItem', item);
   };
-  uploader.onSuccessItem = function(fileItem, response, status, headers) {
-    if(response.error){
+  uploader.onSuccessItem = function (fileItem, response, status, headers) {
+    console.log(response);
+    if (response && response.error) {
       $rootScope.alerts = response.error.message;
     } else {
       $rootScope.alerts = response.response.message
+      Session.set(response, function () {
+
+      })
     }
   };
 
 
   $scope.uploadPicture = new FileUploader({
-    url: '/api/users/upload-picture'
+    url: '/api/users/upload-picture',
+
   });
 
   $scope.profileSubmit = function (profile) {

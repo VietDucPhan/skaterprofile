@@ -7,7 +7,18 @@ div(ng-controller="SettingController")
         div(ng-if="profile._id").form-group
           label.col-md-2.control-label Profile picture:
           div.col-md-10
-            input(ng-model="file",type="file",ng-blur="uploader.uploadAll()",nv-file-select="",uploader="uploader").form-control
+            div.row
+              div.col-md-3
+                div(ng-show="uploader.isUploading").progress
+                  div(,role="progressbar", aria-valuenow="0", aria-valuemin="0",
+                  aria-valuemax="100",
+                  ng-style="{'width': uploader.progress + '%' }",style="width:0%").progress-bar Uploading...
+                img(ng-if="user.profile.picture",ng-src="{{user.profile.picture.source}}",class="thumbnail img-responsive")
+                div(nv-file-drop="",uploader="uploader",class="well profile-uploader",ng-show="uploader.isHTML5 && !user.profile.picture.source")
+              div.col-md-6
+                label(for="change-profile",class="btn btn-default") Change picture
+              div.col-md-3
+            input(id="change-profile",class="ng-hide",ng-model="file",type="file",nv-file-select="",uploader="uploader")
         div.form-group
           label.col-md-2.control-label Name:
           div.col-md-10
@@ -27,6 +38,6 @@ div(ng-controller="SettingController")
         div.form-group
           label.col-md-2.control-label Bio:
           div.col-md-10.btn-group
-            textarea(rows="5").form-control
+            textarea(rows="5",ng-model="profile.bio").form-control
       hr
       button(ng-click="profileSubmit(profile)",ng-disabled="profileForm.$invalid").btn.btn-default Submit

@@ -39,6 +39,7 @@ angular.module('App').factory('Session', function ($http, $interval, $rootScope)
       //if token expired => destroy session in client
       if (!data.err) {
         if (data.refreshed) {
+          console.log(data);
           Session.set(data, function () {
             return true;
           });

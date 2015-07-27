@@ -10,14 +10,13 @@ li
     span(ng-if="!notifications", class="glyphicon glyphicon-bell")
     span(ng-if="notifications", class="badge") {{notifications}}
 li(ng-if="alias",dropdown="").dropdown
-  button(ng-class="{glyphicon:!alias.profile_picture,'glyphicon-user':!alias.profile_picture,'profile-picture':alias" +
-  ".profile_picture}",
+  button(ng-class="{glyphicon:!user.profile.picture,'glyphicon-user':!user.profile.picture,'profile-picture':user.profile.picture}",
   class="btn navbar-btn btn-primary dropdown-toggle ", dropdown-toggle="")
-    img(ng-if="alias.profile_img",ng-src="{{alias.profile_img}}")
+    img(ng-if="user.profile.picture",ng-src="{{user.profile.picture.source}}")
   ul(role="menu").dropdown-menu
     li
-      a(href="/users/setting/your-profile") {{!user.profile.type ? 'Create Profile' : user.profile.username}}
+      a(ng-href="/{{user.profile.username}}") {{!user.profile.type ? 'Create Profile':user.profile.username}}
     li
-      a(href="#") Setting
+      a(href="/users/setting/your-profile") Setting
     li
       a(ng-click="logout()",href="#") Logout

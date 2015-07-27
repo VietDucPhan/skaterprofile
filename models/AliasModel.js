@@ -15,25 +15,31 @@ AliasModel.getCollection = function () {
   return AppModel.db.collection('alias');
 };
 
-AliasModel.getSkaterAlias = function(adminId, callback){
+AliasModel.getAlias = function(condition, callback){
   var Alias = AliasModel.getCollection();
-  Alias.findOne({"admin":new ObjectID(adminId)},function(err,doc){
+  Alias.findOne(condition,function(err,doc){
     return callback(doc);
   });
 }
 
 AliasModel.updateProfile = function(condition,update, callback){
   var Alias = AliasModel.getCollection();
-  Alias.findandmodify(condition,{$set: update},function(err,rec){
-    if(typeof callback == "function"){
-      return callback(rec);
+  Alias.findAndModify(condition,[],{$set: update},{new:true},function(err,rec){
+    if(!err){
+      if(typeof callback == "function"){
+        return callback(rec);
+      }
+    } else {
+      if(typeof callback == "function"){
+        return callback(err);
+      }
     }
+
   });
 }
 
 AliasModel.createSkaterAlias = function (data, callback) {
   async.waterfall([function (callback) {
-    data.type = 'user';
     if(data._id){
       data._id = new ObjectID(data._id);
     }
@@ -47,7 +53,6 @@ AliasModel.createSkaterAlias = function (data, callback) {
     })
   }, function (err,callback) {
       Validate.isUsernameExist(data.username, function (flag,explanation) {
-
         if (flag) {
           if(explanation._id.equals(data._id)){
             callback(null,{})
@@ -75,7 +80,7 @@ AliasModel.createSkaterAlias = function (data, callback) {
         if(status.result.nModified == 1){
           callback(null,{msg:"Profile was updated",type:'success'})
         } else {
-          callback(true,{msg:"Congratulation, you have successfully created a profile",type:'success'})
+          callback(null,{msg:"Congratulation, you have successfully created a profile",type:'success'})
         }
       } else {
         callback(true,{msg:"There is an error occured, Please try again latter",type:'warning'})
@@ -86,7 +91,7 @@ AliasModel.createSkaterAlias = function (data, callback) {
     if(err){
       return callback({error:{message:[msg]}});
     } else {
-      return callback({message:[msg],data:data})
+      return callback({message:[msg],response:data})
     }
 
   })
