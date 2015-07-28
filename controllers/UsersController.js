@@ -24,6 +24,11 @@ router.post('/refresh', function (req, res) {
 });
 
 router.post('/upload-picture', function (req, res) {
+  var uploader = new Uploader({fieldName:'file'});
+  uploader.read(req,function(data){
+    console.log(data);
+  });
+  return
   FB.setAccessToken(config.fb_access_token);
   var pageid = 'me',
     fburl = 'https://graph.facebook.com/'
@@ -36,8 +41,6 @@ router.post('/upload-picture', function (req, res) {
     if (decoded && decoded.data && decoded.data._id) {
       Users.getProfileByAdmin(decoded.data._id, function (profileData) {
         if (profileData) {
-          Uploader.uploadSingleImage('file', req, res, function (err, msg) {
-            if (!err) {
               reqModule = request.post(fburl, function (err, response, body) {
                 var fbPostResponse = JSON.parse(body);
                 request.get('https://graph.facebook.com/v2.4/' + fbPostResponse.id + '?fields=source,link,created_time,height,width,from,name,picture&access_token=' + config.fb_access_token,
@@ -70,10 +73,6 @@ router.post('/upload-picture', function (req, res) {
               form = reqModule.form()
               form.append('message', profileData.username + ' Updated profile picture');
               form.append('source', fs.createReadStream(path.join(__dirname, '..\\' + req.file.path)));
-            } else {
-              return res.json({error: {message: [msg]}, status: 'upload_file_error'})
-            }
-          })
         } else {
           return res.json({
             error: {
