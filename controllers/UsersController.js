@@ -9,7 +9,7 @@ var ObjectID = require('mongodb').ObjectID;
 var fs = require('fs');
 var path = require('path');
 var request = require('request');
-var Image = require('../lib/Image');
+var Uploader = require('../lib/Uploader');
 
 /**
  * get data from sign up page process save data
@@ -36,12 +36,8 @@ router.post('/upload-picture', function (req, res) {
     if (decoded && decoded.data && decoded.data._id) {
       Users.getProfileByAdmin(decoded.data._id, function (profileData) {
         if (profileData) {
-          var uploader = Image.singleUpload;
-          uploader(req, res, function (err) {
-            if (err) {
-              //console.log(err);
-              return res.json({error: {message: [{msg: "File too large", type: 'danger'}]}});
-            } else {
+          Uploader.uploadSingleImage('file', req, res, function (err, msg) {
+            if (!err) {
               reqModule = request.post(fburl, function (err, response, body) {
                 var fbPostResponse = JSON.parse(body);
                 request.get('https://graph.facebook.com/v2.4/' + fbPostResponse.id + '?fields=source,link,created_time,height,width,from,name,picture&access_token=' + config.fb_access_token,
@@ -51,7 +47,7 @@ router.post('/upload-picture', function (req, res) {
                     if (fbGetResponse && fbGetResponse.error) {
                       return res.json({
                         error: {message: [{msg: fbGetResponse.error.message, type: 'danger'}]},
-                        type: 'facebook_error'
+                        status: 'facebook_error'
                       });
                     } else {
                       fbGetResponse.type = "facebook";
@@ -74,8 +70,9 @@ router.post('/upload-picture', function (req, res) {
               form = reqModule.form()
               form.append('message', profileData.username + ' Updated profile picture');
               form.append('source', fs.createReadStream(path.join(__dirname, '..\\' + req.file.path)));
+            } else {
+              return res.json({error: {message: [msg]}, status: 'upload_file_error'})
             }
-
           })
         } else {
           return res.json({
