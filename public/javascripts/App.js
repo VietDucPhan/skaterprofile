@@ -40,6 +40,13 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
           requireLogin: false
         }
       }).
+      when('/:user', {
+        templateUrl: 'ang/pages/profile',
+        controller: 'ProfileController',
+        data: {
+          requireLogin: false
+        }
+      }).
       when('/404-error-page-not-fucking-found', {
         templateUrl: 'ang/pages/error',
         controller: 'ErrorController',
@@ -134,12 +141,6 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
     }
   };
 
-
-  $scope.uploadPicture = new FileUploader({
-    url: '/api/users/upload-picture',
-
-  });
-
   $scope.profileSubmit = function (profile) {
     $http.post('/api/users/create/profile', profile).success(function (data) {
       if (data.error) {
@@ -151,4 +152,10 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
       }
     })
   }
+}).controller('ProfileController', function ($scope, $http, $routeParams){
+
+  $scope.alias = {};
+  $http.get('/api/users/'+$routeParams.user).success(function(response){
+    console.log(response);
+  })
 });

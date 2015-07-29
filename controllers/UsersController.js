@@ -4,12 +4,11 @@ var Users = require('../models/UsersModel');
 var Auth = require('../lib/Auth');
 var Session = require('../lib/Session');
 var config = require('../config')
-var FB = require('../FB');
 var ObjectID = require('mongodb').ObjectID;
 var fs = require('fs');
 var path = require('path');
 var request = require('request');
-var Uploader = require('../lib/Uploader');
+var SNSApi = require('../lib/SNSApi');
 
 /**
  * get data from sign up page process save data
@@ -24,73 +23,58 @@ router.post('/refresh', function (req, res) {
 });
 
 router.post('/upload-picture', function (req, res) {
-  var uploader = new Uploader({fieldName:'file'});
-  uploader.read(req,function(data){
-    console.log(data);
-  });
-  return
-  FB.setAccessToken(config.fb_access_token);
-  var pageid = 'me',
-    fburl = 'https://graph.facebook.com/'
-      + pageid
-      + '/photos?access_token='
-      + config.fb_access_token,
-    reqModule,
-    form;
-  Session.decode(req.token, function (decoded) {
-    if (decoded && decoded.data && decoded.data._id) {
-      Users.getProfileByAdmin(decoded.data._id, function (profileData) {
-        if (profileData) {
-              reqModule = request.post(fburl, function (err, response, body) {
-                var fbPostResponse = JSON.parse(body);
-                request.get('https://graph.facebook.com/v2.4/' + fbPostResponse.id + '?fields=source,link,created_time,height,width,from,name,picture&access_token=' + config.fb_access_token,
-                  function (err, response, body) {
-                    var fbGetResponse = JSON.parse(body);
+    Session.decode(req.token, function (decoded) {
+      if (decoded && decoded.data && decoded.data._id) {
+        Users.getProfileByAdmin(decoded.data._id, function (profileData) {
+          if (profileData) {
+            SNSApi.postAnImageToFB('file',profileData.username+" upload a profile picture", req, function (fbUploadResponse) {
+              if(fbUploadResponse && fbUploadResponse.error){
+                return res.json(fbUploadResponse);
+              }
 
-                    if (fbGetResponse && fbGetResponse.error) {
-                      return res.json({
-                        error: {message: [{msg: fbGetResponse.error.message, type: 'danger'}]},
-                        status: 'facebook_error'
-                      });
-                    } else {
-                      fbGetResponse.type = "facebook";
-                      Users.updateProfilePicture(profileData._id, fbGetResponse, function (rec) {
-                        decoded.data.profile.picture = rec
-                        Session.encode(decoded.data, function (encoded) {
-                          return res.json({
-                            token: encoded,
-                            message: [{msg: 'Successfully update profile picture', type: 'success'}],
-                            success: true,
-                            response: decoded.data
-                          });
-                        })
+              SNSApi.getFBPostDetailByID(fbUploadResponse.id,function (fbPostResponse) {
+                  if (fbPostResponse && fbPostResponse.error) {
+                    return res.json(fbPostResponse);
+                  } else {
+                    Users.updateProfilePicture(profileData._id, fbPostResponse, function (rec) {
+                      decoded.data.profile.picture = rec
+                      Session.encode(decoded.data, function (encoded) {
+                        if(profileData.picture && profileData.picture.id){
+                          SNSApi.deleteAPostOnFB(profileData.picture.id,function(){
 
+                          })
+                        }
+
+                        return res.json({
+                          token: encoded,
+                          message: [{msg: 'Successfully update profile picture', type: 'success'}],
+                          success: true,
+                          response: decoded.data
+                        });
                       })
-                    }
-                  })
 
-              });
-              form = reqModule.form()
-              form.append('message', profileData.username + ' Updated profile picture');
-              form.append('source', fs.createReadStream(path.join(__dirname, '..\\' + req.file.path)));
-        } else {
-          return res.json({
-            error: {
-              message: [{msg: "Please create profile first", type: 'danger'}],
-              status: 'session_expired'
-            }
-          });
-        }
-      })
-    } else {
-      return res.json({
-        error: {
-          message: [{msg: "Session expired, Please login again", type: 'warning'}],
-          status: 'session_expired'
-        }
-      });
-    }
-  })
+                    })
+                  }
+                })
+            });
+          } else {
+            return res.json({
+              error: {
+                message: [{msg: "Please create profile first", type: 'danger'}],
+                status: 'session_expired'
+              }
+            });
+          }
+        })
+      } else {
+        return res.json({
+          error: {
+            message: [{msg: "Session expired, Please login again", type: 'warning'}],
+            status: 'session_expired'
+          }
+        });
+      }
+    })
 })
 
 /**
@@ -288,9 +272,8 @@ router.post('/recovery', function (req, res) {
 /**
  * show users profile
  */
-router.get('/:id', function (req, res, next) {
-  res.render('users/users', {title: 'user profile'});
-
+router.get('/:user', function (req, res, next) {
+  res.json('abc');
 });
 //export all routes
 module.exports = router;

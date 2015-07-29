@@ -2,14 +2,14 @@ li(dropdown="").dropdown
   button(class="dropdown-toggle", dropdown-toggle="").btn.navbar-btn.btn-primary Submit
   ul(role="menu").dropdown-menu
     li
-      a(href="#",ng-click="testFacebookApi()") Upload an image
+      a(href="#",ng-click="uploadImage()") Upload an image
     li
       a(href="#") Upload a video
 li
   button().btn.navbar-btn.btn-default
     span(ng-if="!notifications", class="glyphicon glyphicon-bell")
     span(ng-if="notifications", class="badge") {{notifications}}
-li(ng-if="alias",dropdown="").dropdown
+li(ng-if="user.profile",dropdown="").dropdown
   button(ng-class="{glyphicon:!user.profile.picture,'glyphicon-user':!user.profile.picture,'profile-picture':user.profile.picture}",
   class="btn navbar-btn btn-primary dropdown-toggle ", dropdown-toggle="")
     img(ng-if="user.profile.picture",ng-src="{{user.profile.picture.source}}")

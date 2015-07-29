@@ -1,0 +1,17 @@
+div(class="modal-body")
+  alert(ng-repeat="alert in popUpAlerts",type="{{alert.type}}",close="closePopUpAlerts($index)") {{alert.msg}}
+  form(name="uploadImageForm",method='post',novalidate)
+    div(ng-show="postImage.queue[0]",ng-class="postImage.queue[0] ? 'col-sm-6' :''",class='form-group')
+      div(ng-repeat="item in postImage.queue").row
+        div.col-sm-6
+
+        div.col-sm-6
+          |{{item.file.name}}
+    div(ng-class="postImage.queue[0]? 'col-sm-6' :''",class="form-group")
+      label(for="postImage",class="btn btn-default") Upload a photo
+      input(type="file", class="ng-hide", id="postImage", ng-model="file", nv-file-select="",
+      uploader="postImage" )
+    div.form-group
+      input(type="text",class="form-control",required="",placeholder="Title")
+    div.form-group
+      button(ng-disabled="uploadImageForm.$invalid && !postImage.queue[0]").btn Upload
