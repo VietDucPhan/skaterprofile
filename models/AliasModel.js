@@ -38,6 +38,22 @@ AliasModel.updateProfile = function(condition,update, callback){
   });
 }
 
+AliasModel.pushProfile = function(condition,update, callback){
+  var Alias = AliasModel.getCollection();
+  Alias.findAndModify(condition,[],{$set: update},{new:true},function(err,rec){
+    if(!err){
+      if(typeof callback == "function"){
+        return callback(rec);
+      }
+    } else {
+      if(typeof callback == "function"){
+        return callback(err);
+      }
+    }
+
+  });
+}
+
 AliasModel.createSkaterAlias = function (data, callback) {
   async.waterfall([function (callback) {
     if(data._id){
