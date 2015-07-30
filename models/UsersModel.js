@@ -30,7 +30,7 @@ UsersModel.getProfileByAdmin = function(adminId,callback){
 UsersModel.postAPhoto = function(userId,photoData,callback){
   this.getProfileByAdmin(userId,function(res){
     if(res){
-      AliasModel.pushProfile(res,{posts:photoData},function(response){
+      AliasModel.addAPhoto(res,photoData,function(response){
         if(response){
           return callback(response)
         } else {
