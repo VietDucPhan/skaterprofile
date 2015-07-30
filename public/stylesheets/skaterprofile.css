@@ -5706,4 +5706,13 @@ button.close {
   width: 200px;
   height: 200px; }
 
+.modal .modal-content .modal-header {
+  border-bottom: 0px; }
+  .modal .modal-content .modal-header h4 {
+    font-weight: bold;
+    font-size: 34px; }
+
+form .error {
+  color: red; }
+
 /*# sourceMappingURL=skaterprofile.css.map */

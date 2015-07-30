@@ -27,6 +27,22 @@ UsersModel.getProfileByAdmin = function(adminId,callback){
   })
 };
 
+UsersModel.postAPhoto = function(userId,photoData,callback){
+  this.getProfileByAdmin(userId,function(res){
+    if(res){
+      AliasModel.updateProfile(res,{$set:photoData},function(response){
+        if(response){
+          return callback(response)
+        } else {
+          return callback({error:{message:[{msg:'Something went wrong please try agin',type:'danger'}]}})
+        }
+      })
+    } else {
+      return callback({error:{message:[{msg:'Please create a profile first',type:'danger'}]}})
+    }
+  })
+}
+
 UsersModel.updateProfilePicture = function (profileId,picture,callback){
   AliasModel.updateProfile({_id:new ObjectID(profileId)},{picture:picture},function (rec){
     if(typeof callback == 'function'){

@@ -22,6 +22,42 @@ router.post('/refresh', function (req, res) {
 
 });
 
+router.post('/post-image',function(req,res){
+  Session.decode(req.token, function (decoded) {
+    if(decoded && !decoded.tokenExp){
+      var msg = req.headers.msg ? req.headers.msg : 'Untitle';
+      SNSApi.postAnImageToFB('file',msg, req, function (fbUploadResponse) {
+        if(fbUploadResponse && fbUploadResponse.error){
+          console.log(fbUploadResponse);
+          return res.json(fbUploadResponse);
+        } else {
+          SNSApi.getFBPostDetailByID(fbUploadResponse.id,function (fbPostResponse) {
+            if (fbPostResponse && fbPostResponse.error) {
+              return res.json(fbPostResponse);
+            } else {
+              if(decoded && decoded.data && decoded.data._id){
+                Users.postAPhoto(decoded.data._id,fbPostResponse,function(databaseResponse){
+                  if(databaseResponse && databaseResponse.error){
+                    return res.json(databaseResponse)
+                  }
+                  return res.json({message:[{msg:'Successfully upload photo',type:'success'}]});
+                })
+              } else {
+                return res.json({error:{message:[{msg:'An unexpected error happened, please try again latter',type:'warning'}],
+                  status: 'session_expired'}})
+              }
+
+            }
+          })
+        }
+      })
+    } else {
+      return res.json({error:{message:[{msg:'Session expired, please login again',type:'warning'}],
+        status: 'session_expired'}})
+    }
+  })
+})
+
 router.post('/upload-picture', function (req, res) {
     Session.decode(req.token, function (decoded) {
       if (decoded && decoded.data && decoded.data._id) {

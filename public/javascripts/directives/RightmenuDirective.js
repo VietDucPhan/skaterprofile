@@ -40,18 +40,40 @@ angular.module('App').directive('rightMenu', function (Auth, $modal, $rootScope,
   return rightMenu;
 });
 
-var UploadImageController = function($scope, FileUploader){
-
+var UploadImageController = function($scope, FileUploader, $modalInstance, Session, $rootScope){
+  $scope.cancel = function () {
+    $modalInstance.dismiss('cancel');
+  };
+  $scope.postTitle = '';
   var postImage = $scope.postImage = new FileUploader({
-    url: '/api/users/postImage',
+    url: '/api/users/post-image',
     removeAfterUpload: true
   })
+
+  postImage.onAfterAddingFile = function(fileItem) {
+    fileItem.formData.push({token:Session.get()})
+    fileItem.headers.token = Session.get();
+    fileItem.headers.msg = $scope.postTitle;
+  };
+  postImage.onSuccessItem(function(fileItem, response) {
+    console.log(response);
+    if (response && response.error) {
+      $rootScope.alerts = response.error.message;
+    } else {
+      $rootScope.alerts = response.response.message
+    }
+  });
+
+
 }
 
 var SignUpController = function (Auth, $scope, $modalInstance, $rootScope, $location, $http, Facebook, $timeout) {
   $scope.fbLogin = function () {
     Facebook.login();
   }
+  $scope.cancel = function () {
+    $modalInstance.dismiss('cancel');
+  };
 
   $scope.signUpSubmit = function (data) {
     $http({
@@ -87,6 +109,9 @@ var LoginController = function (Auth, $scope, $modalInstance, $rootScope) {
       $modalInstance.close();
     });
   }
+  $scope.cancel = function () {
+    $modalInstance.dismiss('cancel');
+  };
   $rootScope.closeLoginPopUpAlert = function (index) {
     $rootScope.popUpLoginAlerts.splice(index, 1);
   };
