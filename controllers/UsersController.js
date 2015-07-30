@@ -28,7 +28,6 @@ router.post('/post-image',function(req,res){
       var msg = req.headers.msg ? req.headers.msg : 'Untitle';
       SNSApi.postAnImageToFB('file',msg, req, function (fbUploadResponse) {
         if(fbUploadResponse && fbUploadResponse.error){
-          console.log(fbUploadResponse);
           return res.json(fbUploadResponse);
         } else {
           SNSApi.getFBPostDetailByID(fbUploadResponse.id,function (fbPostResponse) {
