@@ -5,6 +5,10 @@ div.modal-header
   p Upload picture related to skateboarding, accepting GIF/JPG/PNG (Max size: 3MB)
 div(class="modal-body")
   alert(ng-repeat="alert in popUpAlerts",type="{{alert.type}}",close="closePopUpAlerts($index)") {{alert.msg}}
+  div(ng-show="postImage.isUploading").progress
+    div(,role="progressbar", aria-valuenow="0", aria-valuemin="0",
+    aria-valuemax="100",
+    ng-style="{'width': postImage.progress + '%' }",style="width:0%").progress-bar Uploading...
   form(name="uploadImageForm",method='post',novalidate="")
     div(class='form-group')
       input(name="filePost",type="file", class="form-control", id="postImage", ng-model="uploadImageForm.file",

@@ -15,6 +15,7 @@ var Session = require('./lib/Session');
 var home = require('./controllers/HomeController');
 var users = require('./controllers/UsersController');
 var ang = require('./controllers/AngController');
+var alias = require('./controllers/AliasController');
 var app = express();
 
 // view engine setup
@@ -53,6 +54,7 @@ app.use(function(req, res, next) {
 app.use('/', home);
 app.use('/ang', ang);
 app.use('/api/users/', users);
+app.use('/api/alias/',alias)
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');

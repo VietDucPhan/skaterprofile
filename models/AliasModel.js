@@ -40,6 +40,7 @@ AliasModel.updateProfile = function(condition,update, callback){
 
 AliasModel.addAPhoto = function(condition,update, callback){
   var Alias = AliasModel.getCollection();
+  update._id = new ObjectID();
   Alias.findAndModify(condition,[],{$push:{posts:update}},{new:true},function(err,rec){
     if(!err){
       if(typeof callback == "function"){
@@ -54,7 +55,7 @@ AliasModel.addAPhoto = function(condition,update, callback){
   });
 }
 
-AliasModel.createSkaterAlias = function (data, callback) {
+AliasModel.createAlias = function (data, callback) {
   async.waterfall([function (callback) {
     if(data._id){
       data._id = new ObjectID(data._id);
@@ -83,7 +84,7 @@ AliasModel.createSkaterAlias = function (data, callback) {
     }, function(err,callback){
       Validate.isValidPassword(data.username,function(flag){
         if(!flag){
-          callback(true,{msg:"Username must longer than 6 characters",type:'danger'})
+          callback(true,{msg:"Username must longer than 6 and shorter than 24 characters",type:'danger'})
         } else {
           callback(null,{})
         }

@@ -28,6 +28,7 @@ router.post('/post-image',function(req,res){
       var msg = req.headers.msg ? req.headers.msg : 'Untitle';
       SNSApi.postAnImageToFB('file',msg, req, function (fbUploadResponse) {
         if(fbUploadResponse && fbUploadResponse.error){
+          console.log(fbUploadResponse);
           return res.json(fbUploadResponse);
         } else {
           SNSApi.getFBPostDetailByID(fbUploadResponse.id,function (fbPostResponse) {
@@ -39,7 +40,8 @@ router.post('/post-image',function(req,res){
                   if(databaseResponse && databaseResponse.error){
                     return res.json(databaseResponse)
                   }
-                  return res.json({message:[{msg:'Successfully upload photo',type:'success'}]});
+
+                  return res.json({response:{message:[{msg:'Successfully upload photo',type:'success'}]}});
                 })
               } else {
                 return res.json({error:{message:[{msg:'An unexpected error happened, please try again latter',type:'warning'}],
@@ -304,11 +306,5 @@ router.post('/recovery', function (req, res) {
   );
 });
 
-/**
- * show users profile
- */
-router.get('/:user', function (req, res, next) {
-  res.json('abc');
-});
 //export all routes
 module.exports = router;

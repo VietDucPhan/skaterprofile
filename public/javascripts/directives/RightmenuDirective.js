@@ -40,10 +40,15 @@ angular.module('App').directive('rightMenu', function (Auth, $modal, $rootScope,
   return rightMenu;
 });
 
-var UploadImageController = function($scope, FileUploader, $modalInstance, Session, $rootScope){
+var UploadImageController = function($scope, FileUploader, $modalInstance, Session, $rootScope,$timeout){
   $scope.cancel = function () {
     $modalInstance.dismiss('cancel');
   };
+
+  $scope.closePopUpAlerts = function (index) {
+    $scope.popUpAlerts.splice(index, 1);
+  };
+
   $scope.postTitle = '';
   var postImage = $scope.postImage = new FileUploader({
     url: '/api/users/post-image',
@@ -53,16 +58,26 @@ var UploadImageController = function($scope, FileUploader, $modalInstance, Sessi
   postImage.onAfterAddingFile = function(fileItem) {
     fileItem.formData.push({token:Session.get()})
     fileItem.headers.token = Session.get();
-    fileItem.headers.msg = $scope.postTitle;
+
   };
-  postImage.onSuccessItem(function(fileItem, response) {
-    console.log(response);
+
+  postImage.onBeforeUploadItem = function(item){
+    item.headers.msg = $scope.postTitle;
+  }
+
+  postImage.onSuccessItem = function(fileItem, response) {
+    console.log(response)
     if (response && response.error) {
-      $rootScope.alerts = response.error.message;
+      $scope.popUpAlerts = response.error.message;
     } else {
-      $rootScope.alerts = response.response.message
+      $scope.popUpAlerts = response.response.message;
+
+      $timeout(function () {
+        $scope.popUpAlerts.splice(0, 1);
+        $modalInstance.close()
+      }, 3000);
     }
-  });
+  };
 
 
 }

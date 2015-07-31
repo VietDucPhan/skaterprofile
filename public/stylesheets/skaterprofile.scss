@@ -85,3 +85,24 @@ form{
     color:red;
   }
 }
+.alias-page{
+  .profile-container{
+    .profile-detail{
+      h1{
+        margin-top:0;
+      }
+    }
+  }
+  .row-container{
+    margin-bottom:30px;
+    .post-container{
+      text-align: center;
+      .post-image{
+        max-width:100%;
+        display:inline-block;
+      }
+    }
+  }
+
+
+}

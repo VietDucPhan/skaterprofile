@@ -5715,4 +5715,14 @@ button.close {
 form .error {
   color: red; }
 
+.alias-page .profile-container .profile-detail h1 {
+  margin-top: 0; }
+.alias-page .row-container {
+  margin-bottom: 30px; }
+  .alias-page .row-container .post-container {
+    text-align: center; }
+    .alias-page .row-container .post-container .post-image {
+      max-width: 100%;
+      display: inline-block; }
+
 /*# sourceMappingURL=skaterprofile.css.map */

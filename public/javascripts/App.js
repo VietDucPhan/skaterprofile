@@ -41,7 +41,7 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
         }
       }).
       when('/:user', {
-        templateUrl: 'ang/pages/profile',
+        templateUrl: 'ang/pages/alias',
         controller: 'ProfileController',
         data: {
           requireLogin: false
@@ -165,10 +165,27 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
       }
     })
   }
-}).controller('ProfileController', function ($scope, $http, $routeParams){
+}).controller('ProfileController', function ($scope, $http, $routeParams,$rootScope){
 
-  $scope.alias = {};
-  $http.get('/api/users/'+$routeParams.user).success(function(response){
+  $scope.alias = null;
+  function chunk(arr, size) {
+    var newArr = [];
+    for (var i=0; i<arr.length; i+=size) {
+      newArr.push(arr.slice(i, i+size));
+    }
+    return newArr;
+  }
+
+  $http.get('/api/alias/'+$routeParams.user).success(function(response){
     console.log(response);
+    if(response && !response.error){
+      $scope.alias = response.response;
+      $scope.alias.chuckedPosts = chunk($scope.alias.posts,3);
+      $scope.aliasTemplate = function () {
+        return '/ang/pages/'+$scope.alias.type+'-alias';
+      }
+    } else {
+      $rootScope.alerts = response.error.message;
+    }
   })
-});
+})
