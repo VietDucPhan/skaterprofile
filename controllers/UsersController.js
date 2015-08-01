@@ -174,12 +174,14 @@ router.post('/signup', function (req, res) {
     email: req.body.email,
     password: req.body.password,
     domain: req.protocol + '://' + req.headers.host
-  }, function (err) {
+  }, function (err,errorMessage) {
 
-    if (err.length > 0) {
-      jsonObj = {error: {message: err}}
+    if (err) {
+      return res.json({error:{message:[errorMessage]}});
+    } else {
+      return res.json(jsonObj);
     }
-    res.json(jsonObj);
+
   });
 });
 

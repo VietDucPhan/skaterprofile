@@ -167,7 +167,7 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
   }
 }).controller('ProfileController', function ($scope, $http, $routeParams,$rootScope){
 
-  $scope.alias = null;
+  $scope.aliasPage = null;
   function chunk(arr, size) {
     var newArr = [];
     for (var i=0; i<arr.length; i+=size) {
@@ -179,10 +179,10 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
   $http.get('/api/alias/'+$routeParams.user).success(function(response){
     console.log(response);
     if(response && !response.error){
-      $scope.alias = response.response;
-      $scope.alias.chuckedPosts = chunk($scope.alias.posts,3);
+      $scope.aliasPage = response.response;
+      $scope.aliasPage.chuckedPosts = chunk($scope.aliasPage.posts,3);
       $scope.aliasTemplate = function () {
-        return '/ang/pages/'+$scope.alias.type+'-alias';
+        return '/ang/pages/'+$scope.aliasPage.type+'-alias';
       }
     } else {
       $rootScope.alerts = response.error.message;

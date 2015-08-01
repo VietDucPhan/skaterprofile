@@ -63,9 +63,9 @@ UsersModel.createProfile = function(data,callback){
 
 UsersModel.addNewUser = function(data, callback){
   var users = this.getCollection();
-  Validate.sanitizeUsers(data,function(err, res){
+  Validate.sanitizeUsers(data,function(err,error, res){
 
-    if(err.length == 0){
+    if(!err){
       //store and delete raw password to use latter
       var password = res.raw_password;
       delete res.raw_password;
@@ -82,12 +82,12 @@ UsersModel.addNewUser = function(data, callback){
 
         Email.sendEmail(emailData,function(err){
           if(typeof callback == 'function'){
-            return callback([]);
+            return callback(false);
           }
         });
       });
     } else {
-      return callback(err);
+      return callback(err,error);
     }
 
   });

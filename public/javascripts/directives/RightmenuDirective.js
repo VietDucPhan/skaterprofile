@@ -4,7 +4,7 @@ angular.module('App').directive('rightMenu', function (Auth, $modal, $rootScope,
   rightMenu.restrict = 'E';
   rightMenu.link = function (scope) {
     scope.template = function () {
-      if (scope.user) {
+      if (scope.alias) {
         return '/ang/elements/menues/loggedin-right-mainmenu';
       }
       return '/ang/elements/menues/right-mainmenu';

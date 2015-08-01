@@ -6,7 +6,11 @@ angular.module('App').factory('Session', function ($http, $interval, $rootScope)
     // $rootScope.$apply(function () {
     localStorage.setItem('token', data.token);
     $http.defaults.headers.common.token = data.token;
-    $rootScope.user = data.response;
+    if(data && data.response && data.response.alias){
+      console.log(data.response.alias);
+      $rootScope.alias = data.response.alias;
+    }
+
     if (typeof callback == 'function') {
       return callback();
     }
@@ -51,7 +55,7 @@ angular.module('App').factory('Session', function ($http, $interval, $rootScope)
   }
   Session.destroy = function (callback) {
     localStorage.removeItem("token");
-    $rootScope.user = null;
+    $rootScope.alias = null;
     if (typeof callback == 'function') {
       return callback();
     }

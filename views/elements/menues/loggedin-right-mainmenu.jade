@@ -9,13 +9,14 @@ li
   button().btn.navbar-btn.btn-default
     span(ng-if="!notifications", class="glyphicon glyphicon-bell")
     span(ng-if="notifications", class="badge") {{notifications}}
-li(ng-if="user.profile",dropdown="").dropdown
-  button(ng-class="{glyphicon:!user.profile.picture,'glyphicon-user':!user.profile.picture,'profile-picture':user.profile.picture}",
+li(dropdown="").dropdown
+  button(ng-class="{glyphicon:!alias.picture,'glyphicon-user':!alias.picture,'profile-picture':alias" +
+  ".picture}",
   class="btn navbar-btn btn-primary dropdown-toggle ", dropdown-toggle="")
-    img(ng-if="user.profile.picture",ng-src="{{user.profile.picture.source}}")
+    img(ng-if="alias.picture",ng-src="{{alias.picture.source}}")
   ul(role="menu").dropdown-menu
     li
-      a(ng-href="/{{user.profile.username}}") {{!user.profile.type ? 'Create Profile':user.profile.username}}
+      a(ng-href="/{{alias.username || 'users/setting/your-profile'}}") {{!alias.type ? 'Create Profile':alias.username}}
     li
       a(href="/users/setting/your-profile") Setting
     li

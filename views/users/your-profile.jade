@@ -13,8 +13,9 @@ div(ng-controller="SettingController")
                   div(,role="progressbar", aria-valuenow="0", aria-valuemin="0",
                   aria-valuemax="100",
                   ng-style="{'width': uploader.progress + '%' }",style="width:0%").progress-bar Uploading...
-                img(ng-if="user.profile.picture",ng-src="{{user.profile.picture.source}}",class="thumbnail img-responsive")
-                div(nv-file-drop="",uploader="uploader",class="well profile-uploader",ng-show="uploader.isHTML5 && !user.profile.picture.source")
+                img(ng-if="alias.picture",ng-src="{{alias.picture.source}}",class="thumbnail " +
+                "img-responsive")
+                div(nv-file-drop="",uploader="uploader",class="well profile-uploader",ng-show="uploader.isHTML5 && !alias.picture.source")
               div.col-md-6
                 label(for="change-profile",class="btn btn-default") Change picture
               div.col-md-3

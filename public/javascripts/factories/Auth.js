@@ -10,7 +10,6 @@ angular.module('App').factory('Auth', function ($http, Session, $location ,$root
         }).success(function (data) {
             if(data.success){
                 Session.set(data,function(){
-                    console.log(data);
                     Socket.emit('token',data.token);
                     if(typeof callback == 'function'){
                         return callback([],true)

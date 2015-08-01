@@ -5,15 +5,16 @@ div.row.profile-container
   div.col-sm-6
     div.row
       div.col-sm-5.profile-picture
-        img(ng-if="alias.picture && alias.picture.source",ng-src="{{alias.picture.source}}",class="thumbnail")
+        img(ng-if="aliasPage.picture && aliasPage.picture.source",ng-src="{{aliasPage.picture.source}}",class="thumbnail")
       div.col-sm-7.profile-detail
-        h1 {{alias.name}}
-        h2 {{alias.username}}
+        h1 {{aliasPage.name}}
+        h2 {{aliasPage.username}}
+        div(follow-button="")
   div.col-sm-3
 div.row
   div.col-md-2
   div().col-md-8
-    div(ng-repeat="posts in alias.chuckedPosts").row.row-container
+    div(ng-repeat="posts in aliasPage.chuckedPosts").row.row-container
       div(ng-repeat="post in posts").col-sm-4.post-container
         img(ng-src="{{post.source}}",class="post-image")
   div.col-md-2
