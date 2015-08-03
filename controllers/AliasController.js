@@ -20,4 +20,18 @@ router.get('/:alias',function(req,res){
 
   })
 })
+router.post('/isfollowing',function(req,res){
+  console.log(req.body.id);
+  Session.decode(req.token,function(decoded){
+    console.log(decoded);
+    return res.json({});
+  })
+})
+
+router.post('/follow',function(req,res){
+  Session.decode(req.token,function(decoded){
+    console.log(decoded);
+    return res.json({});
+  })
+})
 module.exports = router;

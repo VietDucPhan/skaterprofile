@@ -1,21 +1,43 @@
 //Main Menu Directive
-angular.module('App').directive('followButton', function ($location,Session) {
+angular.module('App').directive('followButton', function ($location,Session,$http, $rootScope) {
   var followButton = {};
-  followButton.restrict = 'A';
-  followButton.link = function (scope, ele, att) {
-    scope.followTemplate = function (){
-      var loggedInUser = Session.get();
-      return '<button class="btn" ng-include="followTemplate()">Your profile</button>'
-      if(loggedInUser && loggedInUser.alias && att.followButton === loggedInUser.alias._id){
-        return '<button class="btn" ng-include="followTemplate()">Your profile</button>'
+  followButton.restrict = 'E';
+  followButton.scope = {
+    aliasId:'&aliasId'
+  };
+
+
+  followButton.template = '<button class="btn btn-{{followButtonName}}" ng-click="follow()">{{followButtonName}}</button>'
+  followButton.link = function(scope, ele){
+    scope.followButtonName = 'follow'
+    $http.post('/api/alias/isfollowing',{id:scope.aliasId()}).success(function(response){
+      if(response && response.error){
+        $rootScope.alerts = response.error.message;
+
+      } else if(response && response.response && response.response.isFollow){
+        scope.followButtonName = 'unfollow'
       } else {
-        return '<button class="btn" ng-include="followTemplate()">Follow ab</button>';
+        scope.followButtonName = 'follow'
       }
+    }).error(function(){
+      scope.followButtonName = 'error'
+    })
+
+    scope.follow = function(){
+      $http.post('/api/alias/follow/',{id:scope.aliasId()}).success(function(res){
+        if(res && res.error){
+          $rootScope.alerts = res.error.message;
+
+        } else {
+          scope.followButtonName = 'unfollow'
+        }
+      }).error(function(){
+        scope.followButtonName = 'error'
+      })
     }
 
+    scope.
   }
-
-  followButton.template = '<button class="btn" ng-include="followTemplate()">Follow</button>'
   return followButton;
 });
 
