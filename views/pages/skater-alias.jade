@@ -8,8 +8,8 @@ div.row.profile-container
         img(ng-if="aliasPage.picture && aliasPage.picture.source",ng-src="{{aliasPage.picture.source}}",class="thumbnail")
       div.col-sm-7.profile-detail
         h1 {{aliasPage.name}}
-        h2 {{aliasPage.username}}
         follow-button(alias-id="aliasPage._id")
+        h2 {{aliasPage.username}}
   div.col-sm-3
 div.row
   div.col-md-2

@@ -7,17 +7,22 @@ angular.module('App').directive('followButton', function ($location,Session,$htt
   };
 
 
-  followButton.template = '<button class="btn btn-{{followButtonName}}" ng-click="follow()">{{followButtonName}}</button>'
+  followButton.template = '<button class="btn btn-{{followButtonName}} {{followButtonHide}}" ng-click="follow()">{{followButtonName}}</button>'
   followButton.link = function(scope, ele){
-    scope.followButtonName = 'follow'
+    scope.followButtonName = 'follow';
+    scope.followButtonHide = '';
+    if($rootScope.alias && scope.aliasId() === $rootScope.alias._id){
+      scope.followButtonHide = 'ng-hide'
+    }
     $http.post('/api/alias/isfollowing',{id:scope.aliasId()}).success(function(response){
+      //console.log(response);
       if(response && response.error){
         $rootScope.alerts = response.error.message;
 
-      } else if(response && response.response && response.response.isFollow){
-        scope.followButtonName = 'unfollow'
-      } else {
+      } else if(!response){
         scope.followButtonName = 'follow'
+      } else {
+        scope.followButtonName = 'unfollow'
       }
     }).error(function(){
       scope.followButtonName = 'error'
@@ -27,16 +32,16 @@ angular.module('App').directive('followButton', function ($location,Session,$htt
       $http.post('/api/alias/follow/',{id:scope.aliasId()}).success(function(res){
         if(res && res.error){
           $rootScope.alerts = res.error.message;
-
-        } else {
+          scope.followButtonName = 'error'
+        } else if(res && res.status == 'followed') {
           scope.followButtonName = 'unfollow'
+        } else {
+          scope.followButtonName = 'follow'
         }
       }).error(function(){
         scope.followButtonName = 'error'
       })
     }
-
-    scope.
   }
   return followButton;
 });

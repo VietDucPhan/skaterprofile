@@ -22,6 +22,68 @@ AliasModel.getAlias = function(condition, callback){
   });
 }
 
+AliasModel.toggleFollow = function(actionSenderId,actionTakerId,callback){
+  async.waterfall([function(callback){
+
+  }],function(){
+
+  })
+}
+
+
+AliasModel.removeFollowing = function(aliasId,idToRemove,callback){
+  var Alias = AliasModel.getCollection();
+  Alias.update({_id: new ObjectID(aliasId)},{$unset:{following:{ $in: [ {"id":idToRemove} ]}}},function(err,doc){
+    if(doc.result.ok == 1){
+      return callback(true);
+    } else {
+      return callback(false);
+    }
+  });
+}
+
+AliasModel.removeFollower = function(aliasId,idToRemove,callback){
+  var Alias = AliasModel.getCollection();
+  Alias.update({_id: new ObjectID(aliasId)},{$pull:{'follower.id':idToRemove}},function(err,doc){
+    if(doc.result.ok == 1){
+      return callback(true);
+    } else {
+      return callback(false);
+    }
+
+  });
+}
+
+
+AliasModel.isFollower = function(follower,following,callback){
+  var Alias = AliasModel.getCollection();
+  Alias.findOne({'followers.id':aliasId},function(err,doc){
+    return callback(doc);
+  });
+}
+
+AliasModel.isFollowing = function(follower,following,callback){
+  var Alias = AliasModel.getCollection();
+  Alias.findOne({_id:new ObjectID(follower),'following.id':following},function(err,doc){
+    //console.log(follower);
+    return callback(doc);
+  });
+}
+
+AliasModel.addFollower = function(actionSenderId,actionTakerId,callback){
+  var Alias = AliasModel.getCollection();
+  Alias.findAndModify({_id: new ObjectID(actionSenderId)},[],{$push:{followers:actionTakerId}},{new:true},function(err,doc){
+    return callback(doc);
+  });
+}
+
+AliasModel.addFollowing = function(aliasId,anotherAliasId,callback){
+  var Alias = AliasModel.getCollection();
+  Alias.findAndModify({_id: new ObjectID(aliasId)},[],{$push:{following:{_id:new ObjectID(),id:anotherAliasId}}},{new:true},function(err,doc){
+    return callback(doc);
+  });
+}
+
 AliasModel.updateProfile = function(condition,update, callback){
   var Alias = AliasModel.getCollection();
   Alias.findAndModify(condition,[],{$set: update},{new:true},function(err,rec){
