@@ -100,7 +100,7 @@ AliasModel.updateProfile = function(condition,update, callback){
   });
 }
 
-AliasModel.addAPhoto = function(condition,update, callback){
+AliasModel.addAPost = function(condition,update, callback){
   var Alias = AliasModel.getCollection();
   update._id = new ObjectID();
   Alias.findAndModify(condition,[],{$push:{posts:update}},{new:true},function(err,rec){

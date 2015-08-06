@@ -30,7 +30,23 @@ UsersModel.getProfileByAdmin = function(adminId,callback){
 UsersModel.postAPhoto = function(userId,photoData,callback){
   this.getProfileByAdmin(userId,function(res){
     if(res){
-      AliasModel.addAPhoto(res,photoData,function(response){
+      AliasModel.addAPost(res,photoData,function(response){
+        if(response){
+          return callback(response)
+        } else {
+          return callback({error:{message:[{msg:'Something went wrong please try agin',type:'danger'}]}})
+        }
+      })
+    } else {
+      return callback({error:{message:[{msg:'Please create a profile first',type:'danger'}]}})
+    }
+  })
+}
+
+UsersModel.postAVideo = function(userId,videoData,callback){
+  this.getProfileByAdmin(userId,function(responseProfile){
+    if(responseProfile){
+      AliasModel.addAPost(responseProfile,videoData,function(response){
         if(response){
           return callback(response)
         } else {

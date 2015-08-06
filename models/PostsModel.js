@@ -13,12 +13,15 @@ var ObjectID = require('mongodb').ObjectID;
 
 var PostsModel = module.exports = {};
 
-PostsModel.getAllPosts = function(){
+PostsModel.getAllPosts = function(callback){
   var Alias = AppModel.db.collection('alias');
   Alias.aggregate([
-    {$group:{posts:'$posts'}}
+
+    {$group:{push_posts:{$push:'$posts'},_id:'$_id'}},
+    { "$unwind": "$push_posts" },
+    { "$unwind": "$push_posts" },
+    {$project:{_id:1,push_posts:1}}
   ],{},function(err,cur){
-    console.info('error:',err);
-    console.info('cursor:',cur);
+    return callback(cur)
   })
 }

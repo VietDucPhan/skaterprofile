@@ -1,0 +1,17 @@
+div.modal-header
+  button(type="button",class="close",data-dismiss="modal",aria-label="Close")
+    span(ng-click="cancel()",aria-hidden="true") &times;
+  h4.modal-title Paste a video link
+  p Paste an awesome video link, accepting YouTube/Vimeo
+div(class="modal-body")
+  alert(ng-repeat="alert in popUpAlerts",type="{{alert.type}}",close="closePopUpAlerts($index)") {{alert.msg}}
+  form(name="uploadVideoForm",method='post',novalidate="")
+    div(class='form-group')
+      input(type="url",placeholder="http://somevideolink.com/some_link", class="form-control", id="postVideo",
+      ng-model="uploadVideoData.video")
+    div.form-group
+      span(class="error", ng-show="uploadVideoForm.postTile.$error.maxlength") Too long!
+      textarea(name="postTile",class="form-control",required="",ng-maxlength="100",placeholder="Title (Max length: " +
+      "100)",ng-model="uploadVideoData.title")
+    div.form-group
+      button(ng-click="postVideo(uploadVideoData)",ng-disabled="uploadVideoForm.$invalid").btn Upload

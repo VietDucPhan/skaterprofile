@@ -5725,4 +5725,10 @@ form .error {
       max-width: 100%;
       display: inline-block; }
 
+.show-posts-container .show-posts-detail h2 a {
+  color: #333333;
+  text-decoration: none; }
+  .show-posts-container .show-posts-detail h2 a:hover {
+    color: #337ab7; }
+
 /*# sourceMappingURL=skaterprofile.css.map */

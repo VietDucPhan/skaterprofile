@@ -21,4 +21,8 @@ router.get('/users/setting/:param', function(req, res) {
 router.get('/:users', function(req, res) {
   res.render('layout');
 });
+/* GET home page. */
+router.get('/post/detail/:id', function(req, res) {
+  res.render('layout');
+});
 module.exports = router;

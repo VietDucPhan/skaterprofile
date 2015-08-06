@@ -12,7 +12,7 @@ html(ng-app="App",ng-controller="AppController")
     include ./elements/menues/mainmenu
 
     alert(ng-repeat="alert in alerts",type="{{alert.type}}",close="closeAlert($index)") {{alert.msg}}
-    div(ng-view).container-fluid
+    div(ng-view).container
 
     link(rel='stylesheet', href='/stylesheets/skaterprofile.css')
     script(src='/javascripts/jquery-1.11.3.min.js')

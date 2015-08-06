@@ -34,12 +34,48 @@ angular.module('App').directive('rightMenu', function (Auth, $modal, $rootScope,
       });
     }
 
+    scope.uploadVideo = function (){
+      $modal.open({
+        animation: true,
+        templateUrl: '/ang/users/uploadVideo',
+        controller: UploadVideoController
+      });
+    }
 
   }
   rightMenu.template = '<ul class="nav navbar-nav navbar-right" ng-include="template()"/>';
   return rightMenu;
 });
+var UploadVideoController = function($scope,$modalInstance,$http,$rootScope,$timeout){
+  $scope.cancel = function () {
+    $modalInstance.dismiss('cancel');
+  };
 
+  $scope.closePopUpAlerts = function (index) {
+    $scope.popUpAlerts.splice(index, 1);
+  };
+
+  var youtube_pattern = /^http(?:s)?:\/\/(?:www\.)?youtube.com\/watch\?(?=.*v=\w+)(?:\S+)?$/i;
+  var vimeo_pattern = /^http(?:s)?:\/\/(www\.)?vimeo.com\/(\d+)($|\/)$/i;
+
+  $scope.postVideo = function(data){
+    if(youtube_pattern.test(data.video) || vimeo_pattern.test(data.video)){
+      $http.post('/api/users/post-video',data).success(function(res){
+        $scope.popUpAlerts = res.response.message;
+
+        $timeout(function () {
+          $scope.popUpAlerts.splice(0, 1);
+          $modalInstance.close()
+        }, 3000);
+      }).error(function(res){
+        $rootScope.popUpAlerts = [{msg:'An unexpected error happened, please try again, lattttter!!!',type:'warning'}]
+      })
+    } else {
+      $rootScope.popUpAlerts = [{msg:'We currently only suppose youtube and vimeo link',type:'warning'}]
+    }
+
+  }
+}
 var UploadImageController = function($scope, FileUploader, $modalInstance, Session, $rootScope,$timeout){
   $scope.cancel = function () {
     $modalInstance.dismiss('cancel');

@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var Users = require('../models/UsersModel');
 var Auth = require('../lib/Auth');
+var Validate = require('../lib/Validate');
 var Session = require('../lib/Session');
 var config = require('../config')
 var ObjectID = require('mongodb').ObjectID;
@@ -52,6 +53,37 @@ router.post('/post-image',function(req,res){
           })
         }
       })
+    } else {
+      return res.json({error:{message:[{msg:'Session expired, please login again',type:'warning'}],
+        status: 'session_expired'}})
+    }
+  })
+})
+
+router.post('/post-video',function(req,res){
+  Session.decode(req.token, function (decoded) {
+    if(decoded && !decoded.tokenExp){
+      Validate.isVideo(req.body.video,function(flag,type){
+        if(flag){
+          Validate.getVideoId(req.body.video,type,function(videoId){
+            if(videoId){
+              Users.postAVideo(decoded.data._id,{video_id:videoId,url:req.body.video,type:type,name:req.body.title},function(databaseResponse){
+                //console.log(databaseResponse)
+                if(databaseResponse && databaseResponse.error){
+                  return res.json(databaseResponse)
+                } else {
+                  return res.json({response:{message:[{msg:'Successfully upload video',type:'success'}]}});
+                }
+              })
+            } else {
+              return res.json({error:{message:[{msg:'An unexpected error happened, please try again',type:'warning'}]}});
+            }
+          })
+        } else {
+          return res.json({error:{message:[{msg:'We only accept youtube and vimeo link',type:'danger'}]}});
+        }
+      })
+
     } else {
       return res.json({error:{message:[{msg:'Session expired, please login again',type:'warning'}],
         status: 'session_expired'}})

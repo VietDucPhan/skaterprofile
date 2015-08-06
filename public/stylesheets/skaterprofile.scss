@@ -103,6 +103,18 @@ form{
       }
     }
   }
+}
 
-
+.show-posts-container{
+  .show-posts-detail{
+    h2{
+      a{
+        color:#333333;
+        text-decoration: none;
+        &:hover{
+          color:#337ab7;
+        }
+      }
+    }
+  }
 }

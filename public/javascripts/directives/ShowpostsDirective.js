@@ -1,7 +1,7 @@
 /**
  * Created by Administrator on 8/5/2015.
  */
-angular.module('App').directive('showPosts', function ($http) {
+angular.module('App').directive('showPosts', function ($http,$rootScope,$sce) {
   var showPosts = {};
   showPosts.restrict = 'A';
   showPosts.scope = {
@@ -22,9 +22,22 @@ angular.module('App').directive('showPosts', function ($http) {
       following: scope.following() || false
     }
     scope.postClass = scope.postPerRow() || 12;
-    console.log(data);
+
+    scope.youtube = function(id){
+      return $sce.trustAsResourceUrl("https://www.youtube.com/embed/"+id+"?rel=0&amp;controls=0&amp;showinfo=0")
+    }
+
+    scope.vimeo = function(id){
+      return $sce.trustAsResourceUrl("https://player.vimeo.com/video/"+id)
+    }
+
     $http.post(link,data).success(function(res){
-      console.log(res);
+      if(res && res.error){
+        $rootScope.alerts = res.error.message;
+      } else {
+        scope.posts = res.response;
+        console.log(res.response);
+      }
     })
   }
 
