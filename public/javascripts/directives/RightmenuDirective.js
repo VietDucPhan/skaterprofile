@@ -1,10 +1,10 @@
 //Main Menu Directive
-angular.module('App').directive('rightMenu', function (Auth, $modal, $rootScope, $location, $http,FileUploader) {
+angular.module('App').directive('rightMenu', function (Auth, $modal, $rootScope, $location, $http, FileUploader, Session) {
   var rightMenu = {};
   rightMenu.restrict = 'E';
   rightMenu.link = function (scope) {
     scope.template = function () {
-      if (scope.alias) {
+      if (Session.get()) {
         return '/ang/elements/menues/loggedin-right-mainmenu';
       }
       return '/ang/elements/menues/right-mainmenu';

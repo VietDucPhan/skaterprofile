@@ -5703,8 +5703,8 @@ button.close {
 
 .profile-uploader {
   border: dotted 3px lightgray;
-  width: 200px;
-  height: 200px; }
+  width: 120px;
+  height: 120px; }
 
 .modal .modal-content .modal-header {
   border-bottom: 0px; }

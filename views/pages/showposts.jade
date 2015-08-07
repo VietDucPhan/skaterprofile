@@ -7,14 +7,16 @@ div(ng-repeat="post in posts",class="col-sm-{{postClass}}").show-posts-detail
     a(href="/post/detail/{{post.push_posts._id}}")
       img(ng-src="{{post.push_posts.source}}",class="post-image img-responsive")
 
-  div(class="video embed-responsive embed-responsive-16by9",ng-if="post.push_posts.type == 'youtube'")
+  div(class="video youtube",ng-if="post.push_posts.type == 'youtube'")
     h2
       a(href="/post/detail/{{post.push_posts._id}}") {{post.push_posts.name}}
-    iframe(ng-if="post.push_posts.type == 'youtube'",class="embed-responsive-item", ng-src="{{youtube(post.push_posts.video_id)}}",
-    frameborder="0")
+    div(class="embed-responsive embed-responsive-16by9")
+      iframe(ng-if="post.push_posts.type == 'youtube'",class="embed-responsive-item", ng-src="{{youtube(post.push_posts.video_id)}}",
+      frameborder="0")
 
-  div(class="video embed-responsive embed-responsive-16by9",ng-if="post.push_posts.type == 'vimeo'")
+  div(class="video vimeo",ng-if="post.push_posts.type == 'vimeo'")
     h2
       a(href="/post/detail/{{post.push_posts._id}}") {{post.push_posts.name}}
-    iframe(ng-if="post.push_posts.type == 'vimeo'",class="embed-responsive-item", ng-src="{{vimeo(post.push_posts" +
-    ".video_id)}}",frameborder="0", webkitallowfullscreen="", mozallowfullscreen="", allowfullscreen="")
+    div(class="embed-responsive embed-responsive-16by9")
+      iframe(ng-if="post.push_posts.type == 'vimeo'",class="embed-responsive-item", ng-src="{{vimeo(post.push_posts" +
+      ".video_id)}}",frameborder="0", webkitallowfullscreen="", mozallowfullscreen="", allowfullscreen="")

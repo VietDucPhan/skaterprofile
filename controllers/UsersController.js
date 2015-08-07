@@ -6,7 +6,6 @@ var Validate = require('../lib/Validate');
 var Session = require('../lib/Session');
 var config = require('../config')
 var ObjectID = require('mongodb').ObjectID;
-var fs = require('fs');
 var path = require('path');
 var request = require('request');
 var SNSApi = require('../lib/SNSApi');
@@ -19,6 +18,25 @@ router.post('/refresh', function (req, res) {
     Session.refresh(decoded, function (result) {
       return res.json(result);
     })
+  })
+
+});
+
+/**
+ * get data from sign up page process save data
+ */
+router.post('/change-password', function (req, res) {
+  Session.decode(req.token, function (decoded) {
+    if(decoded && !decoded.tokenExp){
+      Users.change_password(decoded.data._id,req.body.curr_pass,req.body.new_pass,req.body.new_pass2,function(changePassRes){
+        if(changePassRes && changePassRes.error){
+          return res.json(changePassRes)
+        }
+        return res.json(changePassRes)
+      })
+    } else {
+      return res.json({error:{message:[{msg:'Your session expired, please login again',type:'danger'}]},status:'session_expired'})
+    }
   })
 
 });
@@ -106,7 +124,7 @@ router.post('/upload-picture', function (req, res) {
                     return res.json(fbPostResponse);
                   } else {
                     Users.updateProfilePicture(profileData._id, fbPostResponse, function (rec) {
-                      decoded.data.profile.picture = rec
+                      decoded.data.alias.picture = rec
                       Session.encode(decoded.data, function (encoded) {
                         if(profileData.picture && profileData.picture.id){
                           SNSApi.deleteAPostOnFB(profileData.picture.id,function(){

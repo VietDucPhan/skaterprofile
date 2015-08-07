@@ -65,8 +65,8 @@
 }
 .profile-uploader{
   border: dotted 3px lightgray;
-  width:200px;
-  height:200px;
+  width:120px;
+  height:120px;
 }
 .modal{
   .modal-content{
@@ -114,6 +114,10 @@ form{
         &:hover{
           color:#337ab7;
         }
+      }
+    }
+    iframe{
+      &.embed-responsive-item{
       }
     }
   }

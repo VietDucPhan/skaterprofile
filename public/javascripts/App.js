@@ -18,9 +18,7 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
         }
       }).
       when('/users/setting/:page', {
-        templateUrl: function (currentRoute) {
-          return 'ang/users/' + currentRoute.page
-        },
+        templateUrl: 'ang/users/setting',
         controller: 'SettingController',
         data: {
           requireLogin: true
@@ -113,14 +111,13 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
   $scope.logout = function () {
     return Auth.logout();
   }
-}).controller('SettingController', function ($scope, $http, $location, $rootScope, FileUploader, Session) {
+}).controller('SettingController', function ($scope, $http, $location, $rootScope, FileUploader, Session, $routeParams) {
   $scope.profile = {
     sex: 1
   };
   (function () {
     $http.get('/api/users/profile').success(function (data) {
       if (data.error) {
-        $scope.profile = {}
         $rootScope.alerts = data.error.message;
       } else {
         $scope.profile = data.response
@@ -161,11 +158,35 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
       } else {
         $rootScope.alerts = data.message;
         $scope.profile = data.response;
-        $rootScope.user.profile = data.response;
+        $rootScope.alias = data.response;
       }
     })
   }
-}).controller('ProfileController', function ($scope, $http, $routeParams,$rootScope){
+
+  $scope.settingInclude = function(){
+    return '/ang/users/'+$routeParams.page;
+  }
+  $scope.new_password = {};
+  $scope.changePassword = function(data){
+    $scope.new_password = {};
+    if(data.new_pass.length < 6 || data.new_pass.length > 24){
+      $rootScope.alerts = [{msg:'Passwords must greater than 6 and less than 24 characters',type:'warning'}];
+    } else if(data.new_pass !== data.new_pass2){
+      $rootScope.alerts = [{msg:'Passwords not matched',type:'warning'}];
+    } else {
+      $http.post('/api/users/change-password',data).success(function(res){
+
+        if(res && res.error){
+          $rootScope.alerts = res.error.message;
+        } else {
+          $rootScope.alerts = res.message;
+        }
+      }).error(function(){
+        $rootScope.alerts = [{msg:'An unexpected error happened, please try again latter',type:'danger'}];
+      });
+    }
+  }
+}).controller('ProfileController', function ($scope, $http, $routeParams,$rootScope,$sce){
 
   $scope.aliasPage = null;
   function chunk(arr, size) {
@@ -174,6 +195,14 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
       newArr.push(arr.slice(i, i+size));
     }
     return newArr;
+  }
+
+  $scope.youtube = function(id){
+    return $sce.trustAsResourceUrl("https://www.youtube.com/embed/"+id+"?rel=0&amp;controls=0&amp;showinfo=0")
+  }
+
+  $scope.vimeo = function(id){
+    return $sce.trustAsResourceUrl("https://player.vimeo.com/video/"+id)
   }
 
   $http.get('/api/alias/'+$routeParams.user).success(function(response){

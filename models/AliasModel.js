@@ -103,6 +103,7 @@ AliasModel.updateProfile = function(condition,update, callback){
 AliasModel.addAPost = function(condition,update, callback){
   var Alias = AliasModel.getCollection();
   update._id = new ObjectID();
+  update.created_time = new Date();
   Alias.findAndModify(condition,[],{$push:{posts:update}},{new:true},function(err,rec){
     if(!err){
       if(typeof callback == "function"){

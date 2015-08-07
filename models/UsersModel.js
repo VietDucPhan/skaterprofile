@@ -8,7 +8,7 @@ var async = require('async');
 var Auth = require('../lib/Auth');
 var AliasModel = require('./AliasModel')
 var ObjectID = require('mongodb').ObjectID;
-
+var bcrypt = require('bcrypt');
 
 var UsersModel = module.exports = {};
 
@@ -27,6 +27,43 @@ UsersModel.getProfileByAdmin = function(adminId,callback){
   })
 };
 
+UsersModel.change_password = function(id,currPass,newPass,newPass2,callback){
+  var Users = UsersModel.getCollection();
+  Users.findOne({_id:new ObjectID(id)},function(err,res){
+    if(res){
+      if(newPass !== newPass2){
+        return callback({error:{message:[{msg:'Your passwords not matched',type:'danger'}]}});
+      } else {
+        Validate.isValidPassword(newPass, function(flag){
+          if(flag){
+            bcrypt.compare(currPass, res.password,  function(err, res) {
+              if(!err){
+                Auth.generatePassword(newPass,function(err,password){
+                  Users.update({_id:new ObjectID(id)},{$set:{password:password}},function(err){
+                    if(!err){
+                      return callback({message:[{msg:'congratulation, you suscessfully updated your password',type:'success'}]});
+                    } else {
+                      return callback({error:{message:[{msg:'Something went wrong please try again',type:'danger'}]}});
+                    }
+                  })
+                })
+
+              } else {
+                callback({error:{message:[{msg:'Not your password',type:'danger'}]}});
+              }
+            });
+          } else {
+            return callback({error:{message:[{msg:'Password must greater than 6 and less than 24 characters',type:'danger'}]}});
+          }
+        })
+      }
+
+    } else {
+      return callback({error:{message:[{msg:'Something went wrong please try again',type:'danger'}]}});
+    }
+  })
+};
+
 UsersModel.postAPhoto = function(userId,photoData,callback){
   this.getProfileByAdmin(userId,function(res){
     if(res){
@@ -34,7 +71,7 @@ UsersModel.postAPhoto = function(userId,photoData,callback){
         if(response){
           return callback(response)
         } else {
-          return callback({error:{message:[{msg:'Something went wrong please try agin',type:'danger'}]}})
+          return callback({error:{message:[{msg:'Something went wrong please try again',type:'danger'}]}})
         }
       })
     } else {
