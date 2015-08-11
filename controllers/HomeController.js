@@ -25,4 +25,9 @@ router.get('/:users', function(req, res) {
 router.get('/post/detail/:id', function(req, res) {
   res.render('layout');
 });
+
+/* GET home page. */
+router.get('/users/create-profile', function(req, res) {
+  res.render('layout');
+});
 module.exports = router;

@@ -38,6 +38,13 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
           requireLogin: false
         }
       }).
+      when('/users/create-profile', {
+        templateUrl: 'ang/users/create-profile',
+        controller: 'CreateProfileController',
+        data: {
+          requireLogin: false
+        }
+      }).
       when('/:user', {
         templateUrl: 'ang/pages/alias',
         controller: 'ProfileController',
@@ -217,4 +224,14 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
       $rootScope.alerts = response.error.message;
     }
   })
+}).controller('CreateProfileController',function($scope){
+  $scope.createProfileData = {
+    type: 'skater'
+  }
+  $scope.createProfileTempUrl = '/ang/users/create-skater-form';
+  $scope.changeSkaterType = function(type){
+    $scope.createProfileData.type = type;
+    $scope.createProfileTempUrl = '/ang/users/create-'+type+"-form";
+  }
+
 })
