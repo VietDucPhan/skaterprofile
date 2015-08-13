@@ -45,6 +45,13 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
           requireLogin: false
         }
       }).
+      when('/profile/:account/edit', {
+        templateUrl: 'ang/users/edit-profile',
+        controller: 'EditProfileController',
+        data: {
+          requireLogin: false
+        }
+      }).
       when('/:user', {
         templateUrl: 'ang/pages/alias',
         controller: 'ProfileController',
@@ -75,7 +82,8 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
     Session.refresh();
     if (next.$$route && next.$$route.data && next.$$route.data.requireLogin) {
       if (!Auth.isAuthenticated()) {
-        $window.location.href = '/users/login';
+        $window.location.href = '/';
+        $rootScope.alerts = [{msg:'You are not authorized',type:"warning"}];
       }
     }
   });
@@ -147,7 +155,6 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
     //console.info('onBeforeUploadItem', item);
   };
   uploader.onSuccessItem = function (fileItem, response, status, headers) {
-    console.log(response);
     if (response && response.error) {
       $rootScope.alerts = response.error.message;
     } else {
@@ -159,7 +166,7 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
   };
 
   $scope.profileSubmit = function (profile) {
-    $http.post('/api/users/create/profile', profile).success(function (data) {
+    $http.post('/api/users/create/your-profile', profile).success(function (data) {
       if (data.error) {
         $rootScope.alerts = data.error.message;
       } else {
@@ -194,6 +201,7 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
     }
   }
 }).controller('ProfileController', function ($scope, $http, $routeParams,$rootScope,$sce){
+  $scope.editable = false;
 
   $scope.aliasPage = null;
   function chunk(arr, size) {
@@ -213,10 +221,18 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
   }
 
   $http.get('/api/alias/'+$routeParams.user).success(function(response){
-    console.log(response);
     if(response && !response.error){
+      console.log($rootScope.alias);
       $scope.aliasPage = response.response;
-      $scope.aliasPage.chuckedPosts = chunk($scope.aliasPage.posts,3);
+      $scope.aliasPage.chuckedPosts = [];
+      if($scope.aliasPage && $scope.aliasPage.posts){
+        $scope.aliasPage.chuckedPosts = chunk($scope.aliasPage.posts,3);
+      }
+
+      if($rootScope.user && ($rootScope.user._id ==  response.response.admin || (response.response.managers && response.response.managers.indexOf($rootScope.user._id) != -1) || (response.response.config && response.response.config.public_editing == 1))){
+        $scope.editable = true;
+      }
+
       $scope.aliasTemplate = function () {
         return '/ang/pages/'+$scope.aliasPage.type+'-alias';
       }
@@ -224,14 +240,35 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
       $rootScope.alerts = response.error.message;
     }
   })
-}).controller('CreateProfileController',function($scope){
-  $scope.createProfileData = {
-    type: 'skater'
+}).controller('CreateProfileController',function($scope,$http,$rootScope,$window){
+  $scope.newProfileData = {
+    type: 'skater',
+    isYourProfile:0,
+    sex:0,
+    status:0,
+    stance:0,
+    config:{
+      public_editing:1,
+      public_posting:1
+    }
   }
+
   $scope.createProfileTempUrl = '/ang/users/create-skater-form';
   $scope.changeSkaterType = function(type){
-    $scope.createProfileData.type = type;
+    $scope.newProfileData.type = type;
     $scope.createProfileTempUrl = '/ang/users/create-'+type+"-form";
+  }
+
+  $scope.newProfileSubmit = function(data){
+    $http.post('/api/users/create/new-profile',data).success(function(res){
+      if(res && res.error){
+        $rootScope.alerts = res.error.message;
+      } else {
+        $window.location.href = '/'+res.response.username+'/edit';
+      }
+    }).error(function(){
+      $rootScope.alerts = [{msg:'Errors occured please try again latter',type:"danger"}]
+    })
   }
 
 })

@@ -7,8 +7,9 @@ angular.module('App').factory('Session', function ($http, $interval, $rootScope)
     localStorage.setItem('token', data.token);
     $http.defaults.headers.common.token = data.token;
     if(data && data.response && data.response.alias){
-      console.log(data.response.alias);
       $rootScope.alias = data.response.alias;
+      delete data.response.alias;
+      $rootScope.user = data.response;
     }
 
     if (typeof callback == 'function') {
@@ -43,7 +44,6 @@ angular.module('App').factory('Session', function ($http, $interval, $rootScope)
       //if token expired => destroy session in client
       if (!data.err) {
         if (data.refreshed) {
-          console.log(data);
           Session.set(data, function () {
             return true;
           });
@@ -56,6 +56,7 @@ angular.module('App').factory('Session', function ($http, $interval, $rootScope)
   Session.destroy = function (callback) {
     localStorage.removeItem("token");
     $rootScope.alias = null;
+    $rootScope.user = null;
     if (typeof callback == 'function') {
       return callback();
     }

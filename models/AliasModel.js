@@ -123,7 +123,10 @@ AliasModel.createAlias = function (data, callback) {
     if(data._id){
       data._id = new ObjectID(data._id);
     }
-
+    if(!data.username){
+      data.username = Validate.urlFriendly(data.name);
+    }
+    console.log(data);
     Validate.isValidUsername(data.username, function (flag) {
       if (!flag) {
         callback(true,{msg:'Username is not valid, please try again',type:'danger'})

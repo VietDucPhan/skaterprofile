@@ -1,5 +1,10 @@
 @import "_bootstrap";
-
+body{
+  background-color:#f1f1f1;
+  h1{
+    margin:0;
+  }
+}
 .navbar-default{
   .navbar-nav{
     li{
@@ -85,11 +90,36 @@ form{
     color:red;
   }
 }
+.follow-button-container{
+  display:block;
+  button{
+    letter-spacing: 2px;
+    color: #4090db;
+    border: 1px solid #4090db;
+    background: none;
+    padding: 4px 8px;
+    font-size: 14px;
+    &.btn-following{
+      @extend .btn-success;
+    }
+  }
+}
 .alias-page{
   .profile-container{
-    .profile-detail{
-      h1{
-        margin-top:0;
+    h1{
+      margin-top:0;
+      display:inline-block;
+    }
+    .edit-alias{
+      margin-top:-10px;
+      margin-left:10px;
+    }
+    .follow-button-container{
+      display:inline-block;
+
+      margin-left:10px;
+      button{
+        margin-top:-18px;
       }
     }
   }

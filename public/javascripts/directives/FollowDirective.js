@@ -1,13 +1,13 @@
 //Main Menu Directive
 angular.module('App').directive('followButton', function ($location,Session,$http, $rootScope) {
   var followButton = {};
-  followButton.restrict = 'E';
+  followButton.restrict = 'A';
   followButton.scope = {
     aliasId:'&aliasId'
   };
 
 
-  followButton.template = '<button class="btn btn-{{followButtonName}} {{followButtonHide}}" ng-click="follow()">{{followButtonName}}</button>'
+  followButton.template = '<button class="btn follow-btn btn-{{followButtonName}} {{followButtonHide}}" ng-click="follow()">{{followButtonName}}</button>'
   followButton.link = function(scope, ele){
     scope.followButtonName = 'follow';
     scope.followButtonHide = '';
@@ -22,7 +22,7 @@ angular.module('App').directive('followButton', function ($location,Session,$htt
       } else if(!response){
         scope.followButtonName = 'follow'
       } else {
-        scope.followButtonName = 'unfollow'
+        scope.followButtonName = 'following'
       }
     }).error(function(){
       scope.followButtonName = 'error'
@@ -33,8 +33,8 @@ angular.module('App').directive('followButton', function ($location,Session,$htt
         if(res && res.error){
           $rootScope.alerts = res.error.message;
           scope.followButtonName = 'error'
-        } else if(res && res.status == 'followed') {
-          scope.followButtonName = 'unfollow'
+        } else if(res && res.status == 'following') {
+          scope.followButtonName = 'following'
         } else {
           scope.followButtonName = 'follow'
         }

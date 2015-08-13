@@ -44,7 +44,7 @@ router.post('/follow',function(req,res){
         if(!doc){
           Alias.addFollowing(decoded.data.alias._id,req.body.id,function(doc){
             if(doc){
-              return res.json({message:[{msg:'You successfully followed this one',type:'success'}],status:'followed'});
+              return res.json({message:[{msg:'You successfully followed this one',type:'success'}],status:'following'});
             } else {
               return res.json({error:{message:[{msg:'Something happened, please try again latter',type:'warning'}]}});
             }
@@ -52,7 +52,7 @@ router.post('/follow',function(req,res){
         } else {
           Alias.removeFollowing(decoded.data.alias._id,req.body.id,function(doc){
             if(doc){
-              return res.json({message:[{msg:'You successfully unfollowed this one',type:'success'}],status:'unfollowed'});
+              return res.json({message:[{msg:'You successfully unfollowed this one',type:'success'}],status:'follow'});
             } else {
               return res.json({error:{message:[{msg:'Something happened, please try again latter',type:'warning'}]}});
             }

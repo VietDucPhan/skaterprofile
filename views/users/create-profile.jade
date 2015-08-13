@@ -2,12 +2,13 @@ div.create-profile
   div.row
     div.col-sm-12
       h1 Create new profile
+      p Help us to build the largest skateboarder database!!!
   div.row
     div.col-sm-3
       div.list-group
-        a(ng-class="{active: createProfileData.type == 'skater'}",ng-click="changeSkaterType('skater')",href="#").list-group-item Create Skater Profile
+        a(ng-class="{active: newProfileData.type == 'skater'}",ng-click="changeSkaterType('skater')",href="#").list-group-item Create Skater Profile
           span(class="glyphicon glyphicon-chevron-right right") &nbsp
-        a(ng-class="{active: createProfileData.type == 'company'}",ng-click="changeSkaterType('company')",
+        a(ng-class="{active: newProfileData.type == 'company'}",ng-click="changeSkaterType('company')",
         href="#").list-group-item Create Company Profile
           span(class="glyphicon glyphicon-chevron-right right") &nbsp
     div(ng-include="createProfileTempUrl").col-sm-9

@@ -2929,20 +2929,20 @@ select[multiple].input-lg,
     color: #337ab7;
     background-color: #fff; }
 
-.btn-success {
+.btn-success, .follow-button-container button.btn-following {
   color: #fff;
   background-color: #5cb85c;
   border-color: #4cae4c; }
-  .btn-success:hover, .btn-success:focus, .btn-success.focus, .btn-success:active, .btn-success.active, .open > .btn-success.dropdown-toggle {
+  .btn-success:hover, .follow-button-container button.btn-following:hover, .btn-success:focus, .follow-button-container button.btn-following:focus, .btn-success.focus, .follow-button-container button.focus.btn-following, .btn-success:active, .follow-button-container button.btn-following:active, .btn-success.active, .follow-button-container button.active.btn-following, .open > .btn-success.dropdown-toggle, .follow-button-container .open > button.dropdown-toggle.btn-following {
     color: #fff;
     background-color: #449d44;
     border-color: #398439; }
-  .btn-success:active, .btn-success.active, .open > .btn-success.dropdown-toggle {
+  .btn-success:active, .follow-button-container button.btn-following:active, .btn-success.active, .follow-button-container button.active.btn-following, .open > .btn-success.dropdown-toggle, .follow-button-container .open > button.dropdown-toggle.btn-following {
     background-image: none; }
-  .btn-success.disabled, .btn-success.disabled:hover, .btn-success.disabled:focus, .btn-success.disabled.focus, .btn-success.disabled:active, .btn-success.disabled.active, .btn-success[disabled], .btn-success[disabled]:hover, .btn-success[disabled]:focus, .btn-success[disabled].focus, .btn-success[disabled]:active, .btn-success[disabled].active, fieldset[disabled] .btn-success, fieldset[disabled] .btn-success:hover, fieldset[disabled] .btn-success:focus, fieldset[disabled] .btn-success.focus, fieldset[disabled] .btn-success:active, fieldset[disabled] .btn-success.active {
+  .btn-success.disabled, .follow-button-container button.disabled.btn-following, .btn-success.disabled:hover, .follow-button-container button.disabled.btn-following:hover, .btn-success.disabled:focus, .follow-button-container button.disabled.btn-following:focus, .btn-success.disabled.focus, .follow-button-container button.disabled.focus.btn-following, .btn-success.disabled:active, .follow-button-container button.disabled.btn-following:active, .btn-success.disabled.active, .follow-button-container button.disabled.active.btn-following, .btn-success[disabled], .follow-button-container button[disabled].btn-following, .btn-success[disabled]:hover, .follow-button-container button[disabled].btn-following:hover, .btn-success[disabled]:focus, .follow-button-container button[disabled].btn-following:focus, .btn-success[disabled].focus, .follow-button-container button[disabled].focus.btn-following, .btn-success[disabled]:active, .follow-button-container button[disabled].btn-following:active, .btn-success[disabled].active, .follow-button-container button[disabled].active.btn-following, fieldset[disabled] .btn-success, fieldset[disabled] .follow-button-container button.btn-following, .follow-button-container fieldset[disabled] button.btn-following, fieldset[disabled] .btn-success:hover, fieldset[disabled] .follow-button-container button.btn-following:hover, .follow-button-container fieldset[disabled] button.btn-following:hover, fieldset[disabled] .btn-success:focus, fieldset[disabled] .follow-button-container button.btn-following:focus, .follow-button-container fieldset[disabled] button.btn-following:focus, fieldset[disabled] .btn-success.focus, fieldset[disabled] .follow-button-container button.focus.btn-following, .follow-button-container fieldset[disabled] button.focus.btn-following, fieldset[disabled] .btn-success:active, fieldset[disabled] .follow-button-container button.btn-following:active, .follow-button-container fieldset[disabled] button.btn-following:active, fieldset[disabled] .btn-success.active, fieldset[disabled] .follow-button-container button.active.btn-following, .follow-button-container fieldset[disabled] button.active.btn-following {
     background-color: #5cb85c;
     border-color: #4cae4c; }
-  .btn-success .badge {
+  .btn-success .badge, .follow-button-container button.btn-following .badge {
     color: #5cb85c;
     background-color: #fff; }
 
@@ -5655,6 +5655,11 @@ button.close {
 @media print {
   .hidden-print {
     display: none !important; } }
+body {
+  background-color: #f1f1f1; }
+  body h1 {
+    margin: 0; }
+
 .navbar-default .navbar-nav li a.btn {
   color: white;
   padding: 6px 12px; }
@@ -5715,8 +5720,27 @@ button.close {
 form .error {
   color: red; }
 
-.alias-page .profile-container .profile-detail h1 {
-  margin-top: 0; }
+.follow-button-container {
+  display: block; }
+  .follow-button-container button {
+    letter-spacing: 2px;
+    color: #4090db;
+    border: 1px solid #4090db;
+    background: none;
+    padding: 4px 8px;
+    font-size: 14px; }
+
+.alias-page .profile-container h1 {
+  margin-top: 0;
+  display: inline-block; }
+.alias-page .profile-container .edit-alias {
+  margin-top: -10px;
+  margin-left: 10px; }
+.alias-page .profile-container .follow-button-container {
+  display: inline-block;
+  margin-left: 10px; }
+  .alias-page .profile-container .follow-button-container button {
+    margin-top: -18px; }
 .alias-page .row-container {
   margin-bottom: 30px; }
   .alias-page .row-container .post-container {

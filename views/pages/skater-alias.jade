@@ -9,8 +9,13 @@ div.row.profile-container
         class="thumbnail img-responsive")
   div.col-sm-7
     h1 {{aliasPage.name}}
-    follow-button(alias-id="aliasPage._id")
-    h2 {{aliasPage.username}}
+    | &nbsp;
+    span(follow-button="" alias-id="aliasPage._id").follow-button-container
+    a(ng-if="editable",ng-href="/profile/{{aliasPage.username}}/edit" ,class="btn btn-default btn-xs glyphicon " +
+    "glyphicon-wrench" +
+    " " +
+    "edit-alias")
+
 div.row
   div.col-md-2
   div().col-md-8

@@ -105,6 +105,14 @@ UsersModel.updateProfilePicture = function (profileId,picture,callback){
   })
 }
 
+UsersModel.createNewProfile = function(data,callback){
+  AliasModel.createAlias(data,function(response){
+    //console.log(response);
+    return callback(response);
+  })
+};
+
+
 UsersModel.createProfile = function(data,callback){
   data.type = 'skater'
   AliasModel.createAlias(data,function(response){

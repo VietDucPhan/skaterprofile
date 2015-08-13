@@ -1,2 +1,45 @@
-div.create-skater
-  |skater
+div.row.create-skater.well
+  div.col-sm-12
+    form(novalidate,name="newProfileForm").form-horizontal.control-label-left
+      div(ng-if="!alias").form-group
+        label.col-md-2.control-label Create your own profile?:
+        div.col-md-10.btn-group
+          label(class="btn btn-primary",ng-model="newProfileData.isYourProfile",btn-radio="0") No
+          label(class="btn btn-primary",ng-model="newProfileData.isYourProfile",btn-radio="1") Yes
+      div.form-group
+        label.col-md-2.control-label Name:
+        div.col-md-10
+          input(type="text",ng-model="newProfileData.name",required).form-control
+      div.form-group
+        label.col-md-2.control-label Sex:
+        div.col-md-10.btn-group
+          label(class="btn btn-primary",ng-model="newProfileData.sex",btn-radio="0") Others
+          label(class="btn btn-primary",ng-model="newProfileData.sex",btn-radio="1") Male
+          label(class="btn btn-primary",ng-model="newProfileData.sex",btn-radio="2") Female
+      div.form-group
+        label.col-md-2.control-label Status:
+        div.col-md-10.btn-group
+          label(class="btn btn-primary",ng-model="newProfileData.status",btn-radio="0") skater
+          label(class="btn btn-primary",ng-model="newProfileData.status",btn-radio="1") amature skater
+          label(class="btn btn-primary",ng-model="newProfileData.status",btn-radio="2") Professional skater
+      div.form-group
+        label.col-md-2.control-label Stance:
+        div.col-md-10.btn-group
+          label(class="btn btn-primary",ng-model="newProfileData.stance",btn-radio="0") Goofy
+          label(class="btn btn-primary",ng-model="newProfileData.stance",btn-radio="1") Regular
+      div.form-group
+        label.col-md-2.control-label Bio:
+        div.col-md-10.btn-group
+          textarea(rows="5",ng-model="newProfileData.bio").form-control
+      div.form-group
+        label.col-md-2.control-label Who can post to this profile?:
+        div.col-md-10.btn-group
+          label(class="btn btn-primary",ng-model="newProfileData.config.public_posting",btn-radio="0") Only me
+          label(class="btn btn-primary",ng-model="newProfileData.config.public_posting",btn-radio="1") Anyone
+      div.form-group
+        label.col-md-2.control-label Who can edit this profile?:
+        div.col-md-10.btn-group
+          label(class="btn btn-primary",ng-model="newProfileData.config.public_editing",btn-radio="0") Only me
+          label(class="btn btn-primary",ng-model="newProfileData.config.public_editing",btn-radio="1") Anyone
+    hr
+    button(ng-click="newProfileSubmit(newProfileData)",ng-disabled="newProfileForm.$invalid").btn.btn-default Submit

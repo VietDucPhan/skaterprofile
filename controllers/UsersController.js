@@ -164,10 +164,38 @@ router.post('/upload-picture', function (req, res) {
     })
 })
 
+
 /**
  * get data from sign up page process save data
  */
-router.post('/create/profile', function (req, res) {
+router.post('/create/new-profile', function (req, res) {
+  Session.decode(req.token, function (decoded) {
+    if (decoded && decoded.data) {
+      req.body.managers = []
+      req.body.managers.push(new ObjectID(decoded.data._id))
+      console.log(req.body);
+      Users.createNewProfile(req.body, function (response) {
+        //console.log(response);
+        res.json(response);
+      })
+    } else {
+      res.json(
+        {
+          error: {
+            message: [
+              {msg: 'Please login', type: 'warning'}
+            ]
+          },
+          type: 'session_expired'
+        })
+    }
+  })
+});
+
+/**
+ * get data from sign up page process save data
+ */
+router.post('/create/your-profile', function (req, res) {
   Session.decode(req.token, function (decoded) {
     if (decoded) {
       req.body.admin = new ObjectID(decoded.data._id);
