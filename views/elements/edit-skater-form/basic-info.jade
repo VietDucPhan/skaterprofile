@@ -1,0 +1,48 @@
+form(novalidate,name="editProfileForm").form-horizontal.control-label-left
+  div(ng-if="editProfile._id").form-group
+    label.col-md-2.control-label Profile picture:
+    div.col-md-10
+      div.row
+        div.col-md-3
+          div(ng-show="uploader.isUploading").progress
+            div(,role="progressbar", aria-valuenow="0", aria-valuemin="0",
+            aria-valuemax="100",
+            ng-style="{'width': uploader.progress + '%' }",style="width:0%").progress-bar Uploading...
+          img(ng-if="editProfile.picture",ng-src="{{editProfile.picture.source}}",class="thumbnail " +
+          "img-responsive")
+          div(nv-file-drop="",uploader="uploader",class="well profile-uploader",ng-show="uploader.isHTML5 && !editProfile.picture.source")
+        div.col-md-6
+          label(for="change-profile",class="btn btn-default") Change picture
+        div.col-md-3
+      input(id="change-profile",class="ng-hide",ng-model="file",type="file",nv-file-select="",uploader="uploader")
+  div.form-group
+    label.col-md-2.control-label Name:
+    div.col-md-10
+      input(type="text",ng-model="editProfile.name",required).form-control
+  div.form-group
+    label.col-md-2.control-label Username:
+    div.col-md-10
+      input(type="text",ng-model="editProfile.username",required).form-control
+  div.form-group
+    label.col-md-2.control-label Sex:
+    div.col-md-10.btn-group
+      label(class="btn btn-primary",ng-model="editProfile.sex",btn-radio="0") Others
+      label(class="btn btn-primary",ng-model="editProfile.sex",btn-radio="1") Male
+      label(class="btn btn-primary",ng-model="editProfile.sex",btn-radio="2") Female
+  div.form-group
+    label.col-md-2.control-label Status:
+    div.col-md-10.btn-group
+      label(class="btn btn-primary",ng-model="editProfile.status",btn-radio="0") skater
+      label(class="btn btn-primary",ng-model="editProfile.status",btn-radio="1") amature skater
+      label(class="btn btn-primary",ng-model="editProfile.status",btn-radio="2") Professional skater
+  div.form-group
+    label.col-md-2.control-label Stance:
+    div.col-md-10.btn-group
+      label(class="btn btn-primary",ng-model="editProfile.stance",btn-radio="0") Goofy
+      label(class="btn btn-primary",ng-model="editProfile.stance",btn-radio="1") Regular
+  div.form-group
+    label.col-md-2.control-label Bio:
+    div.col-md-10.btn-group
+      textarea(rows="5",ng-model="editProfile.bio").form-control
+  hr
+  button(ng-click="editProfileSubmit(editProfile)",ng-disabled="editProfileForm.$invalid").btn.btn-default Save

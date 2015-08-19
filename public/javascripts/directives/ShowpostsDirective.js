@@ -36,7 +36,7 @@ angular.module('App').directive('showPosts', function ($http,$rootScope,$sce) {
         $rootScope.alerts = res.error.message;
       } else {
         scope.posts = res.response;
-        console.log(res.response);
+        //console.log(res.response);
       }
     })
   }

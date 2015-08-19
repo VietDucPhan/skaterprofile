@@ -61,7 +61,12 @@ var UploadVideoController = function($scope,$modalInstance,$http,$rootScope,$tim
   $scope.postVideo = function(data){
     if(youtube_pattern.test(data.video) || vimeo_pattern.test(data.video)){
       $http.post('/api/users/post-video',data).success(function(res){
-        $scope.popUpAlerts = res.response.message;
+        if(res && res.error){
+          $scope.popUpAlerts = res.error.message;
+        } else {
+          $scope.popUpAlerts = res.message;
+        }
+
 
         $timeout(function () {
           $scope.popUpAlerts.splice(0, 1);

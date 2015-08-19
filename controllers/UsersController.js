@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var Users = require('../models/UsersModel');
+var Alias = require('../models/AliasModel');
 var Auth = require('../lib/Auth');
 var Validate = require('../lib/Validate');
 var Session = require('../lib/Session');
@@ -59,7 +60,6 @@ router.post('/post-image',function(req,res){
                   if(databaseResponse && databaseResponse.error){
                     return res.json(databaseResponse)
                   }
-
                   return res.json({response:{message:[{msg:'Successfully upload photo',type:'success'}]}});
                 })
               } else {
@@ -79,18 +79,29 @@ router.post('/post-image',function(req,res){
 })
 
 router.post('/post-video',function(req,res){
+
   Session.decode(req.token, function (decoded) {
     if(decoded && !decoded.tokenExp){
       Validate.isVideo(req.body.video,function(flag,type){
         if(flag){
           Validate.getVideoId(req.body.video,type,function(videoId){
             if(videoId){
-              Users.postAVideo(decoded.data._id,{video_id:videoId,url:req.body.video,type:type,name:req.body.title},function(databaseResponse){
-                //console.log(databaseResponse)
+              var videoData = {
+                video_id:videoId,
+                url:req.body.video,
+                type:type,
+                name:req.body.title,
+                posted_by_user:decoded.data._id,
+                posted_to_alias:req.body.to_alias
+              };
+              if(decoded.data && decoded.data.alias && !videoData.posted_to_alias){
+                videoData.posted_by_alias = decoded.data.alias._id;
+              }
+              Users.postAVideo(videoData,function(databaseResponse){
                 if(databaseResponse && databaseResponse.error){
                   return res.json(databaseResponse)
                 } else {
-                  return res.json({response:{message:[{msg:'Successfully upload video',type:'success'}]}});
+                  return res.json({message:[{msg:'Successfully upload video',type:'success'}]});
                 }
               })
             } else {
@@ -109,61 +120,6 @@ router.post('/post-video',function(req,res){
   })
 })
 
-router.post('/upload-picture', function (req, res) {
-    Session.decode(req.token, function (decoded) {
-      if (decoded && decoded.data && decoded.data._id) {
-        Users.getProfileByAdmin(decoded.data._id, function (profileData) {
-          if (profileData) {
-            SNSApi.postAnImageToFB('file',profileData.username+" upload a profile picture", req, function (fbUploadResponse) {
-              if(fbUploadResponse && fbUploadResponse.error){
-                return res.json(fbUploadResponse);
-              }
-
-              SNSApi.getFBPostDetailByID(fbUploadResponse.id,function (fbPostResponse) {
-                  if (fbPostResponse && fbPostResponse.error) {
-                    return res.json(fbPostResponse);
-                  } else {
-                    Users.updateProfilePicture(profileData._id, fbPostResponse, function (rec) {
-                      decoded.data.alias.picture = rec
-                      Session.encode(decoded.data, function (encoded) {
-                        if(profileData.picture && profileData.picture.id){
-                          SNSApi.deleteAPostOnFB(profileData.picture.id,function(){
-
-                          })
-                        }
-
-                        return res.json({
-                          token: encoded,
-                          message: [{msg: 'Successfully update profile picture', type: 'success'}],
-                          success: true,
-                          response: decoded.data
-                        });
-                      })
-
-                    })
-                  }
-                })
-            });
-          } else {
-            return res.json({
-              error: {
-                message: [{msg: "Please create profile first", type: 'danger'}],
-                status: 'session_expired'
-              }
-            });
-          }
-        })
-      } else {
-        return res.json({
-          error: {
-            message: [{msg: "Session expired, Please login again", type: 'warning'}],
-            status: 'session_expired'
-          }
-        });
-      }
-    })
-})
-
 
 /**
  * get data from sign up page process save data
@@ -171,13 +127,30 @@ router.post('/upload-picture', function (req, res) {
 router.post('/create/new-profile', function (req, res) {
   Session.decode(req.token, function (decoded) {
     if (decoded && decoded.data) {
+      var respond = {};
       req.body.managers = []
       req.body.managers.push(new ObjectID(decoded.data._id))
-      console.log(req.body);
-      Users.createNewProfile(req.body, function (response) {
-        //console.log(response);
-        res.json(response);
+      Users.getProfileByAdmin(decoded.data._id,function(profile){
+        if(req.body.isYourProfile == 1 && !profile){
+          req.body.admin = new ObjectID(decoded.data._id);
+        }
+        delete req.body.isYourProfile;
+        Users.createNewProfile(req.body, function (response) {
+          if(req.body.admin && response && !response.error){
+            decoded.data.alias = response.response;
+            Session.encode(decoded.data,function(token){
+              respond.token = token;
+              respond.response = decoded.data;
+              console.log(decoded.data);
+              return res.json(respond);
+            })
+          } else {
+            return res.json(response);
+          }
+
+        })
       })
+
     } else {
       res.json(
         {
@@ -222,6 +195,7 @@ router.post('/create/your-profile', function (req, res) {
  */
 router.get('/profile', function (req, res) {
   Session.decode(req.token, function (decoded) {
+
     if (!decoded.tokenExp) {
       Users.getProfileByAdmin(decoded.data._id, function (data) {
         if (data) {

@@ -49,7 +49,7 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
         templateUrl: 'ang/users/edit-profile',
         controller: 'EditProfileController',
         data: {
-          requireLogin: false
+          requireLogin: true
         }
       }).
       when('/:user', {
@@ -222,7 +222,6 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
 
   $http.get('/api/alias/'+$routeParams.user).success(function(response){
     if(response && !response.error){
-      console.log($rootScope.alias);
       $scope.aliasPage = response.response;
       $scope.aliasPage.chuckedPosts = [];
       if($scope.aliasPage && $scope.aliasPage.posts){
@@ -240,7 +239,7 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
       $rootScope.alerts = response.error.message;
     }
   })
-}).controller('CreateProfileController',function($scope,$http,$rootScope,$window){
+}).controller('CreateProfileController',function($scope,$http,$rootScope,$window, Session){
   $scope.newProfileData = {
     type: 'skater',
     isYourProfile:0,
@@ -253,22 +252,82 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
     }
   }
 
-  $scope.createProfileTempUrl = '/ang/users/create-skater-form';
+  $scope.createProfileTempUrl = '/ang/elements/create-profile-form/create-skater-form';
   $scope.changeSkaterType = function(type){
     $scope.newProfileData.type = type;
-    $scope.createProfileTempUrl = '/ang/users/create-'+type+"-form";
+    $scope.createProfileTempUrl = '/ang/elements/create-profile-form/create-'+type+"-form";
   }
 
   $scope.newProfileSubmit = function(data){
     $http.post('/api/users/create/new-profile',data).success(function(res){
       if(res && res.error){
         $rootScope.alerts = res.error.message;
+      } else if(res && res.token) {
+        Session.set(res,function(){
+          $window.location.href = '/profile/'+res.response.alias.username+'/edit';
+        })
       } else {
-        $window.location.href = '/'+res.response.username+'/edit';
+        $window.location.href = '/profile/'+res.response.username+'/edit';
       }
     }).error(function(){
       $rootScope.alerts = [{msg:'Errors occured please try again latter',type:"danger"}]
     })
   }
 
+}).controller('EditProfileController',function($scope,$http,$routeParams,$rootScope,FileUploader,$window, Session){
+  $scope.editProfileTemplate = '/ang/users/edit-skater'
+
+  $http.get('/api/alias/'+$routeParams.account).success(function(response){
+    if(response && response.error){
+      $rootScope.alerts = response.error.message
+    } else {
+      var uploader = $scope.uploader = new FileUploader({
+        url: '/api/alias/change-picture',
+        autoUpload: true,
+        removeAfterUpload: true
+      });
+
+      uploader.onBeforeUploadItem = function (item) {
+        item.headers.token = Session.get();
+        item.headers.alias_id = response.response._id;
+        //console.info('onBeforeUploadItem', item);
+      };
+      uploader.onSuccessItem = function (fileItem, response, status, headers) {
+        if (response && response.error) {
+          $rootScope.alerts = response.error.message;
+        } else {
+          if(response.response && response.response.alias){
+            $rootScope.alerts = response.response.message;
+            $scope.editProfile.picture = response.response.alias.picture
+          }
+          if($rootScope.user && $scope.editProfile.admin == $rootScope.user._id){
+            Session.set(response, function () {
+
+            })
+          }
+        }
+      };
+
+
+      if($rootScope.user && ((response.response.managers && response.response.managers.indexOf($rootScope.user._id) != -1) || (response.response.config && response.response.config.public_editing == 1))){
+        $scope.edit_skater = '/ang/elements/edit-skater-form/basic-info'
+        $scope.editProfile = response.response;
+        $scope.isOwner = $rootScope.user._id == response.response.admin;
+
+        $scope.editProfileSubmit = function (profile) {
+          $http.post('/api/alias/edit-profile', profile).success(function (data) {
+            if (data.error) {
+              $rootScope.alerts = data.error.message;
+            } else {
+              $rootScope.alerts = data.message;
+              $window.location.href = '/profile/'+data.response.username+'/edit';
+            }
+          })
+        }
+      } else {
+        $window.location.href = '/'
+      }
+    }
+
+  })
 })

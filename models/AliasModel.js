@@ -22,6 +22,28 @@ AliasModel.getAlias = function(condition, callback){
   });
 }
 
+AliasModel.isEditable = function(aliasId, userId, callback){
+  var editable = false;
+  var Alias = AliasModel.getCollection();
+  Alias.findOne({_id:new ObjectID(aliasId)},function(err,doc){
+    if(doc && (doc.managers[0].toString() === userId.toString() || (doc.config && doc.config.public_editing == 1))){
+      editable = true;
+    }
+    return callback(editable);
+  });
+}
+
+AliasModel.isPostable = function(aliasId, userId, callback){
+  var editable = false;
+  var Alias = AliasModel.getCollection();
+  Alias.findOne({_id:new ObjectID(aliasId)},function(err,doc){
+    if(doc && userId && (doc.managers[0].toString() === userId.toString() || (doc.config && doc.config.public_editing == 1))){
+      editable = true;
+    }
+    return callback(editable);
+  });
+}
+
 AliasModel.toggleFollow = function(actionSenderId,actionTakerId,callback){
   async.waterfall([function(callback){
 
@@ -126,7 +148,6 @@ AliasModel.createAlias = function (data, callback) {
     if(!data.username){
       data.username = Validate.urlFriendly(data.name);
     }
-    console.log(data);
     Validate.isValidUsername(data.username, function (flag) {
       if (!flag) {
         callback(true,{msg:'Username is not valid, please try again',type:'danger'})

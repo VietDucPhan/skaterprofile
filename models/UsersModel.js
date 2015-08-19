@@ -7,18 +7,19 @@ var Email = require('../lib/Email');
 var async = require('async');
 var Auth = require('../lib/Auth');
 var AliasModel = require('./AliasModel')
+var PostsModel = require('./PostsModel');
 var ObjectID = require('mongodb').ObjectID;
 var bcrypt = require('bcrypt');
 
 var UsersModel = module.exports = {};
 
-UsersModel.getCollection = function(){
+UsersModel.getCollection = function () {
   return AppModel.db.collection('users');
 };
 
-UsersModel.getProfileByAdmin = function(adminId,callback){
-  AliasModel.getAlias({"admin":new ObjectID(adminId)},function(response){
-    if(response){
+UsersModel.getProfileByAdmin = function (adminId, callback) {
+  AliasModel.getAlias({"admin": new ObjectID(adminId)}, function (response) {
+    if (response) {
       return callback(response);
     } else {
       return callback(false);
@@ -27,243 +28,328 @@ UsersModel.getProfileByAdmin = function(adminId,callback){
   })
 };
 
-UsersModel.change_password = function(id,currPass,newPass,newPass2,callback){
-  var Users = UsersModel.getCollection();
-  Users.findOne({_id:new ObjectID(id)},function(err,res){
-    if(res){
-      if(newPass !== newPass2){
-        return callback({error:{message:[{msg:'Your passwords not matched',type:'danger'}]}});
+UsersModel.getProfileByAliasId = function (AliasId, callback) {
+  AliasModel.getAlias({"_id": new ObjectID(AliasId)}, function (response) {
+    if (response) {
+      return callback(response);
+    } else {
+      return callback(false);
+    }
+
+  })
+};
+
+UsersModel.getAllUserDataByUserId = function (UserId, callback) {
+  var error = [];
+  var users = AppModel.db.collection('users');
+  var alias = AppModel.db.collection('alias');
+  async.waterfall([function (callback) {
+    users.findOne({_id: new ObjectID(UserId)}, function (err, rec) {
+      if (rec == undefined) {
+        error.push({msg: 'User not found!', type: 'warning'});
+        callback(true, error);
       } else {
-        Validate.isValidPassword(newPass, function(flag){
-          if(flag){
-            bcrypt.compare(currPass, res.password,  function(err, res) {
-              if(!err){
-                Auth.generatePassword(newPass,function(err,password){
-                  Users.update({_id:new ObjectID(id)},{$set:{password:password}},function(err){
-                    if(!err){
-                      return callback({message:[{msg:'congratulation, you suscessfully updated your password',type:'success'}]});
+        delete rec.password;
+        delete rec.activate
+        callback(null, error, rec);
+      }
+    });
+  },
+    function (error, rec, callback) {
+
+      alias.findOne({admin: new ObjectID(rec._id)}, function (err, response) {
+
+        if (response) {
+          rec.alias = response;
+          callback(null, error, rec);
+        } else {
+          error.push({msg: 'Alias not found!', type: 'warning'});
+          callback(true, error, rec);
+        }
+
+      })
+    }
+  ], function (err, errorMessage, rec) {
+    if (err) {
+      return callback({error: {message: errorMessage}});
+    } else {
+      return callback(rec);
+    }
+  })
+
+};
+
+UsersModel.change_password = function (id, currPass, newPass, newPass2, callback) {
+  var Users = UsersModel.getCollection();
+  Users.findOne({_id: new ObjectID(id)}, function (err, res) {
+    if (res) {
+      if (newPass !== newPass2) {
+        return callback({error: {message: [{msg: 'Your passwords not matched', type: 'danger'}]}});
+      } else {
+        Validate.isValidPassword(newPass, function (flag) {
+          if (flag) {
+            bcrypt.compare(currPass, res.password, function (err, res) {
+              if (!err) {
+                Auth.generatePassword(newPass, function (err, password) {
+                  Users.update({_id: new ObjectID(id)}, {$set: {password: password}}, function (err) {
+                    if (!err) {
+                      return callback({
+                        message: [{
+                          msg: 'congratulation, you suscessfully updated your password',
+                          type: 'success'
+                        }]
+                      });
                     } else {
-                      return callback({error:{message:[{msg:'Something went wrong please try again',type:'danger'}]}});
+                      return callback({
+                        error: {
+                          message: [{
+                            msg: 'Something went wrong please try again',
+                            type: 'danger'
+                          }]
+                        }
+                      });
                     }
                   })
                 })
 
               } else {
-                callback({error:{message:[{msg:'Not your password',type:'danger'}]}});
+                callback({error: {message: [{msg: 'Not your password', type: 'danger'}]}});
               }
             });
           } else {
-            return callback({error:{message:[{msg:'Password must greater than 6 and less than 24 characters',type:'danger'}]}});
+            return callback({
+              error: {
+                message: [{
+                  msg: 'Password must greater than 6 and less than 24 characters',
+                  type: 'danger'
+                }]
+              }
+            });
           }
         })
       }
 
     } else {
-      return callback({error:{message:[{msg:'Something went wrong please try again',type:'danger'}]}});
+      return callback({error: {message: [{msg: 'Something went wrong please try again', type: 'danger'}]}});
     }
   })
 };
 
-UsersModel.postAPhoto = function(userId,photoData,callback){
-  this.getProfileByAdmin(userId,function(res){
-    if(res){
-      AliasModel.addAPost(res,photoData,function(response){
-        if(response){
+UsersModel.postAPhoto = function (userId, photoData, callback) {
+  this.getProfileByAdmin(userId, function (res) {
+    if (res) {
+      AliasModel.addAPost(res, photoData, function (response) {
+        if (response) {
           return callback(response)
         } else {
-          return callback({error:{message:[{msg:'Something went wrong please try again',type:'danger'}]}})
+          return callback({error: {message: [{msg: 'Something went wrong please try again', type: 'danger'}]}})
         }
       })
     } else {
-      return callback({error:{message:[{msg:'Please create a profile first',type:'danger'}]}})
+      return callback({error: {message: [{msg: 'Please create a profile first', type: 'danger'}]}})
     }
   })
 }
 
-UsersModel.postAVideo = function(userId,videoData,callback){
-  this.getProfileByAdmin(userId,function(responseProfile){
-    if(responseProfile){
-      AliasModel.addAPost(responseProfile,videoData,function(response){
-        if(response){
-          return callback(response)
+UsersModel.postAVideo = function (videoData, callback) {
+  if (!videoData.posted_to_alias) {
+    videoData.posted_to_alias = videoData.posted_by_user
+  }
+  this.getProfileByAdmin(videoData.posted_to_alias, function (res) {
+    if (res) {
+      videoData.posted_to_alias = res._id
+      AliasModel.isPostable(res._id, videoData.posted_by_user, function (isPostable) {
+        if (isPostable) {
+          PostsModel.save(videoData, function (response) {
+            if (response) {
+              return callback(response)
+            } else {
+              return callback({error: {message: [{msg: 'Something went wrong please try agin', type: 'danger'}]}})
+            }
+          })
         } else {
-          return callback({error:{message:[{msg:'Something went wrong please try agin',type:'danger'}]}})
+          return callback({error: {message: [{msg: 'You are not allowed to post to this profile', type: 'danger'}]}})
         }
       })
     } else {
-      return callback({error:{message:[{msg:'Please create a profile first',type:'danger'}]}})
+      return callback({error: {message: [{msg: 'An error occurs please try again', type: 'danger'}]}})
     }
   })
 }
 
-UsersModel.updateProfilePicture = function (profileId,picture,callback){
-  AliasModel.updateProfile({_id:new ObjectID(profileId)},{picture:picture},function (rec){
-    if(typeof callback == 'function'){
+UsersModel.updateProfilePicture = function (profileId, picture, callback) {
+  AliasModel.updateProfile({_id: new ObjectID(profileId)}, {picture: picture}, function (rec) {
+    if (typeof callback == 'function') {
       return callback(rec.value.picture);
     }
     return rec;
   })
 }
 
-UsersModel.createNewProfile = function(data,callback){
-  AliasModel.createAlias(data,function(response){
+UsersModel.createNewProfile = function (data, callback) {
+  AliasModel.createAlias(data, function (response) {
     //console.log(response);
     return callback(response);
   })
 };
 
 
-UsersModel.createProfile = function(data,callback){
+UsersModel.createProfile = function (data, callback) {
   data.type = 'skater'
-  AliasModel.createAlias(data,function(response){
+  AliasModel.createAlias(data, function (response) {
     //console.log(response);
     return callback(response);
   })
 };
 
 
-UsersModel.addNewUser = function(data, callback){
+UsersModel.addNewUser = function (data, callback) {
   var users = this.getCollection();
-  Validate.sanitizeUsers(data,function(err,error, res){
+  Validate.sanitizeUsers(data, function (err, error, res) {
 
-    if(!err){
+    if (!err) {
       //store and delete raw password to use latter
       var password = res.raw_password;
       delete res.raw_password;
       res.activate = AppModel.guid();
-      users.insert(res,function(err, rec){
+      users.insert(res, function (err, rec) {
         //email data to send to register user
         var emailData = {
-          template:'confirm',
-          subject:'Welcome to Skaterprofile',
-          password:password,
-          email:rec.ops[0].email,
+          template: 'confirm',
+          subject: 'Welcome to Skaterprofile',
+          password: password,
+          email: rec.ops[0].email,
           activate_url: data.domain + '/users/activate/' + rec.ops[0].activate
         }
 
-        Email.sendEmail(emailData,function(err){
-          if(typeof callback == 'function'){
+        Email.sendEmail(emailData, function (err) {
+          if (typeof callback == 'function') {
             return callback(false);
           }
         });
       });
     } else {
-      return callback(err,error);
+      return callback(err, error);
     }
 
   });
 
 };
 
-UsersModel.addFacebookUser = function(data,callback){
+UsersModel.addFacebookUser = function (data, callback) {
   var users = this.getCollection();
-  users.insert(data,function(err,res){
-    if(!err){
+  users.insert(data, function (err, res) {
+    if (!err) {
 
     } else {
-      return callback([{msg:"Could not login, please remove our app on facebook and login again",type:'warning'}]);
+      return callback([{msg: "Could not login, please remove our app on facebook and login again", type: 'warning'}]);
     }
 
   });
 }
 
-UsersModel.resetPassByRecoveryCode = function(data, callback){
+UsersModel.resetPassByRecoveryCode = function (data, callback) {
   var date = new Date();
   var users = this.getCollection();
   date.setDate(date.getDate());
   var currentDate = new Date(date.toISOString());
   var error = [];
   async.waterfall([
-      function(callback){
-        Validate.isValidPassword(data.password,function(flag,password){
-          if(flag){
-            callback(null,error,password);
-          } else {
-            error.push('Please enter a valid password');
-            callback(true,error)
-          }
-        })
-      },
-      function(error, password, callback){
-        if(password == data.repassword){
+    function (callback) {
+      Validate.isValidPassword(data.password, function (flag, password) {
+        if (flag) {
           callback(null, error, password);
         } else {
-          error.push("These passwords don't match, Please try again ");
-          callback(true,error);
+          error.push('Please enter a valid password');
+          callback(true, error)
         }
-      },
-      function(error, password, callback){
-        Auth.generatePassword(password,function(err,hash){
-          callback(null,error,hash)
-        });
-      },
-      function(error,hash,callback){
-        users.update({'recovery.code':data.code,'recovery.expire':{$gte:currentDate}},{$set:{password:hash,recovery:{}}},function(err,rec){
-          if(rec.result.n == 0){
-            error.push('Your request code expired, Please request a new one');
-            callback(true,error);
-          } else {
-            callback(null,error);
-          }
-
-        })
+      })
+    },
+    function (error, password, callback) {
+      if (password == data.repassword) {
+        callback(null, error, password);
+      } else {
+        error.push("These passwords don't match, Please try again ");
+        callback(true, error);
       }
-  ],function(err,error){
-    if(typeof callback == 'function'){
+    },
+    function (error, password, callback) {
+      Auth.generatePassword(password, function (err, hash) {
+        callback(null, error, hash)
+      });
+    },
+    function (error, hash, callback) {
+      users.update({'recovery.code': data.code, 'recovery.expire': {$gte: currentDate}}, {
+        $set: {
+          password: hash,
+          recovery: {}
+        }
+      }, function (err, rec) {
+        if (rec.result.n == 0) {
+          error.push('Your request code expired, Please request a new one');
+          callback(true, error);
+        } else {
+          callback(null, error);
+        }
+
+      })
+    }
+  ], function (err, error) {
+    if (typeof callback == 'function') {
       return callback(error);
     }
   })
 
 }
 
-UsersModel.requestRecoveryCode = function(data,callback){
+UsersModel.requestRecoveryCode = function (data, callback) {
   var date = new Date(),
-      users = this.getCollection(),
-      error = [],
-      numberOfDaysToAdd = 1;//could not reset password after 1 day
+    users = this.getCollection(),
+    error = [],
+    numberOfDaysToAdd = 1;//could not reset password after 1 day
 
   date.setDate(date.getDate() + numberOfDaysToAdd);
   var expirationDate = new Date(date.toISOString());
   var resetCode = AppModel.guid();
   async.waterfall([
-      function(callback){
-        Validate.isEmail(data.email,function(flag,email){
-          if(!flag){
-            error.push('Email is not valid');
-            callback(true,error,email);
+    function (callback) {
+      Validate.isEmail(data.email, function (flag, email) {
+        if (!flag) {
+          error.push('Email is not valid');
+          callback(true, error, email);
+        } else {
+          callback(null, error, email);
+        }
+
+      });
+    },
+    function (err, email, callback) {
+      users.update(
+        {email: email},
+        {$set: {recovery: {code: resetCode, expire: expirationDate}}},
+        function (err, count) {
+          if (count.result.n == 0) {
+            error.push('Account not found');
+            callback(true, error);
           } else {
-            callback(null,error,email);
+            callback(null, email, resetCode);
           }
 
-        });
-      },
-      function(err,email,callback){
-        users.update(
-            {email:email},
-            {$set:{recovery:{code:resetCode,expire:expirationDate}}},
-            function(err,count){
-              if(count.result.n == 0){
-                error.push('Account not found');
-                callback(true,error);
-              }else {
-                callback(null, email, resetCode);
-              }
-
-            }
-        );
-      },
-      function(email, resetCode, callback){
-        var emailData = {
-          email:email,
-          recovery_url:data.domain + '/users/email-reset-password/' +  resetCode,
-          template:"recovery",
-          subject:"Password Recovery"
-        };
-        Email.sendEmail(emailData,function(err,message){
-          callback(null,error);
-        });
-      }
-  ],function(err,error){
+        }
+      );
+    },
+    function (email, resetCode, callback) {
+      var emailData = {
+        email: email,
+        recovery_url: data.domain + '/users/email-reset-password/' + resetCode,
+        template: "recovery",
+        subject: "Password Recovery"
+      };
+      Email.sendEmail(emailData, function (err, message) {
+        callback(null, error);
+      });
+    }
+  ], function (err, error) {
     callback(error);
     //users.update(
     //    {email:email},
@@ -272,12 +358,12 @@ UsersModel.requestRecoveryCode = function(data,callback){
   });
 }
 
-UsersModel.update = function(criteria,update,callback){
+UsersModel.update = function (criteria, update, callback) {
   var users = this.getCollection();
-  if(typeof criteria == 'object' && typeof update == 'object'){
-    users.update(criteria,update, function(err,rec){
-      if(typeof callback == 'function'){
-        return callback(err,rec);
+  if (typeof criteria == 'object' && typeof update == 'object') {
+    users.update(criteria, update, function (err, rec) {
+      if (typeof callback == 'function') {
+        return callback(err, rec);
       }
       return err;
     });

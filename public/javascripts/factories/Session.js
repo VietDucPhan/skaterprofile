@@ -6,10 +6,12 @@ angular.module('App').factory('Session', function ($http, $interval, $rootScope)
     // $rootScope.$apply(function () {
     localStorage.setItem('token', data.token);
     $http.defaults.headers.common.token = data.token;
+    console.info('Logged in user:',data.response);
+    if(data && data.response){
+      $rootScope.user = data.response;
+    }
     if(data && data.response && data.response.alias){
       $rootScope.alias = data.response.alias;
-      delete data.response.alias;
-      $rootScope.user = data.response;
     }
 
     if (typeof callback == 'function') {
