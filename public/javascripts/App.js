@@ -52,6 +52,13 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
           requireLogin: true
         }
       }).
+      when('/post/:id', {
+        templateUrl: 'ang/pages/post-detail',
+        controller: 'PostdetailController',
+        data: {
+          requireLogin: false
+        }
+      }).
       when('/:user', {
         templateUrl: 'ang/pages/alias',
         controller: 'ProfileController',
@@ -330,4 +337,6 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
     }
 
   })
+}).controller('PostdetailController',function($scope,$http,$routeParams,$rootScope,FileUploader,$window, Session){
+
 })

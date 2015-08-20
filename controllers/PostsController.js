@@ -5,7 +5,8 @@ var PostsModel = require('../models/PostsModel')
 
 
 router.post('/get',function(req,res){
-  PostsModel.getAllPosts(function(data){
+  console.log(req.body);
+  PostsModel.getAllPostsByCondition(req.body,function(data){
     if(data){
       return res.json({response:data});
     } else {

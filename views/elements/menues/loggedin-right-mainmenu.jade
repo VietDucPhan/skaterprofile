@@ -16,7 +16,7 @@ li(dropdown="").dropdown
     img(ng-if="alias.picture",ng-src="{{alias.picture.source}}")
   ul(role="menu").dropdown-menu
     li
-      a(ng-href="/{{alias.username || 'users/setting/your-profile'}}") {{!alias.type ? 'Create Profile':alias.username}}
+      a(ng-href="/{{alias.username || 'users/create-profile'}}") {{!alias.type ? 'Create Profile':alias.username}}
     li.divider
     li
       a(href="/users/setting/manage-profiles") Manage Profiles
@@ -24,6 +24,6 @@ li(dropdown="").dropdown
       a(href="/users/create-profile") Create Profile
     li.divider
     li
-      a(href="/users/setting/your-profile") Setting
+      a(href="/users/setting/change-password") Setting
     li
       a(ng-click="logout()",href="#") Logout

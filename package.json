@@ -28,7 +28,8 @@
     "request": "2.9.x",
     "crypto": "0.0.3",
     "request": "2.60.0",
-    "multiparty":"4.1.2"
+    "multiparty":"4.1.2",
+    "cheerio":"0.19.0"
   },
   "engines": {
     "node": "0.12.2"

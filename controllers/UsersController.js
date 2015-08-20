@@ -10,7 +10,7 @@ var ObjectID = require('mongodb').ObjectID;
 var path = require('path');
 var request = require('request');
 var SNSApi = require('../lib/SNSApi');
-
+var cheerio = require('cheerio')
 /**
  * get data from sign up page process save data
  */
@@ -45,32 +45,59 @@ router.post('/change-password', function (req, res) {
 router.post('/post-image',function(req,res){
   Session.decode(req.token, function (decoded) {
     if(decoded && !decoded.tokenExp){
-      var msg = req.headers.msg ? req.headers.msg : 'Untitle';
-      SNSApi.postAnImageToFB('file',msg, req, function (fbUploadResponse) {
-        if(fbUploadResponse && fbUploadResponse.error){
-          console.log(fbUploadResponse);
-          return res.json(fbUploadResponse);
-        } else {
-          SNSApi.getFBPostDetailByID(fbUploadResponse.id,function (fbPostResponse) {
-            if (fbPostResponse && fbPostResponse.error) {
-              return res.json(fbPostResponse);
-            } else {
-              if(decoded && decoded.data && decoded.data._id){
-                Users.postAPhoto(decoded.data._id,fbPostResponse,function(databaseResponse){
-                  if(databaseResponse && databaseResponse.error){
-                    return res.json(databaseResponse)
-                  }
-                  return res.json({response:{message:[{msg:'Successfully upload photo',type:'success'}]}});
-                })
-              } else {
-                return res.json({error:{message:[{msg:'An unexpected error happened, please try again latter',type:'warning'}],
-                  status: 'session_expired'}})
-              }
 
+      var msg = req.headers.msg ? req.headers.msg : 'Untitle';
+      var to_alias = req.headers.to_alias ? new ObjectID(req.headers.to_alias) : null;
+      var by_user = new ObjectID(decoded.data._id);
+      var by_alias = null;
+      if(decoded.data && decoded.data.alias){
+        by_alias = new ObjectID(decoded.data.alias._id);
+      }
+      if(!to_alias){
+        to_alias = by_user;
+      }
+      Users.getProfileByAdmin(to_alias,function(profile){
+        if(profile){
+          to_alias = profile._id;
+          Alias.isPostable(to_alias, by_user, function(isPostable){
+            if (isPostable) {
+              SNSApi.postAnImageToFB('file',msg, req, function (fbUploadResponse) {
+                if(fbUploadResponse && fbUploadResponse.error){
+                  return res.json(fbUploadResponse);
+                } else {
+                  SNSApi.getFBPostDetailByID(fbUploadResponse.id,function (fbPostResponse) {
+                    if (fbPostResponse && fbPostResponse.error) {
+                      return res.json(fbPostResponse);
+                    } else {
+                      if(decoded && decoded.data && decoded.data._id){
+                        fbPostResponse.posted_by_user = by_user;
+                        fbPostResponse.posted_to_alias = to_alias;
+                        fbPostResponse.posted_by_alias = by_alias;
+                        Users.postAPhoto(fbPostResponse,function(databaseResponse){
+                          if(databaseResponse && databaseResponse.error){
+                            return res.json(databaseResponse)
+                          }
+                          return res.json({response:{message:[{msg:'Successfully upload photo',type:'success'}]}});
+                        })
+                      } else {
+                        return res.json({error:{message:[{msg:'An unexpected error happened, please try again latter',type:'warning'}],
+                          status: 'session_expired'}})
+                      }
+
+                    }
+                  })
+                }
+              })
+            } else {
+              return callback({error: {message: [{msg: 'You are not allowed to post to this profile', type: 'danger'}]}})
             }
           })
+        } else {
+          return callback({error: {message: [{msg: 'We could not find the profile, you are posting to, please try again latter', type: 'danger'}]}})
         }
       })
+
+
     } else {
       return res.json({error:{message:[{msg:'Session expired, please login again',type:'warning'}],
         status: 'session_expired'}})
@@ -84,18 +111,20 @@ router.post('/post-video',function(req,res){
     if(decoded && !decoded.tokenExp){
       Validate.isVideo(req.body.video,function(flag,type){
         if(flag){
-          Validate.getVideoId(req.body.video,type,function(videoId){
+          Validate.getVideoId(req.body.video,type,function(videoId,videoImage){
+            var to_alias = req.body.to_alias ? new ObjectID(req.body.to_alias) : null;
             if(videoId){
               var videoData = {
                 video_id:videoId,
                 url:req.body.video,
                 type:type,
                 name:req.body.title,
-                posted_by_user:decoded.data._id,
-                posted_to_alias:req.body.to_alias
+                posted_by_user:new ObjectID(decoded.data._id),
+                posted_to_alias:to_alias,
+                source:videoImage
               };
-              if(decoded.data && decoded.data.alias && !videoData.posted_to_alias){
-                videoData.posted_by_alias = decoded.data.alias._id;
+              if(decoded.data && decoded.data.alias){
+                videoData.posted_by_alias = new ObjectID(decoded.data.alias._id);
               }
               Users.postAVideo(videoData,function(databaseResponse){
                 if(databaseResponse && databaseResponse.error){

@@ -5749,10 +5749,26 @@ form .error {
       max-width: 100%;
       display: inline-block; }
 
-.show-posts-container .show-posts-detail h2 a {
+.show-posts-detail .post-image-container .video-icon {
+  font-size: 51px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -25px;
+  color: white;
+  opacity: 0;
+  -webkit-transition: opacity .2s ease-out;
+  transition: opacity .2s ease-out;
+  -webkit-transition-delay: .1s;
+  transition-delay: .1s; }
+.show-posts-detail .post-image-container:hover .video-icon {
+  opacity: 1; }
+.show-posts-detail .post-image-container {
+  display: block; }
+.show-posts-detail h2 a {
   color: #333333;
   text-decoration: none; }
-  .show-posts-container .show-posts-detail h2 a:hover {
+  .show-posts-detail h2 a:hover {
     color: #337ab7; }
 
 /*# sourceMappingURL=skaterprofile.css.map */

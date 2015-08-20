@@ -17,8 +17,13 @@ UsersModel.getCollection = function () {
   return AppModel.db.collection('users');
 };
 
-UsersModel.getProfileByAdmin = function (adminId, callback) {
-  AliasModel.getAlias({"admin": new ObjectID(adminId)}, function (response) {
+UsersModel.getProfileByAdmin = function (id, callback) {
+  AliasModel.getAlias({
+    $or: [
+      {"admin": new ObjectID(id)},
+      {"_id": new ObjectID(id)}
+    ]
+  }, function (response) {
     if (response) {
       return callback(response);
     } else {
@@ -61,12 +66,9 @@ UsersModel.getAllUserDataByUserId = function (UserId, callback) {
 
         if (response) {
           rec.alias = response;
-          callback(null, error, rec);
-        } else {
-          error.push({msg: 'Alias not found!', type: 'warning'});
-          callback(true, error, rec);
-        }
 
+        }
+        callback(null, error, rec);
       })
     }
   ], function (err, errorMessage, rec) {
@@ -135,18 +137,12 @@ UsersModel.change_password = function (id, currPass, newPass, newPass2, callback
   })
 };
 
-UsersModel.postAPhoto = function (userId, photoData, callback) {
-  this.getProfileByAdmin(userId, function (res) {
-    if (res) {
-      AliasModel.addAPost(res, photoData, function (response) {
-        if (response) {
-          return callback(response)
-        } else {
-          return callback({error: {message: [{msg: 'Something went wrong please try again', type: 'danger'}]}})
-        }
-      })
+UsersModel.postAPhoto = function (photoData, callback) {
+  PostsModel.save(photoData, function (response) {
+    if (response) {
+      return callback(response)
     } else {
-      return callback({error: {message: [{msg: 'Please create a profile first', type: 'danger'}]}})
+      return callback({error: {message: [{msg: 'Something went wrong please try again', type: 'danger'}]}})
     }
   })
 }
@@ -172,7 +168,14 @@ UsersModel.postAVideo = function (videoData, callback) {
         }
       })
     } else {
-      return callback({error: {message: [{msg: 'An error occurs please try again', type: 'danger'}]}})
+      return callback({
+        error: {
+          message: [{
+            msg: 'We could not find the profile, you are posting to, please try again latter',
+            type: 'danger'
+          }]
+        }
+      })
     }
   })
 }

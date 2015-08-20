@@ -1,22 +1,9 @@
 //
    Created by Administrator on 8/5/2015.
 div(ng-repeat="post in posts",class="col-sm-{{postClass}}").show-posts-detail
-  div(class="photo",ng-if="post.type == 'facebook'")
+  div(class="photo")
     h2
-      a(href="/post/detail/{{post._id}}") {{post.name}}
-    a(href="/post/detail/{{post._id}}")
+      a(href="/post/{{post._id}}") {{post.name}}
+    a(href="/post/{{post._id}}",class="post-image-container")
+      span(ng-if="post.type != 'facebook'", class="glyphicon glyphicon-play video-icon")
       img(ng-src="{{post.source}}",class="post-image img-responsive")
-
-  div(class="video youtube",ng-if="post.type == 'youtube'")
-    h2
-      a(href="/post/detail/{{post._id}}") {{post.name}}
-    div(class="embed-responsive embed-responsive-16by9")
-      iframe(ng-if="post.type == 'youtube'",class="embed-responsive-item", ng-src="{{youtube(post.video_id)}}",
-      frameborder="0")
-
-  div(class="video vimeo",ng-if="post.type == 'vimeo'")
-    h2
-      a(href="/post/detail/{{post._id}}") {{post.name}}
-    div(class="embed-responsive embed-responsive-16by9")
-      iframe(ng-if="post.type == 'vimeo'",class="embed-responsive-item", ng-src="{{vimeo(post" +
-      ".video_id)}}",frameborder="0", webkitallowfullscreen="", mozallowfullscreen="", allowfullscreen="")

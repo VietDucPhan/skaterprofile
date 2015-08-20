@@ -13,9 +13,13 @@ var ObjectID = require('mongodb').ObjectID;
 
 var PostsModel = module.exports = {};
 
-PostsModel.getAllPosts = function(callback){
+PostsModel.getAllPostsByCondition = function(condition,callback){
   var Posts = AppModel.db.collection('posts');
-  var curs = Posts.find().toArray(function(err, documents) {
+  var query = {}
+  if(condition.aliasId){
+    query.posted_to_alias = new ObjectID(condition.aliasId)
+  }
+  var curs = Posts.find({$query:query,$orderby:{ _id: -1 }}).toArray(function(err, documents) {
     return callback(documents)
   });
   //Alias.aggregate([
