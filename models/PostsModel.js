@@ -35,6 +35,24 @@ PostsModel.getAllPostsByCondition = function(condition,callback){
   //})
 }
 
+PostsModel.getPost = function(id,callback){
+  var Posts = AppModel.db.collection('posts');
+  Posts.findOne({_id:new ObjectID(id)},function(err,doc){
+    return callback(doc)
+  })
+  //Alias.aggregate([
+  //
+  //  {$group:{push_posts:{$push:'$posts'},
+  //    _id:"$_id"}},
+  //  { "$unwind": "$push_posts" },
+  //  { "$unwind": "$push_posts" },
+  //  {$project:{_id:1,push_posts:1}},
+  //  {$sort:{'push_posts.created_time':-1}}
+  //],{},function(err,cur){
+  //  return callback(cur)
+  //})
+}
+
 PostsModel.save = function(data, callback){
   var Posts = AppModel.db.collection('posts');
   data.created_time = new Date();

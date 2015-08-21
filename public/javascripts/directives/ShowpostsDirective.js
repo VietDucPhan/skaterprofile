@@ -28,7 +28,7 @@ angular.module('App').directive('showPosts', function ($http,$rootScope,$sce) {
     }
 
     scope.vimeo = function(id){
-      return $sce.trustAsResourceUrl("https://player.vimeo.com/video/"+id)
+      return $sce.trustAsResourceUrl("https://player.vimeo.com/youtube.jade/"+id)
     }
 
     $http.post(link,data).success(function(res){

@@ -10,7 +10,7 @@ div.row.profile-container
   div.col-sm-7
     h1 {{aliasPage.name}}
     | &nbsp;
-    span(follow-button="" alias-id="aliasPage._id").follow-button-container
+    span(follow-button="" alias-id="{{aliasPage._id}}").follow-button-container
     a(ng-if="editable",ng-href="/profile/{{aliasPage.username}}/edit" ,class="btn btn-default btn-xs glyphicon " +
     "glyphicon-wrench" +
     " " +

@@ -1,9 +1,14 @@
 //
    Created by Administrator on 8/5/2015.
 div(ng-repeat="post in posts",class="col-sm-{{postClass}}").show-posts-detail
-  div(class="photo")
-    h2
-      a(href="/post/{{post._id}}") {{post.name}}
+  div(class="post-container")
+
     a(href="/post/{{post._id}}",class="post-image-container")
       span(ng-if="post.type != 'facebook'", class="glyphicon glyphicon-play video-icon")
       img(ng-src="{{post.source}}",class="post-image img-responsive")
+
+    div.post-detail-container
+      h1
+        a(href="/post/{{post._id}}") {{post.name}}
+      blockquote(ng-if="post.description")
+        p {{post.description}}

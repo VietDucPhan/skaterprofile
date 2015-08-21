@@ -1,0 +1,15 @@
+div.col-sm-8
+  div.post-detail-container
+    div.post-detail-follow
+      span(follow-button="",alias-id="#{data.posted_to_alias}").follow-button-container
+    div(class="embed-responsive embed-responsive-16by9")
+      if (data.type = 'youtube')
+        iframe(class="embed-responsive-item",src="https://www.youtube.com/embed/#{data.video_id}?rel=0&amp;showinfo=0")
+      else
+        iframe(class="embed-responsive-item",src="https://player.vimeo.com/video/#{data.video_id}?title=0&byline=0&portrait=0")
+    div.post-title
+      h1 #{data.name}
+      if data.description
+        blockquote
+          p #{data.description}
+div.col-sm-4

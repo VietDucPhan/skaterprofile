@@ -5657,8 +5657,6 @@ button.close {
     display: none !important; } }
 body {
   background-color: #f1f1f1; }
-  body h1 {
-    margin: 0; }
 
 .navbar-default .navbar-nav li a.btn {
   color: white;
@@ -5749,26 +5747,49 @@ form .error {
       max-width: 100%;
       display: inline-block; }
 
-.show-posts-detail .post-image-container .video-icon {
-  font-size: 51px;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  margin-left: -25px;
-  color: white;
-  opacity: 0;
-  -webkit-transition: opacity .2s ease-out;
-  transition: opacity .2s ease-out;
-  -webkit-transition-delay: .1s;
-  transition-delay: .1s; }
-.show-posts-detail .post-image-container:hover .video-icon {
-  opacity: 1; }
+.show-posts-detail .post-container {
+  background-color: #f8f8f8;
+  margin-bottom: 30px; }
+  .show-posts-detail .post-container .post-detail-container {
+    padding: 14px 20px; }
+    .show-posts-detail .post-container .post-detail-container h1 {
+      margin-top: 0;
+      font-size: 20px; }
+      .show-posts-detail .post-container .post-detail-container h1 a {
+        color: #333333;
+        text-decoration: none; }
+        .show-posts-detail .post-container .post-detail-container h1 a:hover {
+          color: #337ab7; }
+    .show-posts-detail .post-container .post-detail-container blockquote {
+      font-size: 15px; }
+.show-posts-detail .post-image-container {
+  position: relative; }
+  .show-posts-detail .post-image-container .video-icon {
+    font-size: 51px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -25px;
+    margin-left: -25px;
+    color: white;
+    opacity: 0;
+    -webkit-transition: opacity .2s ease-out;
+    transition: opacity .2s ease-out;
+    -webkit-transition-delay: .1s;
+    transition-delay: .1s; }
+  .show-posts-detail .post-image-container:hover .video-icon {
+    opacity: 1; }
 .show-posts-detail .post-image-container {
   display: block; }
-.show-posts-detail h2 a {
-  color: #333333;
-  text-decoration: none; }
-  .show-posts-detail h2 a:hover {
-    color: #337ab7; }
+
+.post-detail-container {
+  background-color: white; }
+  .post-detail-container .post-detail-follow {
+    padding: 14px 20px; }
+  .post-detail-container .post-title {
+    padding: 14px 20px; }
+    .post-detail-container .post-title h1 {
+      margin-top: 0;
+      font-size: 20px; }
 
 /*# sourceMappingURL=skaterprofile.css.map */

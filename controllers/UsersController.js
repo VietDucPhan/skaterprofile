@@ -121,7 +121,8 @@ router.post('/post-video',function(req,res){
                 name:req.body.title,
                 posted_by_user:new ObjectID(decoded.data._id),
                 posted_to_alias:to_alias,
-                source:videoImage
+                source:videoImage,
+                description:req.body.desc
               };
               if(decoded.data && decoded.data.alias){
                 videoData.posted_by_alias = new ObjectID(decoded.data.alias._id);
@@ -130,7 +131,7 @@ router.post('/post-video',function(req,res){
                 if(databaseResponse && databaseResponse.error){
                   return res.json(databaseResponse)
                 } else {
-                  return res.json({message:[{msg:'Successfully upload video',type:'success'}]});
+                  return res.json({message:[{msg:'Successfully upload youtube.jade',type:'success'}]});
                 }
               })
             } else {

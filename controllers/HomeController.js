@@ -32,6 +32,11 @@ router.get('/users/create-profile', function(req, res) {
 });
 
 /* GET home page. */
+router.get('/post/:id', function(req, res) {
+  res.render('layout');
+});
+
+/* GET home page. */
 router.get('/profile/:acc/edit', function(req, res) {
   res.render('layout');
 });

@@ -11,7 +11,12 @@ div(class="modal-body")
       ng-model="uploadVideoData.video")
     div.form-group
       span(class="error", ng-show="uploadVideoForm.postTile.$error.maxlength") Too long!
-      textarea(name="postTile",class="form-control",required="",ng-maxlength="100",placeholder="Title (Max length: " +
-      "100)",ng-model="uploadVideoData.title")
+      input(type="text",name="postTile",class="form-control",required="",ng-maxlength="100",placeholder="Title (Max " +
+      "length: 100)",ng-model="uploadVideoData.title")
+    div.form-group
+      span(class="error", ng-show="uploadVideoForm.postDesc.$error.maxlength") Too long!
+      textarea(name="postDesc",class="form-control",required="",ng-maxlength="200",placeholder="Description (Max " +
+      "length: " +
+      "200)",ng-model="uploadVideoData.desc", rows="6")
     div.form-group
       button(ng-click="postVideo(uploadVideoData)",ng-disabled="uploadVideoForm.$invalid").btn Upload

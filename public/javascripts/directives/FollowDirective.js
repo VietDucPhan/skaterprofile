@@ -2,19 +2,15 @@
 angular.module('App').directive('followButton', function ($location,Session,$http, $rootScope) {
   var followButton = {};
   followButton.restrict = 'A';
-  followButton.scope = {
-    aliasId:'&aliasId'
-  };
-
-
   followButton.template = '<button class="btn follow-btn btn-{{followButtonName}} {{followButtonHide}}" ng-click="follow()">{{followButtonName}}</button>'
-  followButton.link = function(scope, ele){
+  followButton.link = function(scope, ele, att){
     scope.followButtonName = 'follow';
     scope.followButtonHide = '';
-    if($rootScope.alias && scope.aliasId() === $rootScope.alias._id){
+
+    if($rootScope.alias && att.aliasId === $rootScope.alias._id){
       scope.followButtonHide = 'ng-hide'
     }
-    $http.post('/api/alias/isfollowing',{id:scope.aliasId()}).success(function(response){
+    $http.post('/api/alias/isfollowing',{id:att.aliasId}).success(function(response){
       //console.log(response);
       if(response && response.error){
         $rootScope.alerts = response.error.message;
@@ -29,7 +25,8 @@ angular.module('App').directive('followButton', function ($location,Session,$htt
     })
 
     scope.follow = function(){
-      $http.post('/api/alias/follow/',{id:scope.aliasId()}).success(function(res){
+      console.log('abc');
+      $http.post('/api/alias/follow/',{id:att.aliasId}).success(function(res){
         if(res && res.error){
           $rootScope.alerts = res.error.message;
           scope.followButtonName = 'error'

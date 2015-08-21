@@ -1,4 +1,27 @@
-var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar', 'angularFileUpload']).config(['$routeProvider', '$locationProvider', 'cfpLoadingBarProvider',
+var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar', 'angularFileUpload','ngSanitize'],function($compileProvider){
+  $compileProvider.directive('compile', function($compile) {
+    // directive factory creates a link function
+    return function(scope, element, attrs) {
+      scope.$watch(
+        function(scope) {
+          // watch the 'compile' expression for changes
+          return scope.$eval(attrs.compile);
+        },
+        function(value) {
+          // when the 'compile' expression changes
+          // assign it into the current DOM
+          element.html(value);
+
+          // compile the new DOM and link it to the current
+          // scope.
+          // NOTE: we only compile .childNodes so that
+          // we don't get into infinite loop compiling ourselves
+          $compile(element.contents())(scope);
+        }
+      );
+    };
+  });
+}).config(['$routeProvider', '$locationProvider', 'cfpLoadingBarProvider',
   function ($routeProvider, $locationProvider, cfpLoadingBarProvider) {
     cfpLoadingBarProvider.loadingBarTemplate = '<div id="loading-bar" class="progress page-loading"> <div class="bar progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100"> </div> </div>';
     cfpLoadingBarProvider.includeSpinner = false;
@@ -224,7 +247,7 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
   }
 
   $scope.vimeo = function(id){
-    return $sce.trustAsResourceUrl("https://player.vimeo.com/video/"+id)
+    return $sce.trustAsResourceUrl("https://player.vimeo.com/youtube.jade/"+id)
   }
 
   $http.get('/api/alias/'+$routeParams.user).success(function(response){
@@ -337,6 +360,8 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
     }
 
   })
-}).controller('PostdetailController',function($scope,$http,$routeParams,$rootScope,FileUploader,$window, Session){
-
+}).controller('PostdetailController',function($scope,$http,$routeParams,$rootScope,$sce,$window, Session){
+  $http.get('/api/posts/get/detail/'+$routeParams.id).success(function(html){
+    $scope.post =  html;
+  })
 })

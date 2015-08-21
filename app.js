@@ -56,7 +56,7 @@ app.use('/', home);
 app.use('/ang', ang);
 app.use('/api/users/', users);
 app.use('/api/alias/',alias);
-app.use('/api/posts/',posts)
+app.use('/api/posts/',posts);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
@@ -71,6 +71,7 @@ app.use(function(req, res, next) {
 if (app.get('env') === 'development') {
   app.use(function(err, req, res, next) {
     res.status(err.status || 500);
+    console.log(err);
     res.render('layout', {
       message: err.message,
       error: err

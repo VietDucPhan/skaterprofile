@@ -59,6 +59,7 @@ var UploadVideoController = function ($scope, $modalInstance, $http, $rootScope,
   var vimeo_pattern = /^http(?:s)?:\/\/(www\.)?vimeo.com\/(\d+)($|\/)$/i;
 
   $scope.postVideo = function (data) {
+    console.log(data);
     if (youtube_pattern.test(data.video) || vimeo_pattern.test(data.video)) {
       $http.post('/api/users/post-video', data).success(function (res) {
         if (res && res.error) {
