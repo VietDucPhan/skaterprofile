@@ -1,14 +1,18 @@
 //Main Menu Directive
-angular.module('App').directive('rightMenu', function (Auth, $modal, $rootScope, $location, $http, FileUploader, Session) {
+angular.module('App').directive('rightMenu', function (Auth, $modal, $rootScope, $location, $http, FileUploader, Session,Socket) {
   var rightMenu = {};
   rightMenu.restrict = 'E';
   rightMenu.link = function (scope) {
+    scope.notifications = 0;
     scope.template = function () {
       if (Session.get()) {
         return '/ang/elements/menues/loggedin-right-mainmenu';
       }
       return '/ang/elements/menues/right-mainmenu';
     }
+    Socket.listen('thumb_up',function(data){
+      scope.notifications = ++scope.notifications;
+    })
 
     scope.signup = function () {
       var loginModalInstance = $modal.open({
@@ -59,7 +63,6 @@ var UploadVideoController = function ($scope, $modalInstance, $http, $rootScope,
   var vimeo_pattern = /^http(?:s)?:\/\/(www\.)?vimeo.com\/(\d+)($|\/)$/i;
 
   $scope.postVideo = function (data) {
-    console.log(data);
     if (youtube_pattern.test(data.video) || vimeo_pattern.test(data.video)) {
       $http.post('/api/users/post-video', data).success(function (res) {
         if (res && res.error) {
@@ -108,6 +111,7 @@ var UploadImageController = function ($scope, FileUploader, $modalInstance, Sess
 
   postImage.onBeforeUploadItem = function (item) {
     item.headers.msg = $scope.postTitle;
+    item.headers.desc = $scope.desc;
   }
 
   postImage.onSuccessItem = function (fileItem, response) {

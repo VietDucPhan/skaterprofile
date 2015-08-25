@@ -1,0 +1,8 @@
+//
+   Created by Administrator on 8/24/2015.
+button(class="btn navbar-btn btn-{{up_vote_class}} vote thumbs-up",ng-click="thumb_up()")
+  span(class="glyphicon glyphicon-thumbs-up")
+  span(class="vote-number") {{up_votes_number}}
+button(class="btn navbar-btn btn-{{down_vote_class}} vote thumbs-down", ng-click="thumb_down()")
+  span(class="glyphicon glyphicon-thumbs-down")
+  span(class="vote-number") {{down_votes_number}}

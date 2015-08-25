@@ -6,7 +6,6 @@ angular.module('App').directive('followButton', function ($location,Session,$htt
   followButton.link = function(scope, ele, att){
     scope.followButtonName = 'follow';
     scope.followButtonHide = '';
-
     if($rootScope.alias && att.aliasId === $rootScope.alias._id){
       scope.followButtonHide = 'ng-hide'
     }
@@ -25,7 +24,6 @@ angular.module('App').directive('followButton', function ($location,Session,$htt
     })
 
     scope.follow = function(){
-      console.log('abc');
       $http.post('/api/alias/follow/',{id:att.aliasId}).success(function(res){
         if(res && res.error){
           $rootScope.alerts = res.error.message;

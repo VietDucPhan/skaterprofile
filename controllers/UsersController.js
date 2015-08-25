@@ -50,6 +50,7 @@ router.post('/post-image',function(req,res){
       var to_alias = req.headers.to_alias ? new ObjectID(req.headers.to_alias) : null;
       var by_user = new ObjectID(decoded.data._id);
       var by_alias = null;
+      var description = req.headers.desc ? req.headers.desc : null;
       if(decoded.data && decoded.data.alias){
         by_alias = new ObjectID(decoded.data.alias._id);
       }
@@ -73,6 +74,7 @@ router.post('/post-image',function(req,res){
                         fbPostResponse.posted_by_user = by_user;
                         fbPostResponse.posted_to_alias = to_alias;
                         fbPostResponse.posted_by_alias = by_alias;
+                        fbPostResponse.description = description;
                         Users.postAPhoto(fbPostResponse,function(databaseResponse){
                           if(databaseResponse && databaseResponse.error){
                             return res.json(databaseResponse)

@@ -1,6 +1,7 @@
 angular.module('App').factory('Session', function ($http, $interval, $rootScope) {
   var Session = {};
   var refreshFirstTime = 1;
+  var user;
   Session.set = function (data, callback) {
     //console.log(data);
     // $rootScope.$apply(function () {
@@ -13,7 +14,6 @@ angular.module('App').factory('Session', function ($http, $interval, $rootScope)
     if(data && data.response && data.response.alias){
       $rootScope.alias = data.response.alias;
     }
-
     if (typeof callback == 'function') {
       return callback();
     }

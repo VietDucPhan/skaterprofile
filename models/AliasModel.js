@@ -87,7 +87,6 @@ AliasModel.isFollower = function(follower,following,callback){
 AliasModel.isFollowing = function(follower,following,callback){
   var Alias = AliasModel.getCollection();
   Alias.findOne({_id:new ObjectID(follower),'following.id':following},function(err,doc){
-    //console.log(follower);
     return callback(doc);
   });
 }

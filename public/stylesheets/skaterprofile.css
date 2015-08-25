@@ -5764,6 +5764,8 @@ form .error {
       font-size: 15px; }
 .show-posts-detail .post-image-container {
   position: relative; }
+  .show-posts-detail .post-image-container img {
+    min-width: 100%; }
   .show-posts-detail .post-image-container .video-icon {
     font-size: 51px;
     position: absolute;
@@ -5772,7 +5774,7 @@ form .error {
     margin-top: -25px;
     margin-left: -25px;
     color: white;
-    opacity: 0;
+    opacity: .5;
     -webkit-transition: opacity .2s ease-out;
     transition: opacity .2s ease-out;
     -webkit-transition-delay: .1s;
@@ -5784,12 +5786,28 @@ form .error {
 
 .post-detail-container {
   background-color: white; }
-  .post-detail-container .post-detail-follow {
-    padding: 14px 20px; }
+  .post-detail-container .post-detail {
+    padding: 7px 10px; }
+    .post-detail-container .post-detail .btn, .post-detail-container .post-detail .navbar-default .navbar-nav li a.btn, .navbar-default .navbar-nav li .post-detail-container .post-detail a.btn {
+      margin: 0; }
   .post-detail-container .post-title {
-    padding: 14px 20px; }
+    padding: 7px 10px; }
     .post-detail-container .post-title h1 {
       margin-top: 0;
       font-size: 20px; }
+
+.vote {
+  margin-right: 5px !important; }
+  .vote span {
+    color: #ccc; }
+    .vote span.vote-number {
+      margin-left: 5px; }
+  .vote.btn-success span, .follow-button-container button.vote.btn-following span {
+    color: white; }
+  .vote.btn-danger span {
+    color: white; }
+
+.no-border {
+  border: 0px !important; }
 
 /*# sourceMappingURL=skaterprofile.css.map */

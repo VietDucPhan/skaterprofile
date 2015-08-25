@@ -1,1 +1,25 @@
-|image
+div.col-sm-8
+  div.post-detail-container
+    div.post-detail
+      div.row
+        div.col-xs-8
+          div(vote-buttons='#{data._id}')
+        div.col-xs-4
+          div(dropdown='',class='pull-right').btn-group
+            button(class="btn btn-default dropdown-toggle no-border", dropdown-toggle="", data-toggle="dropdown", aria-haspopup="true", aria-expanded="false")
+              span.caret
+              span(class="sr-only") Split button!
+            ul(role="menu", aria-labelledby="split-button").dropdown-menu
+              li
+                a(ng-href="#") Report
+              li.divider
+              li
+                a(href="#") Delete
+    div()
+      img(class="img-responsive",src='#{data.source}')
+    div.post-title
+      h1 #{data.name}
+      if data.description
+        blockquote
+          p #{data.description}
+div.col-sm-4

@@ -15,7 +15,7 @@ div(class="modal-body")
       "length: 100)",ng-model="uploadVideoData.title")
     div.form-group
       span(class="error", ng-show="uploadVideoForm.postDesc.$error.maxlength") Too long!
-      textarea(name="postDesc",class="form-control",required="",ng-maxlength="200",placeholder="Description (Max " +
+      textarea(name="postDesc",class="form-control",ng-maxlength="200",placeholder="Description (Optional) (Max " +
       "length: " +
       "200)",ng-model="uploadVideoData.desc", rows="6")
     div.form-group

@@ -1,6 +1,8 @@
 @import "_bootstrap";
+$background-color:#f1f1f1;
+$grey : #ccc;
 body{
-  background-color:#f1f1f1;
+  background-color:$background-color;
 }
 .navbar-default{
   .navbar-nav{
@@ -156,7 +158,9 @@ form{
   }
   .post-image-container{
     position:relative;
-
+    img{
+      min-width:100%
+    }
     .video-icon{
       font-size: 51px;
       position: absolute;
@@ -165,7 +169,7 @@ form{
       margin-top:-25px;
       margin-left:-25px;
       color: white;
-      opacity: 0;
+      opacity: .5;
       -webkit-transition: opacity .2s ease-out;
       transition: opacity .2s ease-out;
       -webkit-transition-delay: .1s;
@@ -190,14 +194,40 @@ form{
 }
 .post-detail-container{
   background-color: white;
-  .post-detail-follow{
-    padding:14px 20px;
+  .post-detail{
+    padding:7px 10px;
+    .btn{
+      margin:0;
+    }
   }
   .post-title{
-    padding:14px 20px;
+    padding:7px 10px;
     h1{
       margin-top:0;
       font-size:20px;
     }
   }
+}
+
+.vote{
+  margin-right:5px !important;
+  span{
+    color:$grey;
+    &.vote-number{
+      margin-left:5px;
+    }
+  }
+  &.btn-success{
+    span{
+      color:white;
+    }
+  }
+  &.btn-danger{
+    span{
+      color:white;
+    }
+  }
+}
+.no-border{
+  border:0px !important;
 }

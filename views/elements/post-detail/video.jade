@@ -1,7 +1,20 @@
 div.col-sm-8
   div.post-detail-container
-    div.post-detail-follow
-      span(follow-button="",alias-id="#{data.posted_to_alias}").follow-button-container
+    div.post-detail
+      div.row
+        div.col-xs-8
+          div(vote-buttons='#{data._id}')
+        div.col-xs-4
+          div(dropdown='',class='pull-right').btn-group
+            button(class="btn btn-default dropdown-toggle no-border", dropdown-toggle="", data-toggle="dropdown", aria-haspopup="true", aria-expanded="false")
+              span.caret
+              span(class="sr-only") Split button!
+            ul(role="menu", aria-labelledby="split-button").dropdown-menu
+              li
+                a(ng-href="#") Report
+              li.divider
+              li
+                a(href="#") Delete
     div(class="embed-responsive embed-responsive-16by9")
       if (data.type = 'youtube')
         iframe(class="embed-responsive-item",src="https://www.youtube.com/embed/#{data.video_id}?rel=0&amp;showinfo=0")
