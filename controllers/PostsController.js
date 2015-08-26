@@ -18,13 +18,21 @@ router.get('/get/detail/:id',function(req,res){
   var data = {}
   PostsModel.getPost(req.params.id,function(doc){
     if(doc){
-      data = doc;
-    }
-    if(doc && doc.type == 'facebook'){
-      res.render('elements/post-detail/image',{data:data});
+      return res.json(doc);
     } else {
-      res.render('elements/post-detail/video',{data:data});
+      return res.json({
+        error:{
+          message:[
+            {msg:'Could not find the post you are looking for',status:'warning'}
+          ]}
+      });
     }
+
+    //if(doc && doc.type == 'facebook'){
+    //  res.render('elements/post-detail/image',{data:data});
+    //} else {
+    //  res.render('elements/post-detail/video',{data:data});
+    //}
 
   })
 

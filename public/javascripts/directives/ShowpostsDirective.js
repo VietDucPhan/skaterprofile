@@ -8,7 +8,8 @@ angular.module('App').directive('showPosts', function ($http,$rootScope,$sce) {
     aliasId:'&aliasId',
     hot:'&hot',
     following:'&following',
-    postPerRow:'&postPerRow'
+    postPerRow:'&postPerRow',
+    backState:'@backState'
   };
 
   showPosts.templateUrl = function(ele,att){
@@ -16,6 +17,7 @@ angular.module('App').directive('showPosts', function ($http,$rootScope,$sce) {
   }
   showPosts.link = function(scope){
     var link = '/api/posts/get';
+    scope.back_state = scope.backState || '/';
     var data = {
       aliasId: scope.aliasId() || null,
       hot: scope.hot() || false,

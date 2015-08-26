@@ -1,10 +1,16 @@
+div.modal-header
+  button(type="button",class="close",data-dismiss="modal",aria-label="Close")
+    span(ng-click="cancel()",aria-hidden="true") &times;
+  h4.modal-title Join us, NOW!!!
+  p Connect with all skateboarders around the world
 div(class='modal-body')
-  button(ng-click="fbLogin()").btn Facebook
   alert(ng-repeat="alert in signUpPopUpAlerts",type="{{alert.type}}",close="closeSignUpPopUpAlert($index)") {{alert.msg}}
   form(name="signup",method='post',novalidate)
-    input(name='email',ng-model="data.email",type="email",required,class="form-control")
-    br
-    input(name='password',ng-model="data.password",type='password',minlength="6",required,class="form-control")
-    br
-    button(ng-click="signUpSubmit(data)",ng-disabled="signup.$invalid").btn Sign up
+    div(class="form-group has-feedback",ng-class="signup.email.$invalid ? 'has-error' : 'has-success'" )
+      input(name='email',ng-model="data.email",type="email",required,class="form-control")
+      span(class="glyphicon form-control-feedback",aria-hidden="true",ng-class="signup.email.$invalid ? 'glyphicon-remove' : 'glyphicon-ok'",ng-show="signup.email.$dirty")
+    div(class="form-group has-feedback",ng-class="signup.password.$invalid ? 'has-error' : 'has-success'" )
+      input(name='password',ng-model="data.password",type='password',minlength="6",required,class="form-control")
+      span(class="glyphicon form-control-feedback",aria-hidden="true",ng-class="signup.password.$invalid ? 'glyphicon-remove' : 'glyphicon-ok'",ng-show="signup.password.$dirty")
+    button(ng-click="signUpSubmit(data)",ng-disabled="signup.$invalid").btn.btp.btn-primary Sign up
 

@@ -1,12 +1,16 @@
+div.modal-header
+  button(type="button",class="close",data-dismiss="modal",aria-label="Close")
+    span(ng-click="cancel()",aria-hidden="true") &times;
+  h4.modal-title Login
+  p Connect with skateboarding digital world
 div(class="modal-body")
   alert(ng-repeat="alert in popUpLoginAlerts",type="{{alert.type}}",close="closeLoginPopUpAlert($index)") {{alert.msg}}
   form(name="login",method='post',novalidate)
     div(class="form-group has-feedback",ng-class="login.email.$invalid ? 'has-error' : 'has-success'" )
-      input(type="email",name='email',ng-model="data.email",required,class="form-control")
+      input(type="email",name='email',ng-model="data.email",required,class="form-control",placeholder="Email")
       span(class="glyphicon form-control-feedback",aria-hidden="true",ng-class="login.email.$invalid ? 'glyphicon-remove' : 'glyphicon-ok'",ng-show="login.email.$dirty")
-    br
-    div(class="form-group has-feedback",ng-class="login.password.$invalid ? 'has-error' : 'has-success'" )
-      input(name='password',type='password',ng-model="data.password",required,minlength="6",class="form-control")
+    div(class="form-group has-feedback",ng-class="login.password.$invalid ? 'has-error' : 'has-success'")
+      input(name='password',type='password',ng-model="data.password",required,minlength="6",class="form-control",
+      placeholder="Password" )
       span(class="glyphicon form-control-feedback",aria-hidden="true",ng-class="login.password.$invalid ? 'glyphicon-remove' : 'glyphicon-ok'",ng-show="login.password.$dirty")
-    br
-    button(ng-click="loginSubmit(data)",ng-disabled="login.$invalid").btn log in
+    button(ng-click="loginSubmit(data)",ng-disabled="login.$invalid").btn.btn-success log in

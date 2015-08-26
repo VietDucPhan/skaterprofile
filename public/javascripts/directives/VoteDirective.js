@@ -24,11 +24,11 @@ angular.module('App').directive('voteButtons', function ($location, Session, $ht
             scope.down_votes_number = -down_votes_id.length;
           }
 
-          if (up_votes_id && up_votes_id.indexOf($rootScope.user._id) != -1) {
+          if ($rootScope.user && up_votes_id && up_votes_id.indexOf($rootScope.user._id) != -1) {
             scope.up_vote_class = 'success';
           }
 
-          if (down_votes_id && down_votes_id.indexOf($rootScope.user._id) != -1) {
+          if ($rootScope.user && down_votes_id && down_votes_id.indexOf($rootScope.user._id) != -1) {
             scope.down_vote_class = 'danger';
           }
 
@@ -48,14 +48,14 @@ angular.module('App').directive('voteButtons', function ($location, Session, $ht
               scope.down_votes_number = -down_votes_id.length;
             }
 
-            if (up_votes_id && up_votes_id.indexOf($rootScope.user._id) != -1) {
+            if ($rootScope.user && up_votes_id && up_votes_id.indexOf($rootScope.user._id) != -1) {
               scope.up_vote_class = 'success';
               Socket.emit('thumb_up',res.response)
             } else {
               scope.up_vote_class = 'default';
             }
 
-            if (down_votes_id && down_votes_id.indexOf($rootScope.user._id) != -1) {
+            if ($rootScope.user && down_votes_id && down_votes_id.indexOf($rootScope.user._id) != -1) {
               scope.down_vote_class = 'danger';
             } else {
               scope.down_vote_class = 'default';
@@ -80,13 +80,13 @@ angular.module('App').directive('voteButtons', function ($location, Session, $ht
               scope.down_votes_number = -down_votes_id.length;
             }
 
-            if (up_votes_id && up_votes_id.indexOf($rootScope.user._id) != -1) {
+            if ($rootScope.user && up_votes_id && up_votes_id.indexOf($rootScope.user._id) != -1) {
               scope.up_vote_class = 'success';
             } else {
               scope.up_vote_class = 'default';
             }
 
-            if (down_votes_id && down_votes_id.indexOf($rootScope.user._id) != -1) {
+            if ($rootScope.user && down_votes_id && down_votes_id.indexOf($rootScope.user._id) != -1) {
               scope.down_vote_class = 'danger';
             } else {
               scope.down_vote_class = 'default';

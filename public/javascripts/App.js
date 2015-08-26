@@ -104,8 +104,18 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
       });
     $locationProvider.html5Mode(true);
   }
-]).run(function ($rootScope, Auth, $window, Session, $http, $interval, cfpLoadingBar, $location) {
-
+]).run(function ($rootScope, Auth, $window, Session, $http, $interval, cfpLoadingBar, $location,$route) {
+  var original = $location.path;
+  $location.path = function (path, reload) {
+    if (reload === false) {
+      var lastRoute = $route.current;
+      var un = $rootScope.$on('$locationChangeSuccess', function () {
+        $route.current = lastRoute;
+        un();
+      });
+    }
+    return original.apply($location, [path]);
+  };
   //Session.destroy();
   $http.defaults.headers.common.token = Session.get();
   $rootScope.$on('$routeChangeStart', function (event, next) {
@@ -340,17 +350,28 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
 
 
       if($rootScope.user && ((response.response.managers && response.response.managers.indexOf($rootScope.user._id) != -1) || (response.response.config && response.response.config.public_editing == 1))){
-        $scope.edit_skater = '/ang/elements/edit-skater-form/basic-info'
+        $scope.edit_skater = '/ang/elements/edit-skater-form/basic-info';
+        $scope.type = 'basic-info';
         $scope.editProfile = response.response;
+        var username = response.response.username
         $scope.isOwner = $rootScope.user._id == response.response.admin;
+
+
+        $scope.change = function(template){
+          $scope.type = template;
+          $scope.edit_skater = '/ang/elements/edit-skater-form/' + template;
+        }
 
         $scope.editProfileSubmit = function (profile) {
           $http.post('/api/alias/edit-profile', profile).success(function (data) {
-            if (data.error) {
+            if (data && data.error) {
               $rootScope.alerts = data.error.message;
             } else {
               $rootScope.alerts = data.message;
-              $window.location.href = '/profile/'+data.response.username+'/edit';
+              if(username !== data.response.username){
+                $window.location.href = '/profile/'+data.response.username+'/edit';
+              }
+
             }
           })
         }
@@ -361,7 +382,27 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
 
   })
 }).controller('PostdetailController',function($scope,$http,$routeParams,$rootScope,$sce,$window, Session){
-  $http.get('/api/posts/get/detail/'+$routeParams.id).success(function(html){
-    $scope.post =  html;
+  $scope.post_detail_url = '/ang/elements/post-detail/image';
+  $scope.video_src = ''
+  $http.get('/api/posts/get/detail/'+$routeParams.id).success(function(data){
+    if(data && !data.error){
+      $scope.postData =  data;
+      if($scope.postData && $scope.postData.type != 'facebook' ){
+        $scope.post_detail_url = '/ang/elements/post-detail/video';
+      }
+
+      switch ($scope.postData.type){
+        case 'youtube' :
+          $scope.video_src = $sce.trustAsResourceUrl("https://www.youtube.com/embed/"+$scope.postData.video_id+"?rel=0&amp;controls=0&amp;showinfo=0")
+          break;
+        case 'vimeo' :
+          $scope.video_src = $sce.trustAsResourceUrl("https://player.vimeo.com/youtube.jade/"+$scope.postData.video_id)
+          break
+      }
+
+    } else {
+      $rootScope.alerts = data.error.message;
+    }
+
   })
 })

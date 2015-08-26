@@ -1,1 +1,2 @@
-div(compile="post").row
+span(ng-if="show_cancel",class="glyphicon glyphicon-remove cancel-post-modal-detail",ng-click="cancel()")
+div(ng-include="post_detail_url").row

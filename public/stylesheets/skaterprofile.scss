@@ -162,13 +162,14 @@ form{
       min-width:100%
     }
     .video-icon{
-      font-size: 51px;
+      font-size: 70px;
       position: absolute;
       top: 50%;
       left: 50%;
-      margin-top:-25px;
-      margin-left:-25px;
+      margin-top:-35px;
+      margin-left:-35px;
       color: white;
+      text-shadow: 0px 0px 10px #0D1216;
       opacity: .5;
       -webkit-transition: opacity .2s ease-out;
       transition: opacity .2s ease-out;
@@ -205,6 +206,30 @@ form{
     h1{
       margin-top:0;
       font-size:20px;
+    }
+  }
+}
+
+.post-detail-modal{
+  cursor: pointer;
+  cursor: -webkit-zoom-out;
+  cursor: zoom-out;
+  .modal-dialog{
+    @extend .container;
+    cursor:auto;
+    .modal-content{
+      background:none;
+      box-shadow: none;
+      -webkit-box-shadow: none;
+      border:none;
+      .cancel-post-modal-detail{
+        position:fixed;
+        right: -20px;
+        top: -20px;
+        color:white;
+        font-size:20px;
+        cursor:pointer;
+      }
     }
   }
 }

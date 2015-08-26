@@ -15,9 +15,10 @@ div.row.profile-container
     "glyphicon-wrench" +
     " " +
     "edit-alias")
+    p {{aliasPage.bio}}
 
 div.row
   div.col-md-2
   div().col-md-8
-    div(show-posts='',alias-id='aliasPage._id')
+    div(show-posts='',alias-id='aliasPage._id', back-state="/{{aliasPage.username}}")
   div.col-md-2

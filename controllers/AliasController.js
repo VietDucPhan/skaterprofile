@@ -25,7 +25,7 @@ router.get('/:alias',function(req,res){
 router.post('/edit-profile', function (req, res) {
   Session.decode(req.token, function (decoded) {
     if (decoded && decoded.data) {
-      if(req.body && req.body.config){
+      if(req.body && req.body.config && decoded.data._id != req.body.admin){
         delete req.body.config;
       }
 

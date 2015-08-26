@@ -1502,24 +1502,24 @@ pre {
   max-height: 340px;
   overflow-y: scroll; }
 
-.container {
+.container, .post-detail-modal .modal-dialog {
   margin-right: auto;
   margin-left: auto;
   padding-left: 15px;
   padding-right: 15px; }
-  .container:before, .container:after {
+  .container:before, .post-detail-modal .modal-dialog:before, .container:after, .post-detail-modal .modal-dialog:after {
     content: " ";
     display: table; }
-  .container:after {
+  .container:after, .post-detail-modal .modal-dialog:after {
     clear: both; }
   @media (min-width: 768px) {
-    .container {
+    .container, .post-detail-modal .modal-dialog {
       width: 750px; } }
   @media (min-width: 992px) {
-    .container {
+    .container, .post-detail-modal .modal-dialog {
       width: 970px; } }
   @media (min-width: 1200px) {
-    .container {
+    .container, .post-detail-modal .modal-dialog {
       width: 1170px; } }
 
 .container-fluid {
@@ -3660,15 +3660,17 @@ tbody.collapse.in {
     .navbar-fixed-bottom .navbar-collapse {
       max-height: 200px; } }
 
-.container > .navbar-header,
+.container > .navbar-header, .post-detail-modal .modal-dialog > .navbar-header,
 .container > .navbar-collapse,
+.post-detail-modal .modal-dialog > .navbar-collapse,
 .container-fluid > .navbar-header,
 .container-fluid > .navbar-collapse {
   margin-right: -15px;
   margin-left: -15px; }
   @media (min-width: 768px) {
-    .container > .navbar-header,
+    .container > .navbar-header, .post-detail-modal .modal-dialog > .navbar-header,
     .container > .navbar-collapse,
+    .post-detail-modal .modal-dialog > .navbar-collapse,
     .container-fluid > .navbar-header,
     .container-fluid > .navbar-collapse {
       margin-right: 0;
@@ -3712,7 +3714,7 @@ tbody.collapse.in {
   .navbar-brand > img {
     display: block; }
   @media (min-width: 768px) {
-    .navbar > .container .navbar-brand, .navbar > .container-fluid .navbar-brand {
+    .navbar > .container .navbar-brand, .post-detail-modal .navbar > .modal-dialog .navbar-brand, .navbar > .container-fluid .navbar-brand {
       margin-left: -15px; } }
 
 .navbar-toggle {
@@ -4224,14 +4226,14 @@ a.badge:hover, a.badge:focus {
     font-weight: 200; }
   .jumbotron > hr {
     border-top-color: #d5d5d5; }
-  .container .jumbotron, .container-fluid .jumbotron {
+  .container .jumbotron, .post-detail-modal .modal-dialog .jumbotron, .container-fluid .jumbotron {
     border-radius: 6px; }
-  .jumbotron .container {
+  .jumbotron .container, .jumbotron .post-detail-modal .modal-dialog, .post-detail-modal .jumbotron .modal-dialog {
     max-width: 100%; }
   @media screen and (min-width: 768px) {
     .jumbotron {
       padding: 48px 0; }
-      .container .jumbotron, .container-fluid .jumbotron {
+      .container .jumbotron, .post-detail-modal .modal-dialog .jumbotron, .container-fluid .jumbotron {
         padding-left: 60px;
         padding-right: 60px; }
       .jumbotron h1,
@@ -5767,13 +5769,14 @@ form .error {
   .show-posts-detail .post-image-container img {
     min-width: 100%; }
   .show-posts-detail .post-image-container .video-icon {
-    font-size: 51px;
+    font-size: 70px;
     position: absolute;
     top: 50%;
     left: 50%;
-    margin-top: -25px;
-    margin-left: -25px;
+    margin-top: -35px;
+    margin-left: -35px;
     color: white;
+    text-shadow: 0px 0px 10px #0D1216;
     opacity: .5;
     -webkit-transition: opacity .2s ease-out;
     transition: opacity .2s ease-out;
@@ -5795,6 +5798,25 @@ form .error {
     .post-detail-container .post-title h1 {
       margin-top: 0;
       font-size: 20px; }
+
+.post-detail-modal {
+  cursor: pointer;
+  cursor: -webkit-zoom-out;
+  cursor: zoom-out; }
+  .post-detail-modal .modal-dialog {
+    cursor: auto; }
+    .post-detail-modal .modal-dialog .modal-content {
+      background: none;
+      box-shadow: none;
+      -webkit-box-shadow: none;
+      border: none; }
+      .post-detail-modal .modal-dialog .modal-content .cancel-post-modal-detail {
+        position: fixed;
+        right: -20px;
+        top: -20px;
+        color: white;
+        font-size: 20px;
+        cursor: pointer; }
 
 .vote {
   margin-right: 5px !important; }

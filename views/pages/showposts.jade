@@ -2,8 +2,7 @@
    Created by Administrator on 8/5/2015.
 div(ng-repeat="post in posts",class="col-sm-{{postClass}}").show-posts-detail
   div(class="post-container")
-
-    a(href="/post/{{post._id}}",class="post-image-container")
+    a(href="/post/{{post._id}}",class="post-image-container",post-detail="{{post._id}}",back-state='{{back_state}}')
       span(ng-if="post.type != 'facebook'", class="glyphicon glyphicon-play video-icon")
       img(ng-src="{{post.source}}",class="post-image img-responsive")
 
