@@ -14,6 +14,26 @@ router.post('/get',function(req,res){
   });
 })
 
+router.post('/delete',function(req,res){
+  Session.decode(req.token, function (decoded) {
+    if (decoded && decoded.data) {
+      var aliasId = 0;
+      if(decoded.data.alias){
+        aliasId = decoded.data.alias._id
+      }
+      PostsModel.delete(req.body.id,decoded.data._id, aliasId,function(data){
+        if(data && !data.error){
+          return res.json(data);
+        } else {
+          return res.json(data)
+        }
+      });
+    } else {
+      return res.json({error:{message:[{msg:'You are not authorized',type:'warning'}]},status:'session_expired'})
+    }
+  })
+})
+
 router.get('/get/detail/:id',function(req,res){
   var data = {}
   PostsModel.getPost(req.params.id,function(doc){
@@ -52,6 +72,7 @@ router.get('/get-votes/:id',function(req,res){
 router.post('/up-vote/:id',function(req,res){
   Session.decode(req.token, function (decoded) {
     if(decoded && decoded.data){
+
       PostsModel.upVote(req.params.id, decoded.data._id, function (data) {
         if (data && !data.error) {
           return res.json({response:data.value});

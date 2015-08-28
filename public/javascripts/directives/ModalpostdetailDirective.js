@@ -37,20 +37,42 @@ angular.module('App').directive('postDetail', function ($http, $rootScope, $moda
   return postDetail;
 });
 
-var ModalPostDetailController = function (post_id,back_state,$scope,$http, $sce,$modalInstance,$location) {
+var ModalPostDetailController = function (post_id,back_state,$scope,$http, $sce,$modalInstance,$location,$modal) {
   $scope.show_cancel = true;
   $scope.cancel = function () {
     $modalInstance.dismiss('cancel');
   };
+  $scope.dismiss = function () {
+    $modalInstance.dismiss('forward_state');
+  };
+  $scope.confirm = function(){
+    console.log(abc);
+  }
+  $scope.delete = function(id){
+    $modal.open({
+      animation: false,
+      template: '<div class="modal-header"><h3 class="modal-title">Delete Post</h3></div><div class="modal-body"><p>{{content}}</p></div><div ng-if="flag" class="modal-footer"> <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button> <button class="btn btn-primary" type="button" ng-click="confirm()">Confirm</button> </div>',
+      controller: deleteModalController,
+      resolve:{
+        id:function(){
+          return id;
+        }
+      }
+    });
+  }
   $scope.video_src = ''
   $modalInstance.result.then(function (selectedItem) {
     //$log.info('selectedItem',selectedItem);
-  }, function () {
-    $location.path(back_state, false);
+  }, function (e) {
+    if(e != 'forward_state'){
+      $location.path(back_state, false);
+    }
+
   });
   $http.get('/api/posts/get/detail/' + post_id).success(function (data) {
     if (data && !data.error) {
       $scope.postData = data;
+      $scope.owned_post = data.posted_by_alias == data.posted_to_alias;
       if ($scope.postData && $scope.postData.type != 'facebook') {
         $scope.post_detail_url = '/ang/elements/post-detail/video';
       } else {
@@ -62,7 +84,7 @@ var ModalPostDetailController = function (post_id,back_state,$scope,$http, $sce,
           $scope.video_src = $sce.trustAsResourceUrl("https://www.youtube.com/embed/" + $scope.postData.video_id + "?rel=0&amp;controls=0&amp;showinfo=0")
           break;
         case 'vimeo' :
-          $scope.video_src = $sce.trustAsResourceUrl("https://player.vimeo.com/youtube.jade/" + $scope.postData.video_id)
+          $scope.video_src = $sce.trustAsResourceUrl("https://player.vimeo.com/video/" + $scope.postData.video_id)
           break
       }
 
@@ -72,4 +94,31 @@ var ModalPostDetailController = function (post_id,back_state,$scope,$http, $sce,
 
   })
 
+}
+
+var deleteModalController = function(id, $scope, $modalInstance, $http,$modalStack, $timeout, $rootScope){
+  $scope.cancel = function () {
+    $modalInstance.dismiss('cancel');
+  };
+  $scope.content = 'Are you sure you want to delete this post?';
+  $scope.flag = true;
+  $scope.confirm = function(){
+    $scope.flag = false;
+    $http.post('/api/posts/delete',{id:id}).success(function(data){
+      if(data && !data.error){
+        $scope.content = 'Post successfully deleted';
+
+        $timeout(function () {
+          $rootScope.$broadcast('refresh_showposts', data);
+          $modalStack.dismissAll()
+        }, 1300);
+      } else {
+        $scope.content = 'An error occured please try again latter';
+        $timeout(function () {
+          $modalInstance.dismiss('cancel');
+        }, 1300);
+
+      }
+    })
+  }
 }

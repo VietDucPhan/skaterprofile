@@ -5659,13 +5659,10 @@ button.close {
     display: none !important; } }
 body {
   background-color: #f1f1f1; }
+  body .btn:focus, body .navbar-default .navbar-nav li a.btn:focus, .navbar-default .navbar-nav li body a.btn:focus, body .btn:active:focus, body .navbar-default .navbar-nav li a.btn:active:focus, .navbar-default .navbar-nav li body a.btn:active:focus, body .btn.active:focus, body .navbar-default .navbar-nav li a.active.btn:focus, .navbar-default .navbar-nav li body a.active.btn:focus {
+    outline: 0 none; }
 
-.navbar-default .navbar-nav li a.btn {
-  color: white;
-  padding: 6px 12px; }
-.navbar-default .navbar-nav.navbar-right li {
-  padding: 0 5px; }
-.navbar-default .profile-picture {
+.profile-picture {
   display: inline-block;
   vertical-align: middle;
   touch-action: manipulation;
@@ -5685,10 +5682,16 @@ body {
   border-color: #ccc;
   border-radius: 4px;
   overflow: hidden; }
-  .navbar-default .profile-picture img {
+  .profile-picture img {
     max-width: 31px;
     max-height: 31px;
     min-height: 31px; }
+
+.navbar-default .navbar-nav li a.btn {
+  color: white;
+  padding: 6px 12px; }
+.navbar-default .navbar-nav.navbar-right li {
+  padding: 0 5px; }
 
 #loading-bar {
   position: fixed;
@@ -5749,6 +5752,16 @@ form .error {
       max-width: 100%;
       display: inline-block; }
 
+.show-posts-detail .username {
+  border: 0px;
+  color: #333333;
+  outline: none;
+  box-shadow: none; }
+  .show-posts-detail .username:focus {
+    outline: none;
+    background: none; }
+  .show-posts-detail .username:hover {
+    color: #4090db; }
 .show-posts-detail .post-container {
   background-color: #f8f8f8;
   margin-bottom: 30px; }
@@ -5763,11 +5776,15 @@ form .error {
         .show-posts-detail .post-container .post-detail-container h1 a:hover {
           color: #337ab7; }
     .show-posts-detail .post-container .post-detail-container blockquote {
-      font-size: 15px; }
+      font-size: 15px;
+      margin: 0; }
+    .show-posts-detail .post-container .post-detail-container .vote-buttons {
+      float: right; }
 .show-posts-detail .post-image-container {
-  position: relative; }
+  position: relative;
+  text-align: center; }
   .show-posts-detail .post-image-container img {
-    min-width: 100%; }
+    display: inline-block; }
   .show-posts-detail .post-image-container .video-icon {
     font-size: 70px;
     position: absolute;
@@ -5789,6 +5806,20 @@ form .error {
 
 .post-detail-container {
   background-color: white; }
+  .post-detail-container .username {
+    border: 0px;
+    color: #333333;
+    outline: none;
+    box-shadow: none; }
+    .post-detail-container .username:focus {
+      outline: none;
+      background: none; }
+    .post-detail-container .username:hover {
+      color: #4090db; }
+  .post-detail-container .image-container {
+    text-align: center; }
+    .post-detail-container .image-container img {
+      display: inline-block; }
   .post-detail-container .post-detail {
     padding: 7px 10px; }
     .post-detail-container .post-detail .btn, .post-detail-container .post-detail .navbar-default .navbar-nav li a.btn, .navbar-default .navbar-nav li .post-detail-container .post-detail a.btn {
@@ -5796,13 +5827,25 @@ form .error {
   .post-detail-container .post-title {
     padding: 7px 10px; }
     .post-detail-container .post-title h1 {
-      margin-top: 0;
-      font-size: 20px; }
+      margin: 0;
+      font-size: 15px; }
+    .post-detail-container .post-title blockquote {
+      margin: 0; }
 
 .post-detail-modal {
   cursor: pointer;
   cursor: -webkit-zoom-out;
   cursor: zoom-out; }
+  .post-detail-modal .username {
+    border: 0px;
+    color: #333333;
+    outline: none;
+    box-shadow: none; }
+    .post-detail-modal .username:focus {
+      outline: none;
+      background: none; }
+    .post-detail-modal .username:hover {
+      color: #4090db; }
   .post-detail-modal .modal-dialog {
     cursor: auto; }
     .post-detail-modal .modal-dialog .modal-content {

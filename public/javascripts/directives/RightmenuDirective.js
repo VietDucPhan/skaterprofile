@@ -59,15 +59,20 @@ var UploadVideoController = function ($scope, $modalInstance, $http, $rootScope,
     $scope.popUpAlerts.splice(index, 1);
   };
 
-  var youtube_pattern = /^http(?:s)?:\/\/(?:www\.)?youtube.com\/watch\?(?=.*v=\w+)(?:\S+)?$/i;
+  var youtube_pattern = /^(?:https?:\/\/)?(?:www\.)?youtube\.com\/watch\?(?=.*v=((\w|-){11}))(?:\S+)?$/i;
   var vimeo_pattern = /^http(?:s)?:\/\/(www\.)?vimeo.com\/(\d+)($|\/)$/i;
 
+  $scope.allowPost = true
   $scope.postVideo = function (data) {
-    if (youtube_pattern.test(data.video) || vimeo_pattern.test(data.video)) {
+
+    if ((youtube_pattern.test(data.video) || vimeo_pattern.test(data.video)) && $scope.allowPost) {
+      $scope.allowPost = false;
       $http.post('/api/users/post-video', data).success(function (res) {
         if (res && res.error) {
           $scope.popUpAlerts = res.error.message;
+          $scope.allowPost = true
         } else {
+          $scope.allowPost = true
           $scope.popUpAlerts = res.message;
         }
 
@@ -75,8 +80,9 @@ var UploadVideoController = function ($scope, $modalInstance, $http, $rootScope,
         $timeout(function () {
           $scope.popUpAlerts.splice(0, 1);
           $modalInstance.close()
-        }, 2000);
+        }, 1300);
       }).error(function (res) {
+        $scope.allowPost = true
         $rootScope.popUpAlerts = [{
           msg: 'An unexpected error happened, please try again, lattttter!!!',
           type: 'warning'
@@ -115,7 +121,6 @@ var UploadImageController = function ($scope, FileUploader, $modalInstance, Sess
   }
 
   postImage.onSuccessItem = function (fileItem, response) {
-    console.log(response)
     if (response && response.error) {
       $scope.popUpAlerts = response.error.message;
     } else {
@@ -124,7 +129,7 @@ var UploadImageController = function ($scope, FileUploader, $modalInstance, Sess
       $timeout(function () {
         $scope.popUpAlerts.splice(0, 1);
         $modalInstance.close()
-      }, 2000);
+      }, 1300);
     }
   };
 
@@ -155,7 +160,7 @@ var SignUpController = function (Auth, $scope, $modalInstance, $rootScope, $loca
         $rootScope.signUpPopUpAlerts = data.message
         $timeout(function () {
           $modalInstance.close()
-        }, 2000);
+        }, 1300);
       }
     });
   }

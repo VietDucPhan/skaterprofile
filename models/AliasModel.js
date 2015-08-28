@@ -26,10 +26,27 @@ AliasModel.isEditable = function(aliasId, userId, callback){
   var editable = false;
   var Alias = AliasModel.getCollection();
   Alias.findOne({_id:new ObjectID(aliasId)},function(err,doc){
-    if(doc && (doc.managers[0].toString() === userId.toString() || (doc.config && doc.config.public_editing == 1))){
-      editable = true;
-    }
-    return callback(editable);
+    async.waterfall([
+      function(callback){
+        for(var i = 0, lit = doc.managers ? doc.managers.length : 0; i < lit; i++){
+          if(doc.managers[i] == userId){
+            callback(null)
+            break;
+          }
+
+          if(i == lit-1){
+            callback(true)
+            break;
+          }
+        }
+      }
+    ],function(err){
+      if(doc && (!err || (doc.config && doc.config.public_editing == 1) || doc.admin.toString() == userId)){
+        editable = true;
+      }
+      return callback(editable);
+    })
+
   });
 }
 
@@ -37,10 +54,27 @@ AliasModel.isPostable = function(aliasId, userId, callback){
   var editable = false;
   var Alias = AliasModel.getCollection();
   Alias.findOne({_id:new ObjectID(aliasId)},function(err,doc){
-    if(doc && userId && (doc.managers[0].toString() === userId.toString() || (doc.config && doc.config.public_editing == 1))){
-      editable = true;
-    }
-    return callback(editable);
+    async.waterfall([
+      function(callback){
+        for(var i = 0, lit = doc.managers ? doc.managers.length : 0; i < lit; i++){
+          if(doc.managers[i] == userId){
+            callback(null)
+            break;
+          }
+
+          if(i == lit-1){
+            callback(true)
+            break;
+          }
+        }
+      }
+    ],function(err){
+      console.log(doc.admin == userId);
+      if(doc && (!err || (doc.config && doc.config.public_posting == 1) || doc.admin.toString() == userId)){
+        editable = true;
+      }
+      return callback(editable);
+    })
   });
 }
 

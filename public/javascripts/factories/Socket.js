@@ -11,6 +11,11 @@ angular.module('App').factory('Socket', function ($http, Session, $window, $root
     }
   }
 
+  socket.on('vote_action', function (data) {
+    $rootScope.$broadcast('vote_action', data)
+  })
+
+
   Socket.listen = function (name, callback) {
     socket.on(name, function (data) {
       if (typeof callback == 'function') {

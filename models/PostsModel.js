@@ -10,7 +10,7 @@ var async = require('async');
 var Auth = require('../lib/Auth');
 var ObjectID = require('mongodb').ObjectID;
 var Socket = require('../lib/Socket');
-
+var AliasModel = require('../models/AliasModel');
 var PostsModel = module.exports = {};
 
 PostsModel.getAllPostsByCondition = function (condition, callback) {
@@ -19,9 +19,11 @@ PostsModel.getAllPostsByCondition = function (condition, callback) {
   if (condition.aliasId) {
     query.posted_to_alias = new ObjectID(condition.aliasId)
   }
-  var curs = Posts.find({$query: query, $orderby: {_id: -1}}).toArray(function (err, documents) {
-    return callback(documents)
+
+  Posts.find({$query: query, $orderby: {_id: -1}}).toArray(function (err, documents) {
+    callback(documents)
   });
+
   //Alias.aggregate([
   //
   //  {$group:{push_posts:{$push:'$posts'},
@@ -124,8 +126,20 @@ PostsModel.downVote = function (post_id, user_id, callback) {
 
 PostsModel.getPost = function (id, callback) {
   var Posts = AppModel.db.collection('posts');
+  var Alias = AppModel.db.collection('alias');
   Posts.findOne({_id: new ObjectID(id)}, function (err, doc) {
-    return callback(doc)
+    if(doc){
+      Alias.findOne({_id: new ObjectID(doc.posted_by_alias)},function(err, by_alias){
+        doc.by_alias = by_alias;
+        Alias.findOne({_id: new ObjectID(doc.posted_to_alias)},function(err, to_alias){
+          doc.to_alias = to_alias;
+          return callback(doc)
+        })
+      })
+    } else {
+      return callback(false)
+    }
+
   })
   //Alias.aggregate([
   //
@@ -138,6 +152,24 @@ PostsModel.getPost = function (id, callback) {
   //],{},function(err,cur){
   //  return callback(cur)
   //})
+}
+
+PostsModel.delete = function(postId, userid, aliasId, callback){
+  var Posts = AppModel.db.collection('posts');
+  Posts.findOne({_id: new ObjectID(postId),$or:[{posted_by_user:new ObjectID(userid)},{posted_to_alias:new ObjectID(aliasId)}]},function(err, doc){
+    if(doc){
+      Posts.remove({_id:doc._id},{},function(err, num){
+        if(!err){
+          return callback({message:[{msg:'You successfuly delete a post',type:'success'}]})
+        } else {
+          return callback({error:{message:[{msg:'An unexpected error happened please try again later',type:'danger'}]},status:'not_authorized'})
+        }
+      })
+    } else {
+      return callback({error:{message:[{msg:'You are not authorized',type:'danger'}]},status:'not_authorized'})
+    }
+
+  });
 }
 
 PostsModel.save = function (data, callback) {

@@ -3,7 +3,11 @@ div.col-sm-8
     div.post-detail
       div.row
         div.col-xs-8
-          div(vote-buttons='{{postData._id}}')
+          btton.profile-picture
+            img(ng-src="{{postData.by_alias.picture.source}}")
+          a(href="/{{postData.by_alias.username}}",ng-click="dismiss()").btn.username {{postData.by_alias.name}}
+          span(ng-if="!owned_post") >
+          a(ng-if="!owned_post",href="/{{postData.to_alias.username}}",ng-click="dismiss()").btn.username {{postData.to_alias.name}}
         div.col-xs-4
           div(dropdown='',class='pull-right').btn-group
             button(class="btn btn-default dropdown-toggle no-border", dropdown-toggle="", data-toggle="dropdown", aria-haspopup="true", aria-expanded="false")
@@ -14,11 +18,14 @@ div.col-sm-8
                 a(ng-href="#") Report
               li.divider
               li
-                a(href="#") Delete
+                a(href="#",ng-click="delete(postData._id)") Delete
     div(class="embed-responsive embed-responsive-16by9")
       iframe(class="embed-responsive-item",src="{{video_src}}")
-    div.post-title
-      h1 {{postData.name}}
-      blockquote(ng-if="postData.description")
-        p {{postData.description}}
+    div.row
+      div.post-title
+        div.col-sm-9.post-title
+          blockquote(ng-if="postData.name")
+            h1 {{postData.name}}
+        div.col-sm-3.post-title
+          div(vote-buttons='{{postData._id}}')
 div.col-sm-4

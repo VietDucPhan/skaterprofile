@@ -46,11 +46,10 @@ router.post('/post-image',function(req,res){
   Session.decode(req.token, function (decoded) {
     if(decoded && !decoded.tokenExp){
 
-      var msg = req.headers.msg ? req.headers.msg : 'Untitle';
+      var msg = req.headers.desc ? req.headers.desc : 'Untitle';
       var to_alias = req.headers.to_alias ? new ObjectID(req.headers.to_alias) : null;
       var by_user = new ObjectID(decoded.data._id);
       var by_alias = null;
-      var description = req.headers.desc ? req.headers.desc : null;
       if(decoded.data && decoded.data.alias){
         by_alias = new ObjectID(decoded.data.alias._id);
       }
@@ -74,7 +73,7 @@ router.post('/post-image',function(req,res){
                         fbPostResponse.posted_by_user = by_user;
                         fbPostResponse.posted_to_alias = to_alias;
                         fbPostResponse.posted_by_alias = by_alias;
-                        fbPostResponse.description = description;
+                        fbPostResponse.name = req.headers.desc;
                         Users.postAPhoto(fbPostResponse,function(databaseResponse){
                           if(databaseResponse && databaseResponse.error){
                             return res.json(databaseResponse)
@@ -91,11 +90,11 @@ router.post('/post-image',function(req,res){
                 }
               })
             } else {
-              return callback({error: {message: [{msg: 'You are not allowed to post to this profile', type: 'danger'}]}})
+              return res.json({error: {message: [{msg: 'You are not allowed to post to this profile', type: 'danger'}]}})
             }
           })
         } else {
-          return callback({error: {message: [{msg: 'We could not find the profile, you are posting to, please try again latter', type: 'danger'}]}})
+          return res.json({error: {message: [{msg: 'We could not find the profile, you are posting to, please try again latter', type: 'danger'}]}})
         }
       })
 
@@ -120,11 +119,10 @@ router.post('/post-video',function(req,res){
                 video_id:videoId,
                 url:req.body.video,
                 type:type,
-                name:req.body.title,
+                name:req.body.desc,
                 posted_by_user:new ObjectID(decoded.data._id),
                 posted_to_alias:to_alias,
-                source:videoImage,
-                description:req.body.desc
+                source:videoImage
               };
               if(decoded.data && decoded.data.alias){
                 videoData.posted_by_alias = new ObjectID(decoded.data.alias._id);
@@ -133,7 +131,7 @@ router.post('/post-video',function(req,res){
                 if(databaseResponse && databaseResponse.error){
                   return res.json(databaseResponse)
                 } else {
-                  return res.json({message:[{msg:'Successfully upload youtube.jade',type:'success'}]});
+                  return res.json({message:[{msg:'Successfully upload video',type:'success'}]});
                 }
               })
             } else {

@@ -12,7 +12,11 @@ var request = require('request');
 var SNSApi = require('../lib/SNSApi');
 
 router.get('/:alias',function(req,res){
-  Alias.getAlias({username:req.params.alias},function(aliasData){
+  var condition = {username:req.params.alias};
+  if(ObjectID.isValid(req.params.alias)){
+    condition = {_id: new ObjectID(req.params.alias)};
+  }
+  Alias.getAlias(condition,function(aliasData){
     if(aliasData){
       return res.json({response:aliasData});
     } else {
@@ -25,10 +29,10 @@ router.get('/:alias',function(req,res){
 router.post('/edit-profile', function (req, res) {
   Session.decode(req.token, function (decoded) {
     if (decoded && decoded.data) {
-      if(req.body && req.body.config && decoded.data._id != req.body.admin){
+
+      if(req.body && req.body.config && decoded.data._id != req.body.admin && req.body.managers.indexOf(decoded.data._id) == -1){
         delete req.body.config;
       }
-
       if(req.body && req.body.admin){
         delete req.body.admin
       }
@@ -183,25 +187,30 @@ router.post('/change-picture', function (req, res) {
 router.post('/follow',function(req,res){
   Session.decode(req.token,function(decoded){
     if(decoded && decoded.data){
-      Alias.isFollowing(decoded.data.alias._id,req.body.id,function(doc){
-        if(!doc){
-          Alias.addFollowing(decoded.data.alias._id,req.body.id,function(doc){
-            if(doc){
-              return res.json({message:[{msg:'You successfully followed this one',type:'success'}],status:'following'});
-            } else {
-              return res.json({error:{message:[{msg:'Something happened, please try again latter',type:'warning'}]}});
-            }
-          })
-        } else {
-          Alias.removeFollowing(decoded.data.alias._id,req.body.id,function(doc){
-            if(doc){
-              return res.json({message:[{msg:'You successfully unfollowed this one',type:'success'}],status:'follow'});
-            } else {
-              return res.json({error:{message:[{msg:'Something happened, please try again latter',type:'warning'}]}});
-            }
-          })
-        }
-      })
+      if(decoded.data.alias && decoded.data.alias._id){
+        Alias.isFollowing(decoded.data.alias._id,req.body.id,function(doc){
+          if(!doc){
+            Alias.addFollowing(decoded.data.alias._id,req.body.id,function(doc){
+              if(doc){
+                return res.json({message:[{msg:'You successfully followed this one',type:'success'}],status:'following'});
+              } else {
+                return res.json({error:{message:[{msg:'Something happened, please try again latter',type:'warning'}]}});
+              }
+            })
+          } else {
+            Alias.removeFollowing(decoded.data.alias._id,req.body.id,function(doc){
+              if(doc){
+                return res.json({message:[{msg:'You successfully unfollowed this one',type:'success'}],status:'follow'});
+              } else {
+                return res.json({error:{message:[{msg:'Something happened, please try again latter',type:'warning'}]}});
+              }
+            })
+          }
+        })
+      } else {
+        return res.json({error:{message:[{msg:'You need to create profile to follow someone',type:'warning'}]},status:'profile_missing'});
+      }
+
     } else {
       return res.json({error:{message:[{msg:'Please login first',type:'warning'}]},status:'session_expire'});
     }

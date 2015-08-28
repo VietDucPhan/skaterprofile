@@ -7,7 +7,9 @@ div(ng-repeat="post in posts",class="col-sm-{{postClass}}").show-posts-detail
       img(ng-src="{{post.source}}",class="post-image img-responsive")
 
     div.post-detail-container
-      h1
-        a(href="/post/{{post._id}}") {{post.name}}
-      blockquote(ng-if="post.description")
-        p {{post.description}}
+      div.row
+        div.col-sm-8
+          blockquote(ng-if="post.name")
+            p {{post.name}}
+        div.col-sm-4
+          div(vote-buttons='{{post._id}}').vote-buttons

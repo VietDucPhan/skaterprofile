@@ -15,10 +15,6 @@ div(class="modal-body")
       nv-file-select="",required,
       uploader="postImage",valid-file="")
     div.form-group
-      span(class="error", ng-show="uploadImageForm.postTile.$error.maxlength") Too long!
-      textarea(name="postTile",class="form-control",required="",ng-maxlength="100",placeholder="Title (Max length: " +
-      "100)",ng-model="postTitle")
-    div.form-group
       span(class="error", ng-show="uploadImageForm.postDesc.$error.maxlength") Too long!
       textarea(name="postDesc",class="form-control",ng-maxlength="200",placeholder="Description (Optional) (Max " +
       "length: " +

@@ -10,10 +10,6 @@ div(class="modal-body")
       input(type="url",placeholder="http://somevideolink.com/some_link", class="form-control", id="postVideo",
       ng-model="uploadVideoData.video")
     div.form-group
-      span(class="error", ng-show="uploadVideoForm.postTile.$error.maxlength") Too long!
-      input(type="text",name="postTile",class="form-control",required="",ng-maxlength="100",placeholder="Title (Max " +
-      "length: 100)",ng-model="uploadVideoData.title")
-    div.form-group
       span(class="error", ng-show="uploadVideoForm.postDesc.$error.maxlength") Too long!
       textarea(name="postDesc",class="form-control",ng-maxlength="200",placeholder="Description (Optional) (Max " +
       "length: " +

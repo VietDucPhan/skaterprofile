@@ -257,7 +257,7 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
   }
 
   $scope.vimeo = function(id){
-    return $sce.trustAsResourceUrl("https://player.vimeo.com/youtube.jade/"+id)
+    return $sce.trustAsResourceUrl("https://player.vimeo.com/video/"+id)
   }
 
   $http.get('/api/alias/'+$routeParams.user).success(function(response){
@@ -354,7 +354,11 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
         $scope.type = 'basic-info';
         $scope.editProfile = response.response;
         var username = response.response.username
-        $scope.isOwner = $rootScope.user._id == response.response.admin;
+        $scope.isOwner = false;
+        if($rootScope.user._id == response.response.admin || response.response.managers.indexOf($rootScope.user._id) != -1){
+          $scope.isOwner = true;
+        }
+
 
 
         $scope.change = function(template){
@@ -387,16 +391,17 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
   $http.get('/api/posts/get/detail/'+$routeParams.id).success(function(data){
     if(data && !data.error){
       $scope.postData =  data;
+      $scope.owned_post = data.posted_by_alias == data.posted_to_alias;
       if($scope.postData && $scope.postData.type != 'facebook' ){
         $scope.post_detail_url = '/ang/elements/post-detail/video';
       }
 
       switch ($scope.postData.type){
         case 'youtube' :
-          $scope.video_src = $sce.trustAsResourceUrl("https://www.youtube.com/embed/"+$scope.postData.video_id+"?rel=0&amp;controls=0&amp;showinfo=0")
+          $scope.video_src = $sce.trustAsResourceUrl("https://www.youtube.com/embed/"+$scope.postData.video_id+"?rel=0&amp;showinfo=0")
           break;
         case 'vimeo' :
-          $scope.video_src = $sce.trustAsResourceUrl("https://player.vimeo.com/youtube.jade/"+$scope.postData.video_id)
+          $scope.video_src = $sce.trustAsResourceUrl("https://player.vimeo.com/video/"+$scope.postData.video_id)
           break
       }
 
