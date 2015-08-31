@@ -5662,6 +5662,33 @@ body {
   body .btn:focus, body .navbar-default .navbar-nav li a.btn:focus, .navbar-default .navbar-nav li body a.btn:focus, body .btn:active:focus, body .navbar-default .navbar-nav li a.btn:active:focus, .navbar-default .navbar-nav li body a.btn:active:focus, body .btn.active:focus, body .navbar-default .navbar-nav li a.active.btn:focus, .navbar-default .navbar-nav li body a.active.btn:focus {
     outline: 0 none; }
 
+.no-radius {
+  border-radius: 0px; }
+
+.list-followers {
+  margin: 0;
+  padding: 0;
+  border: 1px solid #ccc;
+  border-top: 0px; }
+  .list-followers li {
+    list-style-type: none;
+    padding: 6px 12px;
+    position: relative;
+    cursor: pointer; }
+    .list-followers li:hover {
+      color: #449d44; }
+      .list-followers li:hover .form-control-feedback {
+        display: inline-block;
+        color: #ccc; }
+    .list-followers li .profile-picture {
+      margin: 0; }
+    .list-followers li .form-control-feedback {
+      display: none;
+      top: calc(50% - 17px); }
+    .list-followers li.active .form-control-feedback {
+      display: inline-block;
+      color: #449d44; }
+
 .profile-picture {
   display: inline-block;
   vertical-align: middle;

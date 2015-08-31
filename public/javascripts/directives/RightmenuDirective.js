@@ -55,9 +55,19 @@ var UploadVideoController = function ($scope, $modalInstance, $http, $rootScope,
     $modalInstance.dismiss('cancel');
   };
 
+
   $scope.closePopUpAlerts = function (index) {
     $scope.popUpAlerts.splice(index, 1);
   };
+  if($rootScope.user && $rootScope.user.alias && $rootScope.user.alias.following){
+    $http.post('/api/users/get-followers',{followers:$rootScope.user.alias.following}).success(function(data){
+      if(data && !data.error){
+        $scope.followers = data.response;
+      }
+
+    })
+  }
+
 
   var youtube_pattern = /^(?:https?:\/\/)?(?:www\.)?youtube\.com\/watch\?(?=.*v=((\w|-){11}))(?:\S+)?$/i;
   var vimeo_pattern = /^http(?:s)?:\/\/(www\.)?vimeo.com\/(\d+)($|\/)$/i;

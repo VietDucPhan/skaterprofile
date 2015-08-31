@@ -385,13 +385,29 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
     }
 
   })
-}).controller('PostdetailController',function($scope,$http,$routeParams,$rootScope,$sce,$window, Session){
+}).controller('PostdetailController',function($scope,$http,$routeParams,$rootScope,$sce,$modal, $location){
   $scope.post_detail_url = '/ang/elements/post-detail/image';
   $scope.video_src = ''
+  $rootScope.$on('refresh_showposts', function (status,data) {
+    if($routeParams.id == data.deleted_post){
+      $rootScope.alerts = data.message;
+      if($rootScope.user && $rootScope.user.alias && $rootScope.user.alias.username){
+        $location.path('/' + $rootScope.user.alias.username,true);
+      } else {
+        $location.path('/',true);$location.path('/',true);
+      }
+
+    }
+
+  })
   $http.get('/api/posts/get/detail/'+$routeParams.id).success(function(data){
     if(data && !data.error){
       $scope.postData =  data;
       $scope.owned_post = data.posted_by_alias == data.posted_to_alias;
+      $scope.isDeletable = false;
+      if($rootScope.user && (($rootScope.user.alias && ($rootScope.user.alias._id == data.posted_to_alias)) || ($rootScope.user._id == data.posted_by_user))){
+        $scope.isDeletable = true;
+      }
       if($scope.postData && $scope.postData.type != 'facebook' ){
         $scope.post_detail_url = '/ang/elements/post-detail/video';
       }
@@ -403,6 +419,19 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
         case 'vimeo' :
           $scope.video_src = $sce.trustAsResourceUrl("https://player.vimeo.com/video/"+$scope.postData.video_id)
           break
+      }
+
+      $scope.delete = function (id) {
+        $modal.open({
+          animation: false,
+          template: '<div class="modal-header"><h3 class="modal-title">Delete Post</h3></div><div class="modal-body"><p>{{content}}</p></div><div ng-if="flag" class="modal-footer"> <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button> <button class="btn btn-primary" type="button" ng-click="confirm()">Confirm</button> </div>',
+          controller: deleteModalController,
+          resolve: {
+            id: function () {
+              return id;
+            }
+          }
+        });
       }
 
     } else {

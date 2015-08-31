@@ -15,4 +15,13 @@ div(class="modal-body")
       "length: " +
       "200)",ng-model="uploadVideoData.desc", rows="6")
     div.form-group
+      input(class="form-control no-radius", type='text', ng-model="search", placeholder='Search or choose from bellow')
+      ul().list-followers
+        li(ng-repeat="follower in followers | filter : search",btn-radio="'{{follower._id}}'",ng-model="uploadVideoData.to_alias", uncheckable="")
+          span().profile-picture
+            img(ng-src="{{follower.picture.source}}")
+          |&nbsp; {{follower.name}}
+          span(class="glyphicon glyphicon-ok-circle form-control-feedback", aria-hidden="true")
+
+    div.form-group
       button(ng-click="postVideo(uploadVideoData)",ng-disabled="uploadVideoForm.$invalid").btn Upload

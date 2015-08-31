@@ -23,6 +23,7 @@ router.post('/delete',function(req,res){
       }
       PostsModel.delete(req.body.id,decoded.data._id, aliasId,function(data){
         if(data && !data.error){
+          data.deleted_post = req.body.id;
           return res.json(data);
         } else {
           return res.json(data)

@@ -28,8 +28,8 @@ AliasModel.isEditable = function(aliasId, userId, callback){
   Alias.findOne({_id:new ObjectID(aliasId)},function(err,doc){
     async.waterfall([
       function(callback){
-        for(var i = 0, lit = doc.managers ? doc.managers.length : 0; i < lit; i++){
-          if(doc.managers[i] == userId){
+        for(var i = 0, lit = doc.managers ? doc.managers.length : 1; i < lit; i++){
+          if(doc && doc.managers && doc.managers[i] && doc.managers[i].toString() == userId){
             callback(null)
             break;
           }
@@ -41,7 +41,7 @@ AliasModel.isEditable = function(aliasId, userId, callback){
         }
       }
     ],function(err){
-      if(doc && (!err || (doc.config && doc.config.public_editing == 1) || doc.admin.toString() == userId)){
+      if(doc && (!err || (doc.config && doc.config.public_editing == 1) || (doc.admin && doc.admin.toString() == userId))){
         editable = true;
       }
       return callback(editable);
@@ -51,13 +51,13 @@ AliasModel.isEditable = function(aliasId, userId, callback){
 }
 
 AliasModel.isPostable = function(aliasId, userId, callback){
-  var editable = false;
+  var isPostable = false;
   var Alias = AliasModel.getCollection();
   Alias.findOne({_id:new ObjectID(aliasId)},function(err,doc){
     async.waterfall([
       function(callback){
-        for(var i = 0, lit = doc.managers ? doc.managers.length : 0; i < lit; i++){
-          if(doc.managers[i] == userId){
+        for(var i = 0, lit = doc.managers ? doc.managers.length : 1; i < lit; i++){
+          if(doc && doc.managers && doc.managers[i] && doc.managers[i].toString() == userId){
             callback(null)
             break;
           }
@@ -69,11 +69,10 @@ AliasModel.isPostable = function(aliasId, userId, callback){
         }
       }
     ],function(err){
-      console.log(doc.admin == userId);
-      if(doc && (!err || (doc.config && doc.config.public_posting == 1) || doc.admin.toString() == userId)){
-        editable = true;
+      if(doc && (!err || (doc.config && doc.config.public_posting == 1) || (doc.admin && doc.admin.toString() == userId))){
+        isPostable = true;
       }
-      return callback(editable);
+      return callback(isPostable);
     })
   });
 }
@@ -110,6 +109,32 @@ AliasModel.removeFollower = function(aliasId,idToRemove,callback){
   });
 }
 
+AliasModel.getFollowers = function(followers, callback){
+  var makeObjectId = function(followers,callback){
+    var val = []
+    for(var i = 0, length = followers.length; i < length; i++){
+      var followerId = followers[i]
+      if(followerId && ObjectID.isValid(followerId)){
+        val.push(new ObjectID(followerId))
+      }
+      if(i == length-1){
+        return callback(val)
+      }
+    }
+  }
+  var Alias = AliasModel.getCollection();
+  makeObjectId(followers,function(arrayObjectId){
+    Alias.find({_id:{$in:arrayObjectId}}).toArray(function (err, documents) {
+      if(!err){
+        callback(documents)
+      } else {
+        callback({error:{message:[{msg:'An unexpected error occured please try again latter',type:'warning'}]}})
+      }
+
+    });
+  })
+
+}
 
 AliasModel.isFollower = function(follower,following,callback){
   var Alias = AliasModel.getCollection();
@@ -120,7 +145,7 @@ AliasModel.isFollower = function(follower,following,callback){
 
 AliasModel.isFollowing = function(follower,following,callback){
   var Alias = AliasModel.getCollection();
-  Alias.findOne({_id:new ObjectID(follower),'following.id':following},function(err,doc){
+  Alias.findOne({_id:new ObjectID(follower),'following':{$in:[following]}},function(err,doc){
     return callback(doc);
   });
 }
@@ -134,7 +159,7 @@ AliasModel.addFollower = function(actionSenderId,actionTakerId,callback){
 
 AliasModel.addFollowing = function(aliasId,anotherAliasId,callback){
   var Alias = AliasModel.getCollection();
-  Alias.findAndModify({_id: new ObjectID(aliasId)},[],{$push:{following:{_id:new ObjectID(),id:anotherAliasId}}},{new:true},function(err,doc){
+  Alias.findAndModify({_id: new ObjectID(aliasId)},[],{$push:{following:anotherAliasId}},{new:true},function(err,doc){
     return callback(doc);
   });
 }

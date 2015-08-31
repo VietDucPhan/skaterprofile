@@ -3,7 +3,7 @@ div.col-sm-8
     div.post-detail
       div.row
         div.col-xs-8
-          btton.profile-picture
+          button.profile-picture
             img(ng-src="{{postData.by_alias.picture.source}}")
           a(href="/{{postData.by_alias.username}}",ng-click="dismiss()").btn.username {{postData.by_alias.name}}
           span(ng-if="!owned_post") >
@@ -16,8 +16,8 @@ div.col-sm-8
             ul(role="menu", aria-labelledby="split-button").dropdown-menu
               li
                 a(ng-href="#") Report
-              li.divider
-              li
+              li(ng-if="isDeletable").divider
+              li(ng-if="isDeletable")
                 a(href="#",ng-click="delete(postData._id)") Delete
     div(class="embed-responsive embed-responsive-16by9")
       iframe(class="embed-responsive-item",src="{{video_src}}")

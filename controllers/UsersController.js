@@ -23,6 +23,21 @@ router.post('/refresh', function (req, res) {
 
 });
 
+router.post('/get-followers', function (req, res) {
+  Session.decode(req.token, function (decoded) {
+    Session.refresh(decoded, function (result) {
+      if(decoded && decoded.data){
+        Alias.getFollowers(req.body.followers,function(data){
+          return res.json({response:data});
+        })
+      } else {
+        return res.json({error:{message:[{msg:'You need to login first',type:'warning'}]},status:'session_expired'});
+      }
+    })
+  })
+
+});
+
 /**
  * get data from sign up page process save data
  */
