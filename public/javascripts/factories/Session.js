@@ -28,7 +28,6 @@ angular.module('App').factory('Session', function ($http, $interval, $rootScope)
   };
 
   Session.refresh = function () {
-
     if (refreshFirstTime == 1) {
       Session._getNewToken();
       refreshFirstTime++;

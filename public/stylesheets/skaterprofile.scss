@@ -15,6 +15,8 @@ body{
   padding: 0;
   border: 1px solid #ccc;
   border-top:0px;
+  max-height: 225px;
+  overflow-y: scroll;
   li{
     list-style-type: none;
     padding:6px 12px;

@@ -75,7 +75,7 @@ var UploadVideoController = function ($scope, $modalInstance, $http, $rootScope,
   $scope.allowPost = true
   $scope.postVideo = function (data) {
 
-    if ((youtube_pattern.test(data.video) || vimeo_pattern.test(data.video)) && $scope.allowPost) {
+    if (data && (youtube_pattern.test(data.video) || vimeo_pattern.test(data.video)) && $scope.allowPost) {
       $scope.allowPost = false;
       $http.post('/api/users/post-video', data).success(function (res) {
         if (res && res.error) {
@@ -104,7 +104,7 @@ var UploadVideoController = function ($scope, $modalInstance, $http, $rootScope,
 
   }
 }
-var UploadImageController = function ($scope, FileUploader, $modalInstance, Session, $rootScope, $timeout) {
+var UploadImageController = function ($scope, FileUploader, $modalInstance, Session, $rootScope, $timeout, $http) {
   $scope.cancel = function () {
     $modalInstance.dismiss('cancel');
   };
@@ -114,20 +114,30 @@ var UploadImageController = function ($scope, FileUploader, $modalInstance, Sess
   };
 
   $scope.postTitle = '';
+  if($rootScope.user && $rootScope.user.alias && $rootScope.user.alias.following){
+    $http.post('/api/users/get-followers',{followers:$rootScope.user.alias.following}).success(function(data){
+      if(data && !data.error){
+        $scope.followers = data.response;
+      }
+
+    })
+  }
+  $scope.set_to_alias = function(id){
+    $scope.to_alias = id
+  }
+
   var postImage = $scope.postImage = new FileUploader({
     url: '/api/users/post-image',
     removeAfterUpload: true
   })
 
   postImage.onAfterAddingFile = function (fileItem) {
-    fileItem.formData.push({token: Session.get()})
     fileItem.headers.token = Session.get();
-
   };
 
   postImage.onBeforeUploadItem = function (item) {
-    item.headers.msg = $scope.postTitle;
     item.headers.desc = $scope.desc;
+    item.headers.to_alias = $scope.to_alias;
   }
 
   postImage.onSuccessItem = function (fileItem, response) {

@@ -7,7 +7,7 @@ var Email = require('../lib/Email');
 var async = require('async');
 var Auth = require('../lib/Auth');
 var ObjectID = require('mongodb').ObjectID;
-
+var util = require('util');
 
 var AliasModel = module.exports = {};
 
@@ -88,7 +88,7 @@ AliasModel.toggleFollow = function(actionSenderId,actionTakerId,callback){
 
 AliasModel.removeFollowing = function(aliasId,idToRemove,callback){
   var Alias = AliasModel.getCollection();
-  Alias.update({_id: new ObjectID(aliasId)},{$unset:{following:{ $in: [ {"id":idToRemove} ]}}},function(err,doc){
+  Alias.update({_id: new ObjectID(aliasId), following:idToRemove},{$pull:{following:idToRemove}},function(err,doc){
     if(doc.result.ok == 1){
       return callback(true);
     } else {
@@ -112,14 +112,18 @@ AliasModel.removeFollower = function(aliasId,idToRemove,callback){
 AliasModel.getFollowers = function(followers, callback){
   var makeObjectId = function(followers,callback){
     var val = []
-    for(var i = 0, length = followers.length; i < length; i++){
-      var followerId = followers[i]
-      if(followerId && ObjectID.isValid(followerId)){
-        val.push(new ObjectID(followerId))
+    if(util.isArray(followers) && followers.length > 0){
+      for(var i = 0, length = followers.length; i < length; i++){
+        var followerId = followers[i]
+        if(followerId && ObjectID.isValid(followerId)){
+          val.push(new ObjectID(followerId))
+        }
+        if(i == length-1){
+          return callback(val)
+        }
       }
-      if(i == length-1){
-        return callback(val)
-      }
+    } else {
+      return callback(val)
     }
   }
   var Alias = AliasModel.getCollection();

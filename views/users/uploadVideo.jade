@@ -8,7 +8,7 @@ div(class="modal-body")
   form(name="uploadVideoForm",method='post',novalidate="")
     div(class='form-group')
       input(type="url",placeholder="http://somevideolink.com/some_link", class="form-control", id="postVideo",
-      ng-model="uploadVideoData.video")
+      ng-model="uploadVideoData.video", required='')
     div.form-group
       span(class="error", ng-show="uploadVideoForm.postDesc.$error.maxlength") Too long!
       textarea(name="postDesc",class="form-control",ng-maxlength="200",placeholder="Description (Optional) (Max " +

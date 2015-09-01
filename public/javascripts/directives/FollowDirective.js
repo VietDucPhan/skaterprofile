@@ -43,8 +43,10 @@ angular.module('App').directive('followButton', function ($location, Session, $h
           scope.followButtonName = 'error'
         } else if (res && res.status == 'following') {
           scope.followButtonName = 'following'
+          $rootScope.$broadcast('session_refresh',true);
         } else {
           scope.followButtonName = 'follow'
+          $rootScope.$broadcast('session_refresh',true);
         }
       }).error(function () {
         scope.followButtonName = 'error'

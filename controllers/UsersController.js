@@ -27,9 +27,14 @@ router.post('/get-followers', function (req, res) {
   Session.decode(req.token, function (decoded) {
     Session.refresh(decoded, function (result) {
       if(decoded && decoded.data){
-        Alias.getFollowers(req.body.followers,function(data){
-          return res.json({response:data});
-        })
+        if(req.body.followers){
+          Alias.getFollowers(req.body.followers,function(data){
+            return res.json({response:data});
+          })
+        } else {
+          return res.json({response:[]});
+        }
+
       } else {
         return res.json({error:{message:[{msg:'You need to login first',type:'warning'}]},status:'session_expired'});
       }
@@ -60,9 +65,9 @@ router.post('/change-password', function (req, res) {
 router.post('/post-image',function(req,res){
   Session.decode(req.token, function (decoded) {
     if(decoded && !decoded.tokenExp){
-
+      console.log(req.headers);
       var msg = req.headers.desc ? req.headers.desc : 'Untitle';
-      var to_alias = req.headers.to_alias ? new ObjectID(req.headers.to_alias) : null;
+      var to_alias = ObjectID.isValid(req.headers.to_alias) ? new ObjectID(req.headers.to_alias) : null;
       var by_user = new ObjectID(decoded.data._id);
       var by_alias = null;
       if(decoded.data && decoded.data.alias){

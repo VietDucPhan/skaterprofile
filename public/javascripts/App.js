@@ -27,8 +27,11 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
     cfpLoadingBarProvider.includeSpinner = false;
     $routeProvider.
       when('/', {
-        templateUrl: 'ang/pages/index',
-        controller: 'IndexController',
+        redirectTo:'/dashboard'
+      }).
+      when('/dashboard', {
+        templateUrl: 'ang/pages/dashboard',
+        controller: 'DashboardController',
         data: {
           requireLogin: false
         }
@@ -105,6 +108,9 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
     $locationProvider.html5Mode(true);
   }
 ]).run(function ($rootScope, Auth, $window, Session, $http, $interval, cfpLoadingBar, $location,$route) {
+  $rootScope.$on('session_refresh',function(e){
+    Session._getNewToken();
+  })
   var original = $location.path;
   $location.path = function (path, reload) {
     if (reload === false) {
@@ -166,6 +172,35 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
   $scope.logout = function () {
     return Auth.logout();
   }
+}).controller('DashboardController', function ($scope, $http, $rootScope, $routeParams, $location,Facebook) {
+  $rootScope.head = {
+    title: 'SkaterProfile',
+    metas: [
+      {
+        name: 'keywords',
+        content: 'Skateboarding, skater, blog, profile, post'
+      },
+      {
+        name: 'description',
+        content: 'Find and follow your favourite skater.  Create your own profile today!!!'
+      }
+    ]
+  };
+  if ($routeParams.id) {
+    $http.post('/api/users/activate', {code: $routeParams.id}).
+      success(function (data) {
+        if (data.error) {
+          $rootScope.alerts = data.error.message;
+
+        } else {
+          $rootScope.alerts = data.message;
+          $location.url('/');
+        }
+
+      });
+  }
+
+  $scope.text = 'page';
 }).controller('SettingController', function ($scope, $http, $location, $rootScope, FileUploader, Session, $routeParams) {
   $scope.profile = {
     sex: 1
