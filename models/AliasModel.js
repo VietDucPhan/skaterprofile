@@ -7,7 +7,7 @@ var Email = require('../lib/Email');
 var async = require('async');
 var Auth = require('../lib/Auth');
 var ObjectID = require('mongodb').ObjectID;
-var util = require('util');
+
 
 var AliasModel = module.exports = {};
 
@@ -110,24 +110,9 @@ AliasModel.removeFollower = function(aliasId,idToRemove,callback){
 }
 
 AliasModel.getFollowers = function(followers, callback){
-  var makeObjectId = function(followers,callback){
-    var val = []
-    if(util.isArray(followers) && followers.length > 0){
-      for(var i = 0, length = followers.length; i < length; i++){
-        var followerId = followers[i]
-        if(followerId && ObjectID.isValid(followerId)){
-          val.push(new ObjectID(followerId))
-        }
-        if(i == length-1){
-          return callback(val)
-        }
-      }
-    } else {
-      return callback(val)
-    }
-  }
+
   var Alias = AliasModel.getCollection();
-  makeObjectId(followers,function(arrayObjectId){
+  AppModel.makeListObjectId(followers,function(arrayObjectId){
     Alias.find({_id:{$in:arrayObjectId}}).toArray(function (err, documents) {
       if(!err){
         callback(documents)

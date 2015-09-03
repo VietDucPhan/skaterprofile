@@ -2,6 +2,24 @@
    Created by Administrator on 8/5/2015.
 div(ng-repeat="post in posts",class="col-sm-{{postClass}}").show-posts-detail
   div(class="post-container")
+    div.post-detail
+      div.row
+        div.col-xs-8
+          span(follow-button="", alias-id="{{post.posted_by_alias}}", show-name="true", show-follow-button="false",
+          show-picture="true")
+          span(ng-if="post.posted_by_alias != post.posted_to_alias") >
+          span(ng-if="post.posted_by_alias != post.posted_to_alias",follow-button="", alias-id="{{post.posted_to_alias}}", show-name="true")
+        div.col-xs-4
+          div(dropdown='',class='pull-right').btn-group
+            button(class="btn btn-default dropdown-toggle no-border", dropdown-toggle="", data-toggle="dropdown", aria-haspopup="true", aria-expanded="false")
+              span.caret
+              span(class="sr-only") Split button!
+            ul(role="menu", aria-labelledby="split-button").dropdown-menu
+              li
+                a(ng-href="#") Report
+              li(ng-if="isDeletable").divider
+              li(ng-if="isDeletable")
+                a(href="#",ng-click="delete(post._id)") Delete
     a(href="/post/{{post._id}}",class="post-image-container",post-detail="{{post._id}}",back-state='{{back_state}}')
       span(ng-if="post.type != 'facebook'", class="glyphicon glyphicon-play video-icon")
       img(ng-src="{{post.source}}",class="post-image img-responsive")

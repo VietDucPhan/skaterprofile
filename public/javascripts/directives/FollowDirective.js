@@ -2,26 +2,38 @@
 angular.module('App').directive('followButton', function ($location, Session, $http, $rootScope, $window, $location) {
   var followButton = {};
   followButton.restrict = 'A';
-  followButton.template = '<button ng-if="username" ng-click="toAliasPage()" class="follow-username btn follow-btn {{followButtonHide}}">{{username}}</button> <button class="btn follow-btn btn-{{followButtonName}} {{followButtonHide}}" ng-click="follow()">{{followButtonName}}</button>'
+  followButton.template = '<button ng-if="showPicture" class="profile-picture "><img ng-src="{{picture}}"></button>' +
+    '<a ng-if="showName || username" href="/{{username}}" ng-click="dismiss()" class="btn username {{showNameClass}}">{{username}}</a> ' +
+    '<button ng-if="showFollowButton" class="btn follow-btn btn-{{followButtonName}} {{followButtonHide}}" ng-click="follow()">{{followButtonName}}</button>'
   followButton.scope = {
-    showName: '@showName'
+    showName: '@showName',
+    showFollowButton: '@showFollowButton',
+    showPicture:'@showPicture'
   }
   followButton.link = function (scope, ele, att) {
     scope.followButtonName = 'follow';
     scope.followButtonHide = '';
-    if ($rootScope.alias && att.aliasId === $rootScope.alias._id) {
+    scope.username = null;
+    if ($rootScope.alias && att.aliasId === $rootScope.alias._id || scope.showFollowButton == 'false') {
       scope.followButtonHide = 'ng-hide'
     }
-    console.log(scope.showName);
+
+    scope.showFollowButton = scope.showFollowButton == 'true' ? true : false;
+    scope.showPicture = scope.showPicture == 'true' ? true : false;
+
     if (scope.showName == 'true') {
+      scope.showName = true
       $http.get('/api/alias/' + att.aliasId).success(function (response) {
         if (response && response.response && response.response.username) {
           scope.username = response.response.username
-          scope.toAliasPage = function () {
-            $location.path('/' + scope.username, true);
+          if(response.response.picture){
+            scope.picture  = response.response.picture.picture
           }
         }
       })
+    } else {
+      scope.showName = false;
+      scope.showNameClass = 'ng-hide';
     }
     $http.post('/api/alias/isfollowing', {id: att.aliasId}).success(function (response) {
       if (response && response.error) {

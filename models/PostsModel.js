@@ -15,14 +15,32 @@ var PostsModel = module.exports = {};
 
 PostsModel.getAllPostsByCondition = function (condition, callback) {
   var Posts = AppModel.db.collection('posts');
+  var Alias = AppModel.db.collection('alias');
   var query = {}
-  if (condition.aliasId) {
-    query.posted_to_alias = new ObjectID(condition.aliasId)
+  console.log(condition);
+  if (condition.aliasId && !condition.following && !condition.hot) {
+    Posts.find({
+      $query: {posted_to_alias: new ObjectID(condition.aliasId)},
+      $orderby: {_id: -1}
+    }).toArray(function (err, documents) {
+      return callback(documents)
+    });
+  } else if (condition.following && condition.alias_id) {
+    Alias.findOne({_id: new ObjectID(condition.alias_id)}, function (err, doc) {
+      if (doc && doc.following) {
+        AppModel.makeListObjectId(doc.following, function (list) {
+          list.push(new ObjectID(condition.alias_id));
+          Posts.find({$query: {$or:[{posted_to_alias: {$in: list}},{posted_by_alias: {$in: list}}]}, $orderby: {_id: -1}}).toArray(function (err, documents) {
+            return callback(documents)
+          });
+        })
+      } else {
+        return callback([])
+      }
+    })
+  } else {
+    return callback([])
   }
-
-  Posts.find({$query: query, $orderby: {_id: -1}}).toArray(function (err, documents) {
-    callback(documents)
-  });
 
   //Alias.aggregate([
   //
@@ -128,10 +146,10 @@ PostsModel.getPost = function (id, callback) {
   var Posts = AppModel.db.collection('posts');
   var Alias = AppModel.db.collection('alias');
   Posts.findOne({_id: new ObjectID(id)}, function (err, doc) {
-    if(doc){
-      Alias.findOne({_id: new ObjectID(doc.posted_by_alias)},function(err, by_alias){
+    if (doc) {
+      Alias.findOne({_id: new ObjectID(doc.posted_by_alias)}, function (err, by_alias) {
         doc.by_alias = by_alias;
-        Alias.findOne({_id: new ObjectID(doc.posted_to_alias)},function(err, to_alias){
+        Alias.findOne({_id: new ObjectID(doc.posted_to_alias)}, function (err, to_alias) {
           doc.to_alias = to_alias;
           return callback(doc)
         })
@@ -154,19 +172,29 @@ PostsModel.getPost = function (id, callback) {
   //})
 }
 
-PostsModel.delete = function(postId, userid, aliasId, callback){
+PostsModel.delete = function (postId, userid, aliasId, callback) {
   var Posts = AppModel.db.collection('posts');
-  Posts.findOne({_id: new ObjectID(postId),$or:[{posted_by_user:new ObjectID(userid)},{posted_to_alias:new ObjectID(aliasId)}]},function(err, doc){
-    if(doc){
-      Posts.remove({_id:doc._id},{},function(err, num){
-        if(!err){
-          return callback({message:[{msg:'You successfuly delete a post',type:'success'}]})
+  Posts.findOne({
+    _id: new ObjectID(postId),
+    $or: [{posted_by_user: new ObjectID(userid)}, {posted_to_alias: new ObjectID(aliasId)}]
+  }, function (err, doc) {
+    if (doc) {
+      Posts.remove({_id: doc._id}, {}, function (err, num) {
+        if (!err) {
+          return callback({message: [{msg: 'You successfuly delete a post', type: 'success'}]})
         } else {
-          return callback({error:{message:[{msg:'An unexpected error happened please try again later',type:'danger'}]},status:'not_authorized'})
+          return callback({
+            error: {
+              message: [{
+                msg: 'An unexpected error happened please try again later',
+                type: 'danger'
+              }]
+            }, status: 'not_authorized'
+          })
         }
       })
     } else {
-      return callback({error:{message:[{msg:'You are not authorized',type:'danger'}]},status:'not_authorized'})
+      return callback({error: {message: [{msg: 'You are not authorized', type: 'danger'}]}, status: 'not_authorized'})
     }
 
   });

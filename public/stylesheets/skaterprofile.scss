@@ -175,6 +175,12 @@ form{
   }
 }
 .show-posts-detail{
+  .post-detail{
+    padding:7px 10px;
+    .btn{
+      margin:0;
+    }
+  }
   .username{
     border:0px;
     color:#333333;

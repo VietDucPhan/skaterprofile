@@ -25,6 +25,8 @@ angular.module('App').directive('showPosts', function ($http, $rootScope, $sce) 
     }
     scope.postClass = scope.postPerRow() || 12;
 
+
+
     scope.youtube = function (id) {
       return $sce.trustAsResourceUrl("https://www.youtube.com/embed/" + id + "?rel=0&amp;showinfo=0")
     }

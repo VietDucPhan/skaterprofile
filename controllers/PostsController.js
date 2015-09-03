@@ -4,25 +4,37 @@ var config = require('../config')
 var PostsModel = require('../models/PostsModel')
 var Session = require('../lib/Session');
 
-router.post('/get',function(req,res){
-  PostsModel.getAllPostsByCondition(req.body,function(data){
-    if(data){
-      return res.json({response:data});
-    } else {
-      return res.json({error:{message:[{msg:'An unexpected error happened, please try again latter',type:'warning'}]}})
+router.post('/get', function (req, res) {
+  Session.decode(req.token, function (decoded) {
+    if(decoded && decoded.data && decoded.data.alias && decoded.data.alias._id){
+      req.body.alias_id = decoded.data.alias._id;
     }
+    PostsModel.getAllPostsByCondition(req.body, function (data) {
+      if (data) {
+        return res.json({response: data});
+      } else {
+        return res.json({
+          error: {
+            message: [{
+              msg: 'An unexpected error happened, please try again latter',
+              type: 'warning'
+            }]
+          }
+        })
+      }
+    });
   });
 })
 
-router.post('/delete',function(req,res){
+router.post('/delete', function (req, res) {
   Session.decode(req.token, function (decoded) {
     if (decoded && decoded.data) {
       var aliasId = 0;
-      if(decoded.data.alias){
+      if (decoded.data.alias) {
         aliasId = decoded.data.alias._id
       }
-      PostsModel.delete(req.body.id,decoded.data._id, aliasId,function(data){
-        if(data && !data.error){
+      PostsModel.delete(req.body.id, decoded.data._id, aliasId, function (data) {
+        if (data && !data.error) {
           data.deleted_post = req.body.id;
           return res.json(data);
         } else {
@@ -30,22 +42,23 @@ router.post('/delete',function(req,res){
         }
       });
     } else {
-      return res.json({error:{message:[{msg:'You are not authorized',type:'warning'}]},status:'session_expired'})
+      return res.json({error: {message: [{msg: 'You are not authorized', type: 'warning'}]}, status: 'session_expired'})
     }
   })
 })
 
-router.get('/get/detail/:id',function(req,res){
+router.get('/get/detail/:id', function (req, res) {
   var data = {}
-  PostsModel.getPost(req.params.id,function(doc){
-    if(doc){
+  PostsModel.getPost(req.params.id, function (doc) {
+    if (doc) {
       return res.json(doc);
     } else {
       return res.json({
-        error:{
-          message:[
-            {msg:'Could not find the post you are looking for',status:'warning'}
-          ]}
+        error: {
+          message: [
+            {msg: 'Could not find the post you are looking for', status: 'warning'}
+          ]
+        }
       });
     }
 
@@ -59,24 +72,31 @@ router.get('/get/detail/:id',function(req,res){
 
 })
 
-router.get('/get-votes/:id',function(req,res){
-  PostsModel.getPostVote(req.params.id,function(data){
+router.get('/get-votes/:id', function (req, res) {
+  PostsModel.getPostVote(req.params.id, function (data) {
 
-    if(data){
-      return res.json({response:data});
+    if (data) {
+      return res.json({response: data});
     } else {
-      return res.json({error:{message:[{msg:'An unexpected error happened, please try again latter',type:'warning'}]}})
+      return res.json({
+        error: {
+          message: [{
+            msg: 'An unexpected error happened, please try again latter',
+            type: 'warning'
+          }]
+        }
+      })
     }
   });
 })
 
-router.post('/up-vote/:id',function(req,res){
+router.post('/up-vote/:id', function (req, res) {
   Session.decode(req.token, function (decoded) {
-    if(decoded && decoded.data){
+    if (decoded && decoded.data) {
 
       PostsModel.upVote(req.params.id, decoded.data._id, function (data) {
         if (data && !data.error) {
-          return res.json({response:data.value});
+          return res.json({response: data.value});
         } else {
           return res.json(data)
         }
@@ -95,12 +115,12 @@ router.post('/up-vote/:id',function(req,res){
   });
 })
 
-router.post('/down-vote/:id',function(req,res){
+router.post('/down-vote/:id', function (req, res) {
   Session.decode(req.token, function (decoded) {
-    if(decoded && decoded.data){
+    if (decoded && decoded.data) {
       PostsModel.downVote(req.params.id, decoded.data._id, function (data) {
         if (data && !data.error) {
-          return res.json({response:data.value});
+          return res.json({response: data.value});
         } else {
           return res.json(data)
         }
