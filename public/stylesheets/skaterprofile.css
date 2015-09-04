@@ -5865,6 +5865,22 @@ form .error {
     .post-detail-container .post-title blockquote {
       margin: 0; }
 
+.align-right {
+  text-align: right !important; }
+
+.post-comment-section {
+  background-color: white;
+  margin-top: 30px; }
+  .post-comment-section .post-comment-form {
+    padding: 7px 10px; }
+    .post-comment-section .post-comment-form .comment-form .form-group {
+      margin: 0; }
+      .post-comment-section .post-comment-form .comment-form .form-group.comment-button-container {
+        padding: 7px 10px; }
+    .post-comment-section .post-comment-form .comment-form textarea {
+      resize: vertical;
+      border-bottom: 1px solid #ccc; }
+
 .post-detail-modal {
   cursor: pointer;
   cursor: -webkit-zoom-out;
@@ -5893,6 +5909,9 @@ form .error {
         color: white;
         font-size: 20px;
         cursor: pointer; }
+
+.media-left .profile-picture {
+  margin: 0; }
 
 .vote {
   margin-right: 5px !important; }

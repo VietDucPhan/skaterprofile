@@ -1,11 +1,11 @@
 //Index Controller
 angular.module('App').controller('IndexController', function ($scope, $http, $rootScope, $routeParams, $location,Facebook) {
   $rootScope.head = {
-    title: 'Index',
+    title: 'Skater Profile! skateboarding digital community',
     metas: [
       {
         name: 'keywords',
-        content: 'Skateboarding, skaterprofile'
+        content: 'Skateboarding, skater profile'
       },
       {
         name: 'description',

@@ -39,7 +39,12 @@ PostsModel.getAllPostsByCondition = function (condition, callback) {
       }
     })
   } else {
-    return callback([])
+    Posts.find({
+      $query: {},
+      $orderby: {_id: -1}
+    }).toArray(function (err, documents) {
+      return callback(documents)
+    });
   }
 
   //Alias.aggregate([

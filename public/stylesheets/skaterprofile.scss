@@ -298,6 +298,30 @@ form{
     }
   }
 }
+.align-right{
+  text-align: right !important;
+}
+.post-comment-section{
+  background-color: white;
+  margin-top:30px;
+  .post-comment-form{
+    padding:7px 10px;
+    .comment-form{
+      .form-group{
+        margin:0;
+        &.comment-button-container{
+
+          padding:7px 10px;
+        }
+      }
+      textarea{
+        resize: vertical;
+        border-bottom:1px solid #ccc;
+      }
+
+    }
+  }
+}
 
 .post-detail-modal{
   cursor: pointer;
@@ -335,7 +359,11 @@ form{
     }
   }
 }
-
+.media-left{
+  .profile-picture{
+    margin:0;
+  }
+}
 .vote{
   margin-right:5px !important;
   span{

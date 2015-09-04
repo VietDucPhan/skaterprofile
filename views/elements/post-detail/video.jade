@@ -28,4 +28,17 @@ div.col-sm-8
             h1 {{postData.name}}
         div.col-sm-3.post-title
           div(vote-buttons='{{postData._id}}')
+  div.post-comment-section
+    div.post-comment-form
+      div.row
+        div.col-sm-12
+          ul(class="media-list")
+            li(class="media")
+              div(class="media-left")
+              div(class="media-body")
+                a(class="btn username ng-binding").media-heading viet duc phan
+                span  some comment here
+      div.row
+        div.col-sm-12
+            div(comment-box="").input-group
 div.col-sm-4

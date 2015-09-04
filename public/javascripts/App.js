@@ -36,6 +36,13 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
           requireLogin: false
         }
       }).
+      when('/hot', {
+        templateUrl: 'ang/pages/hot',
+        controller: 'DashboardController',
+        data: {
+          requireLogin: false
+        }
+      }).
       when('/users/login', {
         templateUrl: 'ang/users/login',
         controller: 'LoginController',
@@ -148,15 +155,15 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
   }
 }).controller('AppController', function ($scope, $http, $rootScope, Auth, Facebook) {
   $rootScope.head = {
-    title: 'SkaterProfile',
+    title: 'Skater Profile! skateboarding digital community',
     metas: [
       {
         name: 'keywords',
-        content: 'Skateboarding, skaterprofile'
+        content: 'Skateboarding, skater profile'
       },
       {
         name: 'description',
-        content: 'Skaterprofile page research'
+        content: 'World largest skateboarding digital community'
       }
     ]
   };
@@ -174,7 +181,7 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
   }
 }).controller('DashboardController', function ($scope, $http, $rootScope, $routeParams, $location,Facebook) {
   $rootScope.head = {
-    title: 'SkaterProfile',
+    title: 'Skater Profile',
     metas: [
       {
         name: 'keywords',
@@ -302,6 +309,20 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
       if($scope.aliasPage && $scope.aliasPage.posts){
         $scope.aliasPage.chuckedPosts = chunk($scope.aliasPage.posts,3);
       }
+
+      $rootScope.head = {
+        title: $scope.aliasPage.name + ' | Skater Profile',
+        metas: [
+          {
+            name: 'keywords',
+            content: 'Skateboarding, skater profile, ' + $scope.aliasPage.name
+          },
+          {
+            name: 'description',
+            content: 'Follow ' + $scope.aliasPage.name + " for more skateboarding related post"
+          }
+        ]
+      };
 
       if($rootScope.user && ($rootScope.user._id ==  response.response.admin || (response.response.managers && response.response.managers.indexOf($rootScope.user._id) != -1) || (response.response.config && response.response.config.public_editing == 1))){
         $scope.editable = true;
@@ -440,6 +461,19 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
       $scope.postData =  data;
       $scope.owned_post = data.posted_by_alias == data.posted_to_alias;
       $scope.isDeletable = false;
+      $rootScope.head = {
+        title: 'Post detail | Skater Profile',
+        metas: [
+          {
+            name: 'keywords',
+            content: 'Skateboarding, skater profile,'
+          },
+          {
+            name: 'description',
+            content: data.name
+          }
+        ]
+      };
       if($rootScope.user && (($rootScope.user.alias && ($rootScope.user.alias._id == data.posted_to_alias)) || ($rootScope.user._id == data.posted_by_user))){
         $scope.isDeletable = true;
       }
