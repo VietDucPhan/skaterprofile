@@ -15,6 +15,9 @@ angular.module('App').factory('Socket', function ($http, Session, $window, $root
     $rootScope.$broadcast('vote_action', data)
   })
 
+  socket.on('added_a_comment', function (data) {
+    $rootScope.$broadcast('added_a_comment', data)
+  })
 
   Socket.listen = function (name, callback) {
     socket.on(name, function (data) {

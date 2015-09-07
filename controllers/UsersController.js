@@ -65,7 +65,6 @@ router.post('/change-password', function (req, res) {
 router.post('/post-image',function(req,res){
   Session.decode(req.token, function (decoded) {
     if(decoded && !decoded.tokenExp){
-      console.log(req.headers);
       var msg = req.headers.desc ? req.headers.desc : 'Untitle';
       var to_alias = ObjectID.isValid(req.headers.to_alias) ? new ObjectID(req.headers.to_alias) : null;
       var by_user = new ObjectID(decoded.data._id);
@@ -91,15 +90,20 @@ router.post('/post-image',function(req,res){
                     } else {
                       if(decoded && decoded.data && decoded.data._id){
                         fbPostResponse.posted_by_user = by_user;
-                        fbPostResponse.posted_to_alias = to_alias;
-                        fbPostResponse.posted_by_alias = by_alias;
-                        fbPostResponse.name = req.headers.desc;
-                        Users.postAPhoto(fbPostResponse,function(databaseResponse){
-                          if(databaseResponse && databaseResponse.error){
-                            return res.json(databaseResponse)
-                          }
-                          return res.json({response:{message:[{msg:'Successfully upload photo',type:'success'}]}});
+                        Alias.getAliasInfoForPost(to_alias,function(doc){
+                          fbPostResponse.posted_to_alias = doc;
+                          Alias.getAliasInfoForPost(by_alias,function(doc){
+                            fbPostResponse.posted_by_alias = doc;
+                            fbPostResponse.name = req.headers.desc;
+                            Users.postAPhoto(fbPostResponse,function(databaseResponse){
+                              if(databaseResponse && databaseResponse.error){
+                                return res.json(databaseResponse)
+                              }
+                              return res.json({response:{message:[{msg:'Successfully upload photo',type:'success'}]}});
+                            })
+                          })
                         })
+
                       } else {
                         return res.json({error:{message:[{msg:'An unexpected error happened, please try again latter',type:'warning'}],
                           status: 'session_expired'}})
@@ -147,13 +151,20 @@ router.post('/post-video',function(req,res){
               if(decoded.data && decoded.data.alias){
                 videoData.posted_by_alias = new ObjectID(decoded.data.alias._id);
               }
-              Users.postAVideo(videoData,function(databaseResponse){
-                if(databaseResponse && databaseResponse.error){
-                  return res.json(databaseResponse)
-                } else {
-                  return res.json({message:[{msg:'Successfully upload video',type:'success'}]});
-                }
+              Alias.getAliasInfoForPost(videoData.posted_to_alias,function(doc){
+                videoData.posted_to_alias = doc;
+                Alias.getAliasInfoForPost(videoData.posted_by_alias,function(doc){
+                  videoData.posted_by_alias = doc;
+                  Users.postAVideo(videoData,function(databaseResponse){
+                    if(databaseResponse && databaseResponse.error){
+                      return res.json(databaseResponse)
+                    } else {
+                      return res.json({message:[{msg:'Successfully upload video',type:'success'}]});
+                    }
+                  })
+                })
               })
+
             } else {
               return res.json({error:{message:[{msg:'An unexpected error happened, please try again',type:'warning'}]}});
             }

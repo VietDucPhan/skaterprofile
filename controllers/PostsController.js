@@ -6,7 +6,7 @@ var Session = require('../lib/Session');
 
 router.post('/get', function (req, res) {
   Session.decode(req.token, function (decoded) {
-    if(decoded && decoded.data && decoded.data.alias && decoded.data.alias._id){
+    if (decoded && decoded.data && decoded.data.alias && decoded.data.alias._id) {
       req.body.alias_id = decoded.data.alias._id;
     }
     PostsModel.getAllPostsByCondition(req.body, function (data) {
@@ -23,6 +23,22 @@ router.post('/get', function (req, res) {
         })
       }
     });
+  });
+})
+
+router.post('/comment', function (req, res) {
+  Session.decode(req.token, function (decoded) {
+    if (decoded && decoded.data) {
+      var alias_id = null
+      if (decoded.data.alias && decoded.data.alias._id) {
+        alias_id = decoded.data.alias._id;
+      }
+      PostsModel.comment(alias_id, req.body.post_id, req.body.message, function (response) {
+        return res.json(response);
+      })
+    } else {
+      return res.json({error: {message: [{msg: 'Please login first', type: 'warning'}]}});
+    }
   });
 })
 

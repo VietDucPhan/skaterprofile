@@ -5,10 +5,13 @@ div(ng-repeat="post in posts",class="col-sm-{{postClass}}").show-posts-detail
     div.post-detail
       div.row
         div.col-xs-8
-          span(follow-button="", alias-id="{{post.posted_by_alias}}", show-name="true", show-follow-button="false",
-          show-picture="true")
-          span(ng-if="post.posted_by_alias != post.posted_to_alias") >
-          span(ng-if="post.posted_by_alias != post.posted_to_alias",follow-button="", alias-id="{{post.posted_to_alias}}", show-name="true")
+          a(ng-if="post.posted_by_alias.picture.picture",class="profile-picture",href="/{{post.posted_by_alias.username}}")
+            img(ng-src="{{post.posted_by_alias.picture.picture}}")
+          a(ng-click="dismiss()",class="btn username", href="/{{post.posted_by_alias.username}}"){{post.posted_by_alias.name}}
+          span(ng-if="post.posted_by_alias._id != post.posted_to_alias._id") >
+          a(ng-if="post.posted_to_alias.picture.picture && post.posted_by_alias._id != post.posted_to_alias._id",class="profile-picture",href="/{{post.posted_to_alias.username}}")
+            img(ng-src="{{post.posted_to_alias.picture.picture}}")
+          a(ng-if="post.posted_by_alias._id != post.posted_to_alias._id", ng-click="dismiss()",class="btn username", href="/{{post.posted_to_alias.username}}") {{post.posted_to_alias.name}}
         div.col-xs-4
           div(dropdown='',class='pull-right').btn-group
             button(class="btn btn-default dropdown-toggle no-border", dropdown-toggle="", data-toggle="dropdown", aria-haspopup="true", aria-expanded="false")

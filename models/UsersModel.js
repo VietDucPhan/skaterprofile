@@ -149,11 +149,12 @@ UsersModel.postAPhoto = function (photoData, callback) {
 
 UsersModel.postAVideo = function (videoData, callback) {
   if (!videoData.posted_to_alias) {
-    videoData.posted_to_alias = videoData.posted_by_user
+    videoData.posted_to_alias = {}
+    videoData.posted_to_alias._id = videoData.posted_by_user
   }
-  this.getProfileByAdmin(videoData.posted_to_alias, function (res) {
+  this.getProfileByAdmin(videoData.posted_to_alias._id, function (res) {
     if (res) {
-      videoData.posted_to_alias = res._id
+      videoData.posted_to_alias._id = res._id
       AliasModel.isPostable(res._id, videoData.posted_by_user, function (isPostable) {
         if (isPostable) {
           PostsModel.save(videoData, function (response) {

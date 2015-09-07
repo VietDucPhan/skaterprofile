@@ -22,6 +22,13 @@ AliasModel.getAlias = function(condition, callback){
   });
 }
 
+AliasModel.getAliasInfoForPost = function(id,callback){
+  var Alias = AliasModel.getCollection();
+  Alias.findOne({_id:new ObjectID(id)},{_id:1, name:1, username:1, picture:1},function(err,doc){
+    return callback(doc);
+  });
+}
+
 AliasModel.isEditable = function(aliasId, userId, callback){
   var editable = false;
   var Alias = AliasModel.getCollection();

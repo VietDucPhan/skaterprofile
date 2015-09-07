@@ -481,6 +481,18 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
         $scope.post_detail_url = '/ang/elements/post-detail/video';
       }
 
+      $rootScope.$on('added_a_comment',function(status,data){
+        if(data && $scope.postData && $scope.postData._id == data.post_id){
+          if($scope.postData && $scope.postData.comments){
+            $scope.postData.comments.push(data)
+          } else {
+            $scope.postData.comments = [];
+            $scope.postData.comments.push(data)
+          }
+        }
+
+      })
+
       switch ($scope.postData.type){
         case 'youtube' :
           $scope.video_src = $sce.trustAsResourceUrl("https://www.youtube.com/embed/"+$scope.postData.video_id+"?rel=0&amp;showinfo=0")
