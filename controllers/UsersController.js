@@ -99,7 +99,7 @@ router.post('/post-image',function(req,res){
                               if(databaseResponse && databaseResponse.error){
                                 return res.json(databaseResponse)
                               }
-                              return res.json({response:{message:[{msg:'Successfully upload photo',type:'success'}]}});
+                              return res.json({response:{message:[{msg:'Successfully upload photo',type:'success'}],data:databaseResponse.ops[0]}});
                             })
                           })
                         })
@@ -159,7 +159,7 @@ router.post('/post-video',function(req,res){
                     if(databaseResponse && databaseResponse.error){
                       return res.json(databaseResponse)
                     } else {
-                      return res.json({message:[{msg:'Successfully upload video',type:'success'}]});
+                      return res.json(databaseResponse);
                     }
                   })
                 })
@@ -368,14 +368,15 @@ router.post('/login', function (req, res) {
     };
 
     if (err.length == 0) {
-      delete rec.password;
-      delete rec.activate;
       respond.success = true;
-      Session.encode(rec, function (token) {
-        respond.token = token;
-        respond.response = rec;
-        return res.json(respond);
-      });
+      Users.getAllUserDataByUserId(rec._id,function(rec){
+        Session.encode(rec, function (token) {
+          respond.token = token;
+          respond.response = rec;
+          return res.json(respond);
+        });
+      })
+
     } else {
       respond.msg = err;
       return res.json(respond);

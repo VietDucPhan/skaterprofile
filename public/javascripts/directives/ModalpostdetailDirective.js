@@ -71,6 +71,20 @@ var ModalPostDetailController = function (post_id, back_state, $scope, $http, $s
     }
 
   });
+
+  $rootScope.$on('added_a_comment',function(status,data){
+    $rootScope.$apply(function(){
+      if(data && $scope.postData && $scope.postData._id == data.post_id){
+        if($scope.postData && $scope.postData.comments){
+          $scope.postData.comments.push(data)
+        } else {
+          $scope.postData.comments = [];
+          $scope.postData.comments.push(data)
+        }
+      }
+    })
+  })
+
   $http.get('/api/posts/get/detail/' + post_id).success(function (data) {
     if (data && !data.error) {
       $scope.postData = data;
@@ -79,17 +93,7 @@ var ModalPostDetailController = function (post_id, back_state, $scope, $http, $s
       if($rootScope.user && (($rootScope.user.alias && ($rootScope.user.alias._id == data.posted_to_alias)) || ($rootScope.user._id == data.posted_by_user))){
         $scope.isDeletable = true;
       }
-      $rootScope.$on('added_a_comment',function(status,data){
-        if(data && $scope.postData && $scope.postData._id == data.post_id){
-          if($scope.postData && $scope.postData.comments){
-            $scope.postData.comments.push(data)
-          } else {
-            $scope.postData.comments = [];
-            $scope.postData.comments.push(data)
-          }
-        }
 
-      })
       if ($scope.postData && $scope.postData.type != 'facebook') {
         $scope.post_detail_url = '/ang/elements/post-detail/video';
       } else {

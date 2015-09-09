@@ -107,6 +107,7 @@ router.get('/get-votes/:id', function (req, res) {
 })
 
 router.post('/up-vote/:id', function (req, res) {
+  console.log(req.token);
   Session.decode(req.token, function (decoded) {
     if (decoded && decoded.data) {
 

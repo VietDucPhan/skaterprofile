@@ -175,7 +175,6 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
     $scope.alerts.splice(index, 1);
   };
 
-  $scope.notifications = null;
   $scope.logout = function () {
     return Auth.logout();
   }
@@ -456,6 +455,18 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
     }
 
   })
+  $rootScope.$on('added_a_comment',function(status,data){
+    $rootScope.$apply(function(){
+      if(data && $scope.postData && $scope.postData._id == data.post_id){
+        if($scope.postData && $scope.postData.comments){
+          $scope.postData.comments.push(data)
+        } else {
+          $scope.postData.comments = [];
+          $scope.postData.comments.push(data)
+        }
+      }
+    })
+  })
   $http.get('/api/posts/get/detail/'+$routeParams.id).success(function(data){
     if(data && !data.error){
       $scope.postData =  data;
@@ -481,17 +492,7 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
         $scope.post_detail_url = '/ang/elements/post-detail/video';
       }
 
-      $rootScope.$on('added_a_comment',function(status,data){
-        if(data && $scope.postData && $scope.postData._id == data.post_id){
-          if($scope.postData && $scope.postData.comments){
-            $scope.postData.comments.push(data)
-          } else {
-            $scope.postData.comments = [];
-            $scope.postData.comments.push(data)
-          }
-        }
 
-      })
 
       switch ($scope.postData.type){
         case 'youtube' :

@@ -7,7 +7,6 @@ var Email = require('../lib/Email');
 var async = require('async');
 var Auth = require('../lib/Auth');
 var AliasModel = require('./AliasModel')
-var PostsModel = require('./PostsModel');
 var ObjectID = require('mongodb').ObjectID;
 var bcrypt = require('bcrypt');
 
@@ -21,6 +20,17 @@ CommentsModel.getCommentsByPostId = function(id, callback){
   var comments = CommentsModel.getCollection();
   comments.find({post_id: new ObjectID(id)}).toArray(function (err, documents) {
     return callback(documents)
+  });
+}
+
+CommentsModel.updateUserData = function(author_id, data, callback){
+  var comment = CommentsModel.getCollection();
+  comment.update({"author._id":author_id},{$set:{author:data}},{multi:true},function(err, doc){
+    if(!err){
+      return callback(doc)
+    } else {
+      return callback({error:{message:[{msg:'Could not update comment author data',type:'warning'}]}})
+    }
   });
 }
 

@@ -7,14 +7,14 @@ nav.navbar.navbar-default
         span.icon-bar
         span.icon-bar
         span.icon-bar
-      a(href="/dashboard",class="navbar-brand") Skaterprofile
+      a(href="/dashboard",class="navbar-brand", ng-active="") Skaterprofile
 
     div(collapse="isCollapsed").collapse.navbar-collapse#main-menu
       ul.nav.navbar-nav
         li
-          a(href="/hot") Hot
+          a(href="/hot", ng-active="") Hot
         li
-          a(href="/skaters") Skaters
+          a(href="/skaters", ng-active="") Skaters
         li
-          a(href="/companies") Companies
+          a(href="/companies", ng-active="") Companies
       right-menu

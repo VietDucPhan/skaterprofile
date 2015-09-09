@@ -3,16 +3,12 @@ angular.module('App').directive('rightMenu', function (Auth, $modal, $rootScope,
   var rightMenu = {};
   rightMenu.restrict = 'E';
   rightMenu.link = function (scope) {
-    scope.notifications = 0;
     scope.template = function () {
       if (Session.get()) {
         return '/ang/elements/menues/loggedin-right-mainmenu';
       }
       return '/ang/elements/menues/right-mainmenu';
     }
-    Socket.listen('thumb_up',function(data){
-      scope.notifications = ++scope.notifications;
-    })
 
     scope.signup = function () {
       var loginModalInstance = $modal.open({
@@ -50,7 +46,7 @@ angular.module('App').directive('rightMenu', function (Auth, $modal, $rootScope,
   rightMenu.template = '<ul class="nav navbar-nav navbar-right" ng-include="template()"/>';
   return rightMenu;
 });
-var UploadVideoController = function ($scope, $modalInstance, $http, $rootScope, $timeout) {
+var UploadVideoController = function ($scope, $modalInstance, $http, $rootScope, $timeout, $location) {
   $scope.cancel = function () {
     $modalInstance.dismiss('cancel');
   };
@@ -78,19 +74,26 @@ var UploadVideoController = function ($scope, $modalInstance, $http, $rootScope,
     if (data && (youtube_pattern.test(data.video) || vimeo_pattern.test(data.video)) && $scope.allowPost) {
       $scope.allowPost = false;
       $http.post('/api/users/post-video', data).success(function (res) {
+        console.log(res);
         if (res && res.error) {
           $scope.popUpAlerts = res.error.message;
           $scope.allowPost = true
+          $timeout(function () {
+            $scope.popUpAlerts.splice(0, 1);
+            $modalInstance.close()
+          }, 1300);
         } else {
           $scope.allowPost = true
-          $scope.popUpAlerts = res.message;
+          $scope.popUpAlerts = res.response.message;
+          $timeout(function () {
+            $scope.popUpAlerts.splice(0, 1);
+            $modalInstance.close()
+            $location.path("/post/"+res.response.data._id,true);
+          }, 1300);
         }
 
 
-        $timeout(function () {
-          $scope.popUpAlerts.splice(0, 1);
-          $modalInstance.close()
-        }, 1300);
+
       }).error(function (res) {
         $scope.allowPost = true
         $rootScope.popUpAlerts = [{
@@ -104,7 +107,7 @@ var UploadVideoController = function ($scope, $modalInstance, $http, $rootScope,
 
   }
 }
-var UploadImageController = function ($scope, FileUploader, $modalInstance, Session, $rootScope, $timeout, $http) {
+var UploadImageController = function ($scope, FileUploader, $modalInstance, Session, $rootScope, $timeout, $http, $location) {
   $scope.cancel = function () {
     $modalInstance.dismiss('cancel');
   };
@@ -148,7 +151,8 @@ var UploadImageController = function ($scope, FileUploader, $modalInstance, Sess
 
       $timeout(function () {
         $scope.popUpAlerts.splice(0, 1);
-        $modalInstance.close()
+        $modalInstance.close();
+        $location.path("/post/"+response.response.data._id,true);
       }, 1300);
     }
   };
@@ -180,6 +184,7 @@ var SignUpController = function (Auth, $scope, $modalInstance, $rootScope, $loca
         $rootScope.signUpPopUpAlerts = data.message
         $timeout(function () {
           $modalInstance.close()
+
         }, 1300);
       }
     });

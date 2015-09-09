@@ -6,7 +6,7 @@ div.col-sm-8
           a(ng-if="postData.posted_by_alias.picture.picture",class="profile-picture",href="/{{postData.posted_by_alias.username}}")
             img(ng-src="{{postData.posted_by_alias.picture.picture}}")
           a(ng-click="dismiss()",class="btn username", href="/{{postData.posted_by_alias.username}}") {{postData.posted_by_alias.name}}
-          span(ng-if="postData.posted_by_alias._id != postData.posted_to_alias._id") >
+          span(ng-if="postData.posted_by_alias._id != postData.posted_to_alias._id") > &nbsp;
           a(ng-if="postData.posted_to_alias.picture.picture && postData.posted_by_alias._id != postData.posted_to_alias._id",class="profile-picture",href="/{{postData.posted_to_alias.username}}")
             img(ng-src="{{postData.posted_to_alias.picture.picture}}")
           a(ng-if="postData.posted_by_alias._id != postData.posted_to_alias._id", ng-click="dismiss()",class="btn username", href="/{{postData.posted_to_alias.username}}") {{postData.posted_to_alias.name}}

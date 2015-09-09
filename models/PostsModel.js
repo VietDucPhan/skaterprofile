@@ -18,7 +18,6 @@ PostsModel.getAllPostsByCondition = function (condition, callback) {
   var Posts = AppModel.db.collection('posts');
   var Alias = AppModel.db.collection('alias');
   var query = {}
-  console.log(condition);
   if (condition.aliasId && !condition.following && !condition.hot) {
     Posts.find({
       $query: {'posted_to_alias._id': new ObjectID(condition.aliasId)},
@@ -127,6 +126,7 @@ PostsModel.upVote = function (post_id, user_id, callback) {
           })
         } else {
           Posts.findAndModify({_id: doc._id}, [], {$push: {up_votes: user_id}}, {new: true}, function (err, updatedDoc) {
+            //console.log(updatedDoc);
             return callback(updatedDoc)
           })
         }
@@ -213,6 +213,7 @@ PostsModel.getPost = function (id, callback) {
 
 PostsModel.delete = function (postId, userid, aliasId, callback) {
   var Posts = AppModel.db.collection('posts');
+  var Comment = AppModel.db.collection('post_comments');
   Posts.findOne({
     _id: new ObjectID(postId),
     $and: [
@@ -225,6 +226,8 @@ PostsModel.delete = function (postId, userid, aliasId, callback) {
     if (doc) {
       Posts.remove({_id: doc._id}, {}, function (err, num) {
         if (!err) {
+          Comment.remove({post_id:doc._id},function(err,num){
+          })
           return callback({message: [{msg: 'You successfuly delete a post', type: 'success'}]})
         } else {
           return callback({

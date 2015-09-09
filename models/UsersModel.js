@@ -8,6 +8,7 @@ var async = require('async');
 var Auth = require('../lib/Auth');
 var AliasModel = require('./AliasModel')
 var PostsModel = require('./PostsModel');
+var NotificationsModel = require('./NotificationsModel');
 var ObjectID = require('mongodb').ObjectID;
 var bcrypt = require('bcrypt');
 
@@ -61,14 +62,18 @@ UsersModel.getAllUserDataByUserId = function (UserId, callback) {
     });
   },
     function (error, rec, callback) {
-
       alias.findOne({admin: new ObjectID(rec._id)}, function (err, response) {
-
+        rec.alias = {};
         if (response) {
           rec.alias = response;
-
         }
-        callback(null, error, rec);
+        NotificationsModel.getAllUserNotification(rec.alias._id,function(notices){
+          if(notices){
+            rec.notifications = notices;
+          }
+          callback(null, error, rec);
+        })
+
       })
     }
   ], function (err, errorMessage, rec) {
@@ -159,7 +164,7 @@ UsersModel.postAVideo = function (videoData, callback) {
         if (isPostable) {
           PostsModel.save(videoData, function (response) {
             if (response) {
-              return callback(response)
+              return callback({response:{message:[{msg:'Successfully upload video',type:'success'}],data:response.ops[0]}})
             } else {
               return callback({error: {message: [{msg: 'Something went wrong please try agin', type: 'danger'}]}})
             }

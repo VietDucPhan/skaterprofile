@@ -6,14 +6,14 @@ li(dropdown="").dropdown
     li
       a(href="#",ng-click="uploadVideo()") Upload a video
 li
-  button().btn.navbar-btn.btn-default
+  button(ng-notice="",notifications="notifications").btn.navbar-btn.btn-default
     span(ng-if="!notifications", class="glyphicon glyphicon-bell")
     span(ng-if="notifications", class="badge") {{notifications}}
 li(dropdown="").dropdown
-  button(ng-class="{glyphicon:!alias.picture,'glyphicon-user':!alias.picture,'profile-picture':alias" +
+  button( ng-class="{glyphicon:!alias.picture,'glyphicon-user':!alias.picture,'profile-picture':alias" +
   ".picture}",
   class="btn navbar-btn btn-primary dropdown-toggle ", dropdown-toggle="")
-    img(ng-if="alias.picture",ng-src="{{alias.picture.source}}")
+    img(ng-if="alias.picture",ng-src="{{alias.picture.picture}}")
   ul(role="menu").dropdown-menu
     li
       a(ng-href="/{{alias.username || 'users/create-profile'}}") {{!alias.type ? 'Create Profile':alias.username}}
