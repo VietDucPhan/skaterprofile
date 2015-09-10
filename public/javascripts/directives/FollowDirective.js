@@ -1,5 +1,5 @@
 //Main Menu Directive
-angular.module('App').directive('followButton', function ($location, Session, $http, $rootScope, $window, $location) {
+angular.module('App').directive('followButton', function ($location, Session, $http, $rootScope) {
   var followButton = {};
   followButton.restrict = 'A';
   followButton.template = '<button ng-if="showPicture" class="profile-picture "><img ng-src="{{picture}}"></button>' +

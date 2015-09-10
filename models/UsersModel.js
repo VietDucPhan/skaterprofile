@@ -62,6 +62,7 @@ UsersModel.getAllUserDataByUserId = function (UserId, callback) {
     });
   },
     function (error, rec, callback) {
+      var notice = AppModel.db.collection('notifications');
       alias.findOne({admin: new ObjectID(rec._id)}, function (err, response) {
         rec.alias = {};
         if (response) {

@@ -107,13 +107,12 @@ router.get('/get-votes/:id', function (req, res) {
 })
 
 router.post('/up-vote/:id', function (req, res) {
-  console.log(req.token);
   Session.decode(req.token, function (decoded) {
     if (decoded && decoded.data) {
 
-      PostsModel.upVote(req.params.id, decoded.data._id, function (data) {
+      PostsModel.upVote(req.params.id, decoded.data._id, function (data,notification) {
         if (data && !data.error) {
-          return res.json({response: data.value});
+          return res.json({response: data,notice:notification});
         } else {
           return res.json(data)
         }

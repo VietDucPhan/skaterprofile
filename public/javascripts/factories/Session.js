@@ -1,10 +1,11 @@
-angular.module('App').factory('Session', function ($http, $interval, $rootScope) {
+angular.module('App').factory('Session', function ($http, $interval, $rootScope, $cacheFactory) {
   var Session = {};
   var refreshFirstTime = 1;
   var user;
   Session.set = function (data, callback) {
     //console.log(data);
     // $rootScope.$apply(function () {
+    var cache = $cacheFactory('user_data')
     localStorage.setItem('token', data.token);
     $http.defaults.headers.common.token = data.token;
     console.info('Logged in user:',data.response);
@@ -14,7 +15,8 @@ angular.module('App').factory('Session', function ($http, $interval, $rootScope)
     if(data && data.response && data.response.alias){
       $rootScope.alias = data.response.alias;
     }
-    if(data && data.response && data.response.notifications){
+    if(data && data.response){
+      cache.put('notifications',data.response.notifications);
       $rootScope.notifications = data.response.notifications;
     }
 
@@ -30,6 +32,7 @@ angular.module('App').factory('Session', function ($http, $interval, $rootScope)
     }
     return false;
   };
+
 
   Session.refresh = function () {
     if (refreshFirstTime == 1) {

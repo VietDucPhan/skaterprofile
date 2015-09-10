@@ -13,7 +13,6 @@ angular.module('App').directive('chat', function (Socket, $rootScope) {
         }
         Socket.getAllOnlineUsers(function (data) {
             $scope.users_list = data;
-            $rootScope.notifications = data.length;
         });
         $scope.send = function (data) {
             Socket.emit('message', data);

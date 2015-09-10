@@ -5,10 +5,9 @@ li(dropdown="").dropdown
       a(href="#",ng-click="uploadImage()") Upload an image
     li
       a(href="#",ng-click="uploadVideo()") Upload a video
-li
-  button(ng-notice="",notifications="notifications").btn.navbar-btn.btn-default
-    span(ng-if="!notifications", class="glyphicon glyphicon-bell")
-    span(ng-if="notifications", class="badge") {{notifications}}
+li()
+  button(dropdown="",ng-notice="",notifications="notifications",dropdown-toggle="").btn.navbar-btn.btn-default
+  .dropdown-toggle.dropdown
 li(dropdown="").dropdown
   button( ng-class="{glyphicon:!alias.picture,'glyphicon-user':!alias.picture,'profile-picture':alias" +
   ".picture}",

@@ -5665,6 +5665,18 @@ body {
 .no-radius {
   border-radius: 0px; }
 
+ul.notifications {
+  word-wrap: break-word;
+  min-width: 300px;
+  white-space: normal; }
+  ul.notifications div {
+    padding: 2px; }
+    ul.notifications div.row {
+      margin-left: -2px;
+      margin-right: -2px; }
+    ul.notifications div img {
+      max-height: 55px; }
+
 .list-followers {
   margin: 0;
   padding: 0;

@@ -42,6 +42,9 @@ angular.module('App').directive('voteButtons', function ($location, Session, $ht
         $http.post('/api/posts/up-vote/' + post_id).success(function (res) {
           if (res && !res.error) {
             Socket.emit('vote_action', res.response)
+            if(res.notice){
+              Socket.emit('notification', res.notice)
+            }
           } else {
             $rootScope.alerts = res.error.message;
           }

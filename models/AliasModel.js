@@ -25,7 +25,7 @@ AliasModel.getAlias = function (condition, callback) {
 
 AliasModel.getAliasInfoForPost = function (id, callback) {
   var Alias = AliasModel.getCollection();
-  Alias.findOne({_id: new ObjectID(id)}, {_id: 1, name: 1, username: 1, picture: 1}, function (err, doc) {
+  Alias.findOne({$or:[{admin: new ObjectID(id)},{_id: new ObjectID(id)}]}, {_id: 1, name: 1, username: 1, picture: 1,admin:1}, function (err, doc) {
     return callback(doc);
   });
 }
@@ -166,7 +166,8 @@ AliasModel.updateProfile = function (condition, update, callback) {
         _id: alias_data._id,
         name: alias_data.name,
         username: alias_data.username,
-        picture: alias_data.picture
+        picture: alias_data.picture,
+        admin: alias_data.admin
       }
       CommentModel.updateUserData(alias_data._id, update_data, function () {
 

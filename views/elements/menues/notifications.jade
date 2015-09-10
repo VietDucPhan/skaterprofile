@@ -1,0 +1,15 @@
+//
+   Created by Administrator on 9/10/2015.
+
+span(ng-if="count_notice == 0",class="glyphicon glyphicon-bell ng-scope")
+span(ng-if="count_notice != 0", class="badge") {{count_notice}}
+ul(role="menu", class="dropdown-menu notifications")
+  li(ng-repeat="notice in notification_list")
+    div.row
+      div.col-xs-3
+        img(ng-src="{{notice.alias.picture.picture}}").img-responsive
+      div.col-xs-6
+        a(href="/{{notice.alias.username}}") {{notice.alias.name}} &nbsp;
+        | {{notice.type}} your post
+      div.col-xs-3
+        img(ng-src="{{notice.post_data.source}}").img-responsive

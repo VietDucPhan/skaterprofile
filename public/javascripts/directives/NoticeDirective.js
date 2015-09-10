@@ -1,13 +1,39 @@
 //Main Menu Directive
-angular.module('App').directive('ngNotice', function ($location, $rootScope, $log) {
+angular.module('App').directive('ngNotice', function ($location, Session, $http, $rootScope, $cacheFactory) {
   var ngNotice = {};
   ngNotice.restrict = 'A';
-  ngNotice.scope = {
-    notifications: '='
-  };
-  ngNotice.template = '<span class="glyphicon glyphicon-bell ng-scope"></span> <span class="badge">{{count_notice}}</span>'
+  ngNotice.templateUrl = '/ang/elements/menues/notifications'
   ngNotice.link = function (scope, ele, att) {
+    var notice = function(){
+      var notice_length = $rootScope.notifications ? $rootScope.notifications.length : 0;
+      var get_count_notice = function (an_array) {
+        if (notice_length != 0) {
+          var read = 0;
+          an_array.forEach(function (e) {
+            if(e.read != 1){
+              read++;
+            }
+          })
+          return read;
+        } else {
+          return notice_length;
+        }
+      }
+      scope.count_notice = get_count_notice($rootScope.notifications)
+      scope.notification_list = $rootScope.notifications;
+      if(scope.count_notice != 0){
+        $rootScope.count_notice = "(" + scope.count_notice + ") ";
+      }
+    }
+    $rootScope.$watch('notifications', function () {
+      notice();
+    })
+    $rootScope.$on('notification', function (data) {
+      $rootScope.$apply(function(){
+        notice();
+      })
 
+    })
   }
   return ngNotice;
 });
