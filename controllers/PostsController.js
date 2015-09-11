@@ -33,8 +33,8 @@ router.post('/comment', function (req, res) {
       if (decoded.data.alias && decoded.data.alias._id) {
         alias_id = decoded.data.alias._id;
       }
-      PostsModel.comment(alias_id, req.body.post_id, req.body.message, function (response) {
-        return res.json(response);
+      PostsModel.comment(alias_id, req.body.post_id, req.body.message, function (response,notice) {
+        return res.json({response:response,notice:notice});
       })
     } else {
       return res.json({error: {message: [{msg: 'Please login first', type: 'warning'}]}});

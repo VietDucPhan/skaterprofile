@@ -29,7 +29,7 @@ div.col-sm-8
           blockquote(ng-if="postData.name")
             h1 {{postData.name}}
         div.col-sm-3.post-title
-          div(vote-buttons='{{postData._id}}')
+          div(vote-buttons='{{postData._id}}', up-votes="postData.up_votes", down-votes="postData.down_votes").vote-buttons
   div.post-comment-section
     div.post-comment-form
       div.row

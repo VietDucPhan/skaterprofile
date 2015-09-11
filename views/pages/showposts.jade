@@ -33,4 +33,4 @@ div(ng-repeat="post in posts",class="col-sm-{{postClass}}").show-posts-detail
           blockquote(ng-if="post.name")
             p {{post.name}}
         div.col-sm-4
-          div(vote-buttons='{{post._id}}').vote-buttons
+          div(vote-buttons='{{post._id}}', up-votes="post.up_votes", down-votes="post.down_votes").vote-buttons

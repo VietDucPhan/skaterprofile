@@ -78,7 +78,12 @@ PostsModel.comment = function (alias_id, post_id, message, callback) {
         comment_data.author = data;
         CommentsModel.save(comment_data, function (res) {
           if (res) {
-            return callback({response: res.ops[0]})
+            PostsModel.getPost(comment_data.post_id,function(doc){
+              var notice = AppModel.db.collection('notifications');
+              notice.save({alias: data, post_data: doc, read: false, type: 'comment', created_date:new Date()}, function (err, doc) {
+                return callback(res.ops[0], doc.ops[0])
+              })
+            })
           } else {
             return callback({
               error: {
@@ -144,17 +149,22 @@ PostsModel.upVote = function (post_id, user_id, callback) {
         } else {
           Posts.findAndModify({_id: doc._id}, [], {$push: {up_votes: user_id}}, {new: true}, function (err, updatedDoc) {
             var notice = AppModel.db.collection('notifications');
-            AliasModel.getAliasInfoForPost(user_id,function(alias){
-              notice.findAndModify({query:{"post_data._id":updatedDoc.value._id},update: {
-                $setOnInsert: { foo: "bar" }
-              },
-                new: true,   // return new doc if one is upserted
-                upsert: true},function(err,doc){
-                console.log(doc);
-              })
-              notice.save({alias:alias,post_data:updatedDoc.value,read:0,type:'like'},function(err,doc){
-                return callback(updatedDoc.value,doc.ops[0])
-              })
+            AliasModel.getAliasInfoForPost(user_id, function (alias) {
+              notice.update({$and: [{"post_data._id": updatedDoc.value._id}, {"post_data.up_votes": user_id}]},
+                {
+                  $setOnInsert: {alias: alias, post_data: updatedDoc.value, read: false, type: 'like', created_date:new Date()}
+                },
+                {upsert: true}, function (err, doc) {
+                  //console.info('doc post model', doc.result);
+                  if (doc.result.upserted) {
+                    notice.findOne({_id: new ObjectID(doc.result.upserted[0]._id)}, function (err, doc) {
+                      //console.info('doc post model', doc);
+                      return callback(updatedDoc.value, doc)
+                    })
+                  } else {
+                    return callback(updatedDoc.value)
+                  }
+                })
             })
 
           })

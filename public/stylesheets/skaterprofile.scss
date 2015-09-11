@@ -10,10 +10,41 @@ body{
 .no-radius{
   border-radius: 0px;
 }
+.text-inline{
+  display: inline-block;
+}
 ul.notifications{
   word-wrap: break-word;
-  min-width: 300px;
   white-space: normal;
+  h5{
+    margin-bottom: 0;
+    margin-top:2px;
+    font-weight: bold;
+    font-size:12px;
+  }
+
+  li{
+    padding: 10px !important;
+    &.divider-small{
+      height: 1px;
+      margin: 2px 0;
+      overflow: hidden;
+      background-color: #e5e5e5;
+    }
+    &.unread{
+      background-color:#f4f4f4;
+    }
+    &.no-padding{
+      padding-top:0 !important;
+      padding-bottom:0 !important;
+      &:hover{
+        background: none;
+      }
+    }
+    &:hover{
+      background-color:#ECECEC;
+    }
+  }
 
   div{
     &.row{
@@ -22,7 +53,8 @@ ul.notifications{
     }
     padding:2px;
     img{
-      max-height: 55px;
+      max-height: 40px;
+      max-width: 40px;
     }
   }
 }
@@ -401,4 +433,29 @@ form{
 }
 .no-border{
   border:0px !important;
+}
+
+@media (min-width: $screen-sm-min) {
+}
+
+
+// Medium grid
+//
+// Columns, offsets, pushes, and pulls for the desktop device range.
+
+@media (min-width: $screen-md-min) {
+  ul.notifications{
+    min-width: 320px;
+  }
+}
+
+
+// Large grid
+//
+// Columns, offsets, pushes, and pulls for the large desktop device range.
+
+@media (min-width: $screen-lg-min) {
+  ul.notifications{
+    min-width: 320px;
+  }
 }

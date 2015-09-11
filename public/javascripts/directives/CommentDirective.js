@@ -20,6 +20,9 @@ angular.module('App').directive('commentBox', function ($location, Session, $htt
         if (response && !response.error) {
           Socket.emit('added_a_comment', response.response, function () {
           })
+          if (response.notice) {
+            Socket.emit('notification', response.notice)
+          }
         } else {
           $rootScope.alerts = response.error.message
         }

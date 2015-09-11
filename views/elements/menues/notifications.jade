@@ -1,15 +1,38 @@
 //
    Created by Administrator on 9/10/2015.
-
-span(ng-if="count_notice == 0",class="glyphicon glyphicon-bell ng-scope")
-span(ng-if="count_notice != 0", class="badge") {{count_notice}}
+button(dropdown-toggle="").btn.navbar-btn.btn-default.dropdown-toggle.dropdown
+  span(ng-if="count_notice == 0",class="glyphicon glyphicon-bell ng-scope")
+  span(ng-if="count_notice != 0", class="badge") {{count_notice}}
 ul(role="menu", class="dropdown-menu notifications")
-  li(ng-repeat="notice in notification_list")
-    div.row
-      div.col-xs-3
+  li.no-padding
+    h5 Notifications
+  li.divider-small.no-padding
+  li(ng-repeat="notice in notification_list", ng-class="notice.read ? '' : 'unread'")
+    div(ng-if="notice.type == 'like'").row
+      div.col-xs-2
         img(ng-src="{{notice.alias.picture.picture}}").img-responsive
-      div.col-xs-6
-        a(href="/{{notice.alias.username}}") {{notice.alias.name}} &nbsp;
-        | {{notice.type}} your post
-      div.col-xs-3
+      div.col-xs-8
+        a(href="/{{notice.alias.username}}") {{notice.alias.name}}&nbsp;
+        | liked&nbsp;
+        a(href="/post/{{notice.post_data._id}}") your post
+        br
+        | {{notice.created_date | timeAgo}}
+      div.col-xs-2
         img(ng-src="{{notice.post_data.source}}").img-responsive
+
+    div(ng-if="notice.type == 'comment'").row
+      div.col-xs-2
+        img(ng-src="{{notice.alias.picture.picture}}").img-responsive
+      div.col-xs-8
+        a(href="/{{notice.alias.username}}") {{notice.alias.name}}&nbsp;
+        | commented on&nbsp;
+        a(href="/post/{{notice.post_data._id}}") your post
+        br
+        | {{notice.created_date | timeAgo}}
+      div.col-xs-2
+        img(ng-src="{{notice.post_data.source}}").img-responsive
+
+  li.divider-small.no-padding
+  li.no-padding
+    div.text-center
+      a() See all

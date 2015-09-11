@@ -5665,17 +5665,41 @@ body {
 .no-radius {
   border-radius: 0px; }
 
+.text-inline {
+  display: inline-block; }
+
 ul.notifications {
   word-wrap: break-word;
-  min-width: 300px;
   white-space: normal; }
+  ul.notifications h5 {
+    margin-bottom: 0;
+    margin-top: 2px;
+    font-weight: bold;
+    font-size: 12px; }
+  ul.notifications li {
+    padding: 10px !important; }
+    ul.notifications li.divider-small {
+      height: 1px;
+      margin: 2px 0;
+      overflow: hidden;
+      background-color: #e5e5e5; }
+    ul.notifications li.unread {
+      background-color: #f4f4f4; }
+    ul.notifications li.no-padding {
+      padding-top: 0 !important;
+      padding-bottom: 0 !important; }
+      ul.notifications li.no-padding:hover {
+        background: none; }
+    ul.notifications li:hover {
+      background-color: #ECECEC; }
   ul.notifications div {
     padding: 2px; }
     ul.notifications div.row {
       margin-left: -2px;
       margin-right: -2px; }
     ul.notifications div img {
-      max-height: 55px; }
+      max-height: 40px;
+      max-width: 40px; }
 
 .list-followers {
   margin: 0;
@@ -5938,5 +5962,12 @@ form .error {
 
 .no-border {
   border: 0px !important; }
+
+@media (min-width: 992px) {
+  ul.notifications {
+    min-width: 320px; } }
+@media (min-width: 1200px) {
+  ul.notifications {
+    min-width: 320px; } }
 
 /*# sourceMappingURL=skaterprofile.css.map */

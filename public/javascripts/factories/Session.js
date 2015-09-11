@@ -16,7 +16,6 @@ angular.module('App').factory('Session', function ($http, $interval, $rootScope,
       $rootScope.alias = data.response.alias;
     }
     if(data && data.response){
-      cache.put('notifications',data.response.notifications);
       $rootScope.notifications = data.response.notifications;
     }
 

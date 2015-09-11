@@ -521,4 +521,36 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
     }
 
   })
-})
+}).filter('timeAgo', function ($interval, $rootScope){
+  // trigger digest every 60 seconds
+
+  $interval(function (){}, 60000);
+  function getDateDiff(time1, time2) {
+    var str1= time1;
+    var t1 = new Date(str1);
+    var t2 = new Date();
+    console.log(t1)
+    console.log(t2)
+    var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    var date = monthNames[t1.getUTCMonth()]  + " " + t1.getDate() + ", " + t1.getFullYear();
+
+    var diffMS = t2 - t1;
+    var minutes = Math.round(diffMS/ 60000);
+    var hours = Math.round(diffMS/ 3600000);
+    return {minutes:minutes, hours:hours, date:date }
+  }
+  function fromNowFilter(time){
+    var ago_date = getDateDiff(time)
+    if(ago_date.minutes < 60){
+      return ago_date.minutes + ' minutes ago'
+    } else if(ago_date.minutes >= 60 && ago_date.hours < 24){
+      return ago_date.hours + ' hours ago';
+    } else {
+      return ago_date.date
+    }
+    return time
+  }
+
+  fromNowFilter.$stateful = true;
+  return fromNowFilter;
+});
