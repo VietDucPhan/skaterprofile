@@ -30,7 +30,10 @@ div(ng-repeat="post in posts",class="col-sm-{{postClass}}").show-posts-detail
     div.post-detail-container
       div.row
         div.col-sm-8
+          div.time-ago
+            abbr(title="{{post.created_date | timeAgo:true}}") {{post.created_date | timeAgo}}
           blockquote(ng-if="post.name")
             p {{post.name}}
+
         div.col-sm-4
           div(vote-buttons='{{post._id}}', up-votes="post.up_votes", down-votes="post.down_votes").vote-buttons

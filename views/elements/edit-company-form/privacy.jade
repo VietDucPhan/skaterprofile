@@ -1,0 +1,13 @@
+form(novalidate,name="editProfileForm").form-horizontal.control-label-left
+  div.form-group
+    label.col-md-2.control-label Who can post to this profile?:
+    div.col-md-10.btn-group
+      label(class="btn btn-primary",ng-model="editProfile.config.public_posting",btn-radio="0") Only me
+      label(class="btn btn-primary",ng-model="editProfile.config.public_posting",btn-radio="1") Anyone
+  div.form-group
+    label.col-md-2.control-label Who can edit this profile?:
+    div.col-md-10.btn-group
+      label(class="btn btn-primary",ng-model="editProfile.config.public_editing",btn-radio="0") Only me
+      label(class="btn btn-primary",ng-model="editProfile.config.public_editing",btn-radio="1") Anyone
+  hr
+  button(ng-click="editProfileSubmit(editProfile)").btn.btn-default Save

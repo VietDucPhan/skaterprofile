@@ -36,7 +36,7 @@ CommentsModel.updateUserData = function(author_id, data, callback){
 
 CommentsModel.save = function(comment, callback){
   var comments = CommentsModel.getCollection();
-  comment.created_time = new Date();
+  comment.created_date = new Date();
   comments.save(comment, function (err, rec) {
     if (!err) {
       if (typeof callback == "function") {

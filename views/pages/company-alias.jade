@@ -1,5 +1,5 @@
 //
-   Created by Administrator on 7/31/2015.
+            Created by Administrator on 7/31/2015.
 div.row.profile-container
   div.col-sm-5
     div.row
@@ -13,29 +13,19 @@ div.row.profile-container
     span(follow-button="", alias-id="{{aliasPage._id}}", show-name="false", show-follow-button="true").follow-button-container
     a(ng-if="editable",ng-href="/profile/{{aliasPage.username}}/edit" ,class="btn btn-default btn-xs glyphicon " +
     "glyphicon-wrench edit-alias")
-
 div.row
   div.col-md-4
     section.row
-      h2 Biography
-      |{{aliasPage.bio}}
+      h2 Description
+      | {{aliasPage.bio}}
     section.row
       h2 Additional info
       table
         tr
           td
-            |Stance:
+            | Established:
           td
-            |&nbsp; {{aliasPage.stance}}
-        tr
-          td
-            |Status:
-          td
-            |&nbsp; {{aliasPage.status}}
-        tr
-          td
-            |Sex:
-          td
-            |&nbsp; {{aliasPage.sex}}
+            | &nbsp; {{aliasPage.stance}}
+
   div().col-md-8
     div(show-posts='',alias-id='aliasPage._id', back-state="/{{aliasPage.username}}")

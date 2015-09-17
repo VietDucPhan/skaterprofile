@@ -304,6 +304,32 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
   $http.get('/api/alias/'+$routeParams.user).success(function(response){
     if(response && !response.error){
       $scope.aliasPage = response.response;
+      $scope.aliasPage.stance = $scope.aliasPage.stance == 0 ? 'Goofy' : 'Regular';
+
+      switch ($scope.aliasPage.status){
+        case 0:
+          $scope.aliasPage.status = 'Skater';
+          break;
+        case 1:
+          $scope.aliasPage.status = 'Amature skater';
+          break;
+        default:
+          $scope.aliasPage.status = 'Proffessional skater';
+          break;
+      }
+
+      switch ($scope.aliasPage.sex){
+        case 0:
+          $scope.aliasPage.sex = 'Others';
+          break;
+        case 1:
+          $scope.aliasPage.sex = 'Male';
+          break;
+        default:
+          $scope.aliasPage.sex = 'Female';
+          break;
+      }
+
       $scope.aliasPage.chuckedPosts = [];
       if($scope.aliasPage && $scope.aliasPage.posts){
         $scope.aliasPage.chuckedPosts = chunk($scope.aliasPage.posts,3);
@@ -376,6 +402,7 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
     if(response && response.error){
       $rootScope.alerts = response.error.message
     } else {
+      console.log(response);
       var uploader = $scope.uploader = new FileUploader({
         url: '/api/alias/change-picture',
         autoUpload: true,
@@ -405,7 +432,7 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
 
 
       if($rootScope.user && ((response.response.managers && response.response.managers.indexOf($rootScope.user._id) != -1) || (response.response.config && response.response.config.public_editing == 1))){
-        $scope.edit_skater = '/ang/elements/edit-skater-form/basic-info';
+        $scope.edit_skater = '/ang/elements/edit-'+response.response.type+'-form/basic-info';
         $scope.type = 'basic-info';
         $scope.editProfile = response.response;
         var username = response.response.username
@@ -529,26 +556,49 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
     var str1= time1;
     var t1 = new Date(str1);
     var t2 = new Date();
-    console.log(t1)
-    console.log(t2)
+    function dayTime(hours, minutes) {
+      var appendix = 'pm';
+      if (hours < 12) {
+        appendix = 'am'
+      } else {
+        hours = hours - 12;
+      }
+
+      if(minutes < 10){
+        minutes = '0' + minutes;
+      }
+      return hours + ":" + minutes + appendix;
+    }
     var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    var date = monthNames[t1.getUTCMonth()]  + " " + t1.getDate() + ", " + t1.getFullYear();
+    var dayName = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+    var date = monthNames[t1.getUTCMonth()]  + " " + t1.getDate() + ", " + t1.getFullYear() + " at " + dayTime(t1.getHours(),t1.getMinutes());
+    var date_with_day = dayName[t1.getDay()] + ", " + date;
 
     var diffMS = t2 - t1;
+    var seconds = Math.round(diffMS/ 1000);
     var minutes = Math.round(diffMS/ 60000);
     var hours = Math.round(diffMS/ 3600000);
-    return {minutes:minutes, hours:hours, date:date }
+    return {minutes:minutes, hours:hours, date:date, seconds:seconds, full_date:date_with_day }
   }
-  function fromNowFilter(time){
+  function fromNowFilter(time, full_date){
+
     var ago_date = getDateDiff(time)
-    if(ago_date.minutes < 60){
-      return ago_date.minutes + ' minutes ago'
+    if(full_date){
+      return ago_date.full_date;
+    }
+    if(ago_date.seconds < 40){
+      return 'Just now';
+    }else if(ago_date.seconds >= 40 && ago_date.seconds < 59){
+      return ago_date.seconds + ' seconds';
+    }else if(ago_date.minutes == 1){
+      return ago_date.minutes + ' min'
+    } else if(ago_date.minutes > 1 && ago_date.minutes < 60){
+      return ago_date.minutes + ' mins'
     } else if(ago_date.minutes >= 60 && ago_date.hours < 24){
-      return ago_date.hours + ' hours ago';
+      return ago_date.hours + ' hrs';
     } else {
       return ago_date.date
     }
-    return time
   }
 
   fromNowFilter.$stateful = true;

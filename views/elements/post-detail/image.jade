@@ -26,6 +26,8 @@ div.col-sm-8
     div.row
       div.post-title
         div.col-sm-9.post-title
+          div.time-ago
+            abbr(title="{{postData.created_date | timeAgo:true}}") {{postData.created_date | timeAgo}}
           blockquote(ng-if="postData.name")
             h1 {{postData.name}}
         div.col-sm-3.post-title
@@ -41,8 +43,10 @@ div.col-sm-8
                   img(ng-src="{{comment.author.picture.picture}}", ng-click="dismiss()")
               div(class="media-body")
                 a(href="/{{comment.author.username}}",ng-click="dismiss()").media-heading {{comment.author.name}}
-                br
                 span  {{comment.message}}
+                div.time-ago
+                  abbr(title="{{comment.created_date | timeAgo:true}}") {{comment.created_date | timeAgo}}
+
       div.row
         div.col-sm-12
           div(comment-box="{{postData._id}}").input-group

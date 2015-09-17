@@ -31,7 +31,7 @@ PostsModel.getAllPostsByCondition = function (condition, callback) {
         AppModel.makeListObjectId(doc.following, function (list) {
           list.push(new ObjectID(condition.alias_id));
           Posts.find({
-            $query: {$or: [{'posted_to_alias._id': {$in: list}}, {'posted_to_alias._id': {$in: list}}]},
+            $query: {$or: [{'posted_to_alias._id': {$in: list}}, {'posted_by_alias._id': {$in: list}}]},
             $orderby: {_id: -1}
           }).toArray(function (err, documents) {
             return callback(documents)
@@ -290,7 +290,7 @@ PostsModel.delete = function (postId, userid, aliasId, callback) {
 
 PostsModel.save = function (data, callback) {
   var Posts = AppModel.db.collection('posts');
-  data.created_time = new Date();
+  data.created_date = new Date();
   Posts.insert(data, function (err, rec) {
     if (!err) {
       if (typeof callback == "function") {

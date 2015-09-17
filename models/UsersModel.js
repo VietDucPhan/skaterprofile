@@ -18,6 +18,11 @@ UsersModel.getCollection = function () {
   return AppModel.db.collection('users');
 };
 
+UsersModel.set_notice_to_read = function(user_id, callback){
+  NotificationsModel.set_all_to_read(user_id, function(res){
+    return callback(res)
+  })
+}
 UsersModel.getProfileByAdmin = function (id, callback) {
   AliasModel.getAlias({
     $or: [

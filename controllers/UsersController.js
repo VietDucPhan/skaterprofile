@@ -10,7 +10,6 @@ var ObjectID = require('mongodb').ObjectID;
 var path = require('path');
 var request = require('request');
 var SNSApi = require('../lib/SNSApi');
-var cheerio = require('cheerio')
 /**
  * get data from sign up page process save data
  */
@@ -42,6 +41,23 @@ router.post('/get-followers', function (req, res) {
   })
 
 });
+
+
+router.post('/set-notice-to-read', function (req, res) {
+  Session.decode(req.token, function (decoded) {
+    Session.refresh(decoded, function (result) {
+      if(decoded && decoded.data){
+        Users.set_notice_to_read(decoded.data._id, function(response){
+          return res.json(response);
+        })
+      } else {
+        return res.json({error:{message:[{msg:'You need to login first',type:'warning'}]},status:'session_expired'});
+      }
+    })
+  })
+
+});
+
 
 /**
  * get data from sign up page process save data

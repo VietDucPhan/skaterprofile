@@ -5668,6 +5668,30 @@ body {
 .text-inline {
   display: inline-block; }
 
+div.time-ago {
+  color: #BEBFC1;
+  font-size: 12px; }
+  div.time-ago abbr {
+    display: inline-block;
+    border-bottom: none;
+    text-decoration: none;
+    cursor: pointer; }
+    div.time-ago abbr:hover {
+      text-decoration: underline; }
+
+section {
+  padding: 7px 10px;
+  margin-bottom: 30px;
+  background-color: white; }
+  section hr {
+    overflow: hidden; }
+  section h2 {
+    margin-top: 2px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #e5e5e5;
+    font-weight: bold;
+    font-size: 12px; }
+
 ul.notifications {
   word-wrap: break-word;
   white-space: normal; }
@@ -5677,7 +5701,7 @@ ul.notifications {
     font-weight: bold;
     font-size: 12px; }
   ul.notifications li {
-    padding: 10px !important; }
+    padding: 0px 10px !important; }
     ul.notifications li.divider-small {
       height: 1px;
       margin: 2px 0;
