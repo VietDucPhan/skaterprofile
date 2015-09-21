@@ -52,7 +52,7 @@ router.post('/edit-profile', function (req, res) {
         if(isEditable){
           var id = req.body._id;
           delete req.body._id;
-          Alias.updateProfile({_id:new ObjectID(id)},req.body,function(respond){
+          Alias.updateProfile({_id:new ObjectID(id)},req.body,function(respond, errMsg){
             if(respond){
               return res.json({
                 message:[
@@ -64,9 +64,7 @@ router.post('/edit-profile', function (req, res) {
               return res.json(
                 {
                   error: {
-                    message: [
-                      {msg: 'An unexpected error occurs please try again latter', type: 'warning'}
-                    ]
+                    message: errMsg
                   },
                   type: 'unexpected'
                 })

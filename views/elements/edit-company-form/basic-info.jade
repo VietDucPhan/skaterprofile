@@ -20,11 +20,19 @@ form(novalidate,name="editProfileForm").form-horizontal.control-label-left
     div.col-md-10
       input(type="text",ng-model="editProfile.name",required).form-control
   div.form-group
-    label.col-md-2.control-label url:
+    label.col-md-2.control-label User name:
     div.col-md-10
-      input(type="text",ng-model="editProfile.username",required).form-control
+      div.input-group
+        input(type="text",ng-model="editProfile.username",required).form-control
+        a(href="/{{username}}",ng-if="username").input-group-addon
+          span Go to&nbsp;
+            b {{username}}
   div.form-group
-    label.col-md-2.control-label Bio:
+    label.col-md-2.control-label Established since:
+    div.col-md-10
+      input(type="number",ng-model="editProfile.established").form-control
+  div.form-group
+    label.col-md-2.control-label Description:
     div.col-md-10.btn-group
       textarea(rows="5",ng-model="editProfile.bio").form-control
   hr

@@ -11,6 +11,14 @@ div.row.create-skater.well
         div.col-md-10
           input(type="text",ng-model="newProfileData.name",required).form-control
       div.form-group
+        label.col-md-2.control-label Established:
+        div.col-md-10
+          div.input-group
+            input(type="text",ng-model="newProfileData.established").form-control
+            span.input-group-btn
+              button(ng-click="open($event)").btn.btn-default
+                span.glyphicon.glyphicon-calendar
+      div.form-group
         label.col-md-2.control-label Bio:
         div.col-md-10.btn-group
           textarea(rows="5",ng-model="newProfileData.bio").form-control

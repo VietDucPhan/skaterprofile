@@ -36,7 +36,21 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
           requireLogin: false
         }
       }).
-      when('/hot', {
+      when('/fresh', {
+        templateUrl: 'ang/pages/hot',
+        controller: 'DashboardController',
+        data: {
+          requireLogin: false
+        }
+      }).
+      when('/skaters', {
+        templateUrl: 'ang/pages/skaters',
+        controller: 'SkatersController',
+        data: {
+          requireLogin: false
+        }
+      }).
+      when('/companies', {
         templateUrl: 'ang/pages/hot',
         controller: 'DashboardController',
         data: {
@@ -373,6 +387,11 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
     }
   }
 
+
+  $scope.open = function(e){
+    $scope.opened = true;
+  }
+
   $scope.createProfileTempUrl = '/ang/elements/create-profile-form/create-skater-form';
   $scope.changeSkaterType = function(type){
     $scope.newProfileData.type = type;
@@ -402,7 +421,6 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
     if(response && response.error){
       $rootScope.alerts = response.error.message
     } else {
-      console.log(response);
       var uploader = $scope.uploader = new FileUploader({
         url: '/api/alias/change-picture',
         autoUpload: true,
@@ -432,10 +450,11 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
 
 
       if($rootScope.user && ((response.response.managers && response.response.managers.indexOf($rootScope.user._id) != -1) || (response.response.config && response.response.config.public_editing == 1))){
-        $scope.edit_skater = '/ang/elements/edit-'+response.response.type+'-form/basic-info';
+        $scope.edit_form = '/ang/elements/edit-'+response.response.type+'-form/basic-info';
+        $scope.editProfileTemplate = '/ang/users/edit-'+response.response.type;
         $scope.type = 'basic-info';
         $scope.editProfile = response.response;
-        var username = response.response.username
+        $scope.username = response.response.username
         $scope.isOwner = false;
         if($rootScope.user._id == response.response.admin || response.response.managers.indexOf($rootScope.user._id) != -1){
           $scope.isOwner = true;
@@ -445,7 +464,7 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
 
         $scope.change = function(template){
           $scope.type = template;
-          $scope.edit_skater = '/ang/elements/edit-skater-form/' + template;
+          $scope.edit_form = '/ang/elements/edit-'+response.response.type+'-form/' + template;
         }
 
         $scope.editProfileSubmit = function (profile) {
@@ -454,7 +473,7 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
               $rootScope.alerts = data.error.message;
             } else {
               $rootScope.alerts = data.message;
-              if(username !== data.response.username){
+              if($scope.username !== data.response.username){
                 $window.location.href = '/profile/'+data.response.username+'/edit';
               }
 
@@ -546,6 +565,10 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
     } else {
       $rootScope.alerts = data.error.message;
     }
+
+  })
+}).controller('SkatersController',function($scope,$http){
+  $http.get('/api/alias/getAllSkaters').success(function(res){
 
   })
 }).filter('timeAgo', function ($interval, $rootScope){

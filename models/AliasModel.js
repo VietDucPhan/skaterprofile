@@ -159,51 +159,58 @@ AliasModel.addFollowing = function (aliasId, anotherAliasId, callback) {
 AliasModel.updateProfile = function (condition, update, callback) {
   var Alias = AliasModel.getCollection();
   var Post = AppModel.db.collection('posts');
-  Alias.findAndModify(condition, [], {$set: update}, {new: true}, function (err, rec) {
-    if (!err) {
-      var alias_data = rec.value;
-      var update_data = {
-        _id: alias_data._id,
-        name: alias_data.name,
-        username: alias_data.username,
-        picture: alias_data.picture,
-        admin: alias_data.admin
-      }
-      CommentModel.updateUserData(alias_data._id, update_data, function () {
-
-      })
-
-      Post.update({"posted_to_alias._id": alias_data._id},
-        {
-          $set: {
-            posted_to_alias: update_data
+  Validate.isValidUsername(update.username,function(valid,text, errMsg){
+    if(valid){
+      Alias.findAndModify(condition, [], {$set: update}, {new: true}, function (err, rec) {
+        if (!err) {
+          var alias_data = rec.value;
+          var update_data = {
+            _id: alias_data._id,
+            name: alias_data.name,
+            username: alias_data.username,
+            picture: alias_data.picture,
+            admin: alias_data.admin
           }
-        },
-        {multi: true},
-        function (err, rec) {
-        }
-      )
+          CommentModel.updateUserData(alias_data._id, update_data, function () {
 
-      Post.update({"posted_by_alias._id": alias_data._id},
-        {
-          $set: {
-            posted_by_alias: update_data
+          })
+
+          Post.update({"posted_to_alias._id": alias_data._id},
+            {
+              $set: {
+                posted_to_alias: update_data
+              }
+            },
+            {multi: true},
+            function (err, rec) {
+            }
+          )
+
+          Post.update({"posted_by_alias._id": alias_data._id},
+            {
+              $set: {
+                posted_by_alias: update_data
+              }
+            },
+            {multi: true},
+            function (err, rec) {
+            }
+          )
+          if (typeof callback == "function") {
+            return callback(rec);
           }
-        },
-        {multi: true},
-        function (err, rec) {
+        } else {
+          if (typeof callback == "function") {
+            return callback(err);
+          }
         }
-      )
-      if (typeof callback == "function") {
-        return callback(rec);
-      }
+
+      });
     } else {
-      if (typeof callback == "function") {
-        return callback(err);
-      }
+      return callback(false, errMsg);
     }
+  })
 
-  });
 }
 
 AliasModel.addAPost = function (condition, update, callback) {
