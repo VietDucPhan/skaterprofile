@@ -23,6 +23,43 @@ AliasModel.getAlias = function (condition, callback) {
   });
 }
 
+AliasModel.getAllCompanies = function(callback){
+  var Alias = AliasModel.getCollection();
+
+  Alias.find({type:'company'},{
+    bio: 1,
+    name: 1,
+    username: 1,
+    picture:1
+  }).sort({name:1}).toArray(function (err, documents) {
+    if (!err) {
+      return callback({response:documents})
+    } else {
+      return callback({error: {message: [{msg: 'An unexpected error occured please try again latter', type: 'warning'}]}})
+    }
+  });
+}
+
+AliasModel.getAllProAm = function(callback){
+  var Alias = AliasModel.getCollection();
+
+  Alias.find({type:'skater', status:{$in:[1,2]}},{
+    bio: 1,
+    name: 1,
+    sex: 1,
+    stance: 1,
+    status: 1,
+    username: 1,
+    picture:1
+  }).sort({name:1}).toArray(function (err, documents) {
+    if (!err) {
+      return callback({response:documents})
+    } else {
+      return callback({error: {message: [{msg: 'An unexpected error occured please try again latter', type: 'warning'}]}})
+    }
+  });
+}
+
 AliasModel.getAliasInfoForPost = function (id, callback) {
   var Alias = AliasModel.getCollection();
   Alias.findOne({$or:[{admin: new ObjectID(id)},{_id: new ObjectID(id)}]}, {_id: 1, name: 1, username: 1, picture: 1,admin:1}, function (err, doc) {
@@ -259,15 +296,6 @@ AliasModel.createAlias = function (data, callback) {
         callback(null, {})
       }
     })
-  }, function (err, callback) {
-    Validate.isValidPassword(data.username, function (flag) {
-      if (!flag) {
-        callback(true, {msg: "Username must longer than 6 and shorter than 24 characters", type: 'danger'})
-      } else {
-        callback(null, {})
-      }
-    })
-
   }, function (err, callback) {
     var collection = AliasModel.getCollection();
     collection.save(data, function (err, status) {

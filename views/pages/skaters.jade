@@ -1,3 +1,9 @@
-div(class="show-posts-container col-md-2")
-div(class="col-md-8")
-div(class="show-posts-container col-md-2")
+div.row
+  div.col-sm-12
+    h1 Skateboarders
+div.row
+  div(ng-repeat="skater in skaters",class="col-sm-6 col-md-3")
+    a(href="/{{skater.username}}").profile-picture
+      img(ng-src="{{skater.picture.picture}}", ng-if="skater.picture.picture")
+      span(ng-if="!skater.picture.picture", class="glyphicon glyphicon-user")
+    a(href="/{{skater.username}}", class="btn username") {{skater.name}}

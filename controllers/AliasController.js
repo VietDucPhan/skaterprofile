@@ -11,18 +11,17 @@ var path = require('path');
 var request = require('request');
 var SNSApi = require('../lib/SNSApi');
 
-router.get('/:alias',function(req,res){
-  var condition = {username:req.params.alias};
-  if(ObjectID.isValid(req.params.alias)){
-    condition = {_id: new ObjectID(req.params.alias)};
-  }
-  Alias.getAlias(condition,function(aliasData){
-    if(aliasData){
-      return res.json({response:aliasData});
-    } else {
-      return res.json({error:{message:[{msg:'Can\'t find what you are looking for'}]},status:'404'})
-    }
 
+
+router.get('/getAllProAm',function(req,res){
+  Alias.getAllProAm(function(data){
+    return res.json(data);
+  })
+})
+
+router.get('/getAllCompanies',function(req,res){
+  Alias.getAllCompanies(function(data){
+    return res.json(data);
   })
 })
 
@@ -211,6 +210,21 @@ router.post('/follow',function(req,res){
 
     } else {
       return res.json({error:{message:[{msg:'Please login first',type:'warning'}]},status:'session_expire'});
+    }
+
+  })
+})
+
+router.get('/:alias',function(req,res){
+  var condition = {username:req.params.alias};
+  if(ObjectID.isValid(req.params.alias)){
+    condition = {_id: new ObjectID(req.params.alias)};
+  }
+  Alias.getAlias(condition,function(aliasData){
+    if(aliasData){
+      return res.json({response:aliasData});
+    } else {
+      return res.json({error:{message:[{msg:'Can\'t find what you are looking for'}]},status:'404'})
     }
 
   })

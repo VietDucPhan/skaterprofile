@@ -1,0 +1,11 @@
+div.edit-profile.row
+  div.col-sm-3
+    div.list-group
+      a(ng-click="change('basic-info')",href='#',ng-class="{active: type == 'basic-info'}").list-group-item
+        |Basic info
+        span(class="glyphicon glyphicon-chevron-right right") &nbsp
+      a(ng-if="isOwner",ng-click="change('privacy')",href='#',ng-class="{active: type == 'privacy'}").list-group-item
+        |Privacy
+        span(class="glyphicon glyphicon-chevron-right right") &nbsp
+  div(ng-include="edit_form").col-sm-9.well
+

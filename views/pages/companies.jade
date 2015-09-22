@@ -1,0 +1,9 @@
+div.row
+  div.col-sm-12
+    h1 Skateboarding Companies
+div.row
+  div(ng-repeat="company in companies",class="col-sm-6 col-md-3")
+    a(href="/{{company.username}}").profile-picture
+      img(ng-src="{{company.picture.picture}}", ng-if="company.picture.picture")
+      span(ng-if="!company.picture.picture", class="glyphicon glyphicon-picture")
+    a(href="/{{company.username}}", class="btn username") {{company.name}}

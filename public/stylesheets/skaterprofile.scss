@@ -134,6 +134,7 @@ ul.notifications{
   margin-top:8px;
   margin-bottom:8px;
   padding:0;
+  max-height: 33px;
   font-size: 17px;
   line-height: 1.42857;
   border-radius: 4px;
@@ -145,10 +146,15 @@ ul.notifications{
   border-color: #ccc;
   border-radius: 4px;
   overflow:hidden;
+  span.glyphicon{
+    max-height: 33px;
+    min-height: 33px;
+    font-size: 33px;
+  }
   img{
-    max-width:31px;
-    max-height:31px;
-    min-height: 31px;
+    max-width:33px;
+    max-height:33px;
+    min-height: 33px;
   }
 }
 .navbar-default{

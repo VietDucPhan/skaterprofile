@@ -1,0 +1,31 @@
+//
+            Created by Administrator on 7/31/2015.
+div.row.profile-container
+  div.col-sm-5
+    div.row
+      div.col-sm-7
+      div.col-sm-5
+        img(ng-if="aliasPage.picture && aliasPage.picture.source",ng-src="{{aliasPage.picture.source}}",
+        class="thumbnail img-responsive")
+  div.col-sm-7
+    h1 {{aliasPage.name}}
+    | &nbsp;
+    span(follow-button="", alias-id="{{aliasPage._id}}", show-name="false", show-follow-button="true").follow-button-container
+    a(ng-if="editable",ng-href="/profile/{{aliasPage.username}}/edit" ,class="btn btn-default btn-xs glyphicon " +
+    "glyphicon-wrench edit-alias")
+div.row
+  div.col-md-4
+    section.row
+      h2 Description
+      | {{aliasPage.bio}}
+    section.row
+      h2 Additional info
+      table
+        tr
+          td
+            | Established:
+          td
+            | &nbsp; {{aliasPage.established}}
+
+  div().col-md-8
+    div(show-posts='',alias-id='aliasPage._id', back-state="/{{aliasPage.username}}")
