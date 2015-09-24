@@ -23,46 +23,112 @@ AliasModel.getAlias = function (condition, callback) {
   });
 }
 
-AliasModel.getAllCompanies = function(callback){
+AliasModel.getAllCompanies = function (callback) {
   var Alias = AliasModel.getCollection();
 
-  Alias.find({type:'company'},{
+  Alias.find({type: 'company'}, {
     bio: 1,
     name: 1,
     username: 1,
-    picture:1
-  }).sort({name:1}).toArray(function (err, documents) {
+    picture: 1
+  }).sort({name: 1}).toArray(function (err, documents) {
     if (!err) {
-      return callback({response:documents})
+      return callback({response: documents})
     } else {
-      return callback({error: {message: [{msg: 'An unexpected error occured please try again latter', type: 'warning'}]}})
+      return callback({
+        error: {
+          message: [{
+            msg: 'An unexpected error occured please try again latter',
+            type: 'warning'
+          }]
+        }
+      })
     }
   });
 }
 
-AliasModel.getAllProAm = function(callback){
+AliasModel.getAllTricks = function (callback) {
   var Alias = AliasModel.getCollection();
 
-  Alias.find({type:'skater', status:{$in:[1,2]}},{
+  Alias.find({type: 'trick'}, {
+    name: 1,
+    username: 1,
+    picture: 1
+  }).sort({name: 1}).toArray(function (err, documents) {
+    if (!err) {
+      return callback({response: documents})
+    } else {
+      return callback({
+        error: {
+          message: [{
+            msg: 'An unexpected error occured please try again latter',
+            type: 'warning'
+          }]
+        }
+      })
+    }
+  });
+}
+
+AliasModel.getAllSpots = function (callback) {
+  var Alias = AliasModel.getCollection();
+
+  Alias.find({type: 'spot'}, {
+    name: 1,
+    username: 1,
+    picture: 1
+  }).sort({name: 1}).toArray(function (err, documents) {
+    if (!err) {
+      return callback({response: documents})
+    } else {
+      return callback({
+        error: {
+          message: [{
+            msg: 'An unexpected error occured please try again latter',
+            type: 'warning'
+          }]
+        }
+      })
+    }
+  });
+}
+
+AliasModel.getAllProAm = function (callback) {
+  var Alias = AliasModel.getCollection();
+
+  Alias.find({type: 'skater', status: {$in: [1, 2]}}, {
     bio: 1,
     name: 1,
     sex: 1,
     stance: 1,
     status: 1,
     username: 1,
-    picture:1
-  }).sort({name:1}).toArray(function (err, documents) {
+    picture: 1
+  }).sort({name: 1}).toArray(function (err, documents) {
     if (!err) {
-      return callback({response:documents})
+      return callback({response: documents})
     } else {
-      return callback({error: {message: [{msg: 'An unexpected error occured please try again latter', type: 'warning'}]}})
+      return callback({
+        error: {
+          message: [{
+            msg: 'An unexpected error occured please try again latter',
+            type: 'warning'
+          }]
+        }
+      })
     }
   });
 }
 
 AliasModel.getAliasInfoForPost = function (id, callback) {
   var Alias = AliasModel.getCollection();
-  Alias.findOne({$or:[{admin: new ObjectID(id)},{_id: new ObjectID(id)}]}, {_id: 1, name: 1, username: 1, picture: 1,admin:1}, function (err, doc) {
+  Alias.findOne({$or: [{admin: new ObjectID(id)}, {_id: new ObjectID(id)}]}, {
+    _id: 1,
+    name: 1,
+    username: 1,
+    picture: 1,
+    admin: 1
+  }, function (err, doc) {
     return callback(doc);
   });
 }
@@ -130,6 +196,8 @@ AliasModel.removeFollowing = function (aliasId, idToRemove, callback) {
     following: idToRemove
   }, {$pull: {following: idToRemove}}, function (err, doc) {
     if (doc.result.ok == 1) {
+      Alias.findAndModify({_id: new ObjectID(idToRemove)}, [], {$inc: {followers: -1}}, {}, function (err, doc) {
+      });
       return callback(true);
     } else {
       return callback(false);
@@ -141,6 +209,7 @@ AliasModel.removeFollower = function (aliasId, idToRemove, callback) {
   var Alias = AliasModel.getCollection();
   Alias.update({_id: new ObjectID(aliasId)}, {$pull: {'follower.id': idToRemove}}, function (err, doc) {
     if (doc.result.ok == 1) {
+
       return callback(true);
     } else {
       return callback(false);
@@ -149,28 +218,26 @@ AliasModel.removeFollower = function (aliasId, idToRemove, callback) {
   });
 }
 
-AliasModel.getFollowers = function (followers, callback) {
+AliasModel.getFollowing = function (alias_id, callback) {
 
   var Alias = AliasModel.getCollection();
-  AppModel.makeListObjectId(followers, function (arrayObjectId) {
-    Alias.find({_id: {$in: arrayObjectId}}).toArray(function (err, documents) {
-      if (!err) {
-        callback(documents)
-      } else {
-        callback({error: {message: [{msg: 'An unexpected error occured please try again latter', type: 'warning'}]}})
-      }
+  Alias.findOne({_id: new ObjectID(alias_id)}, function (err, doc) {
+    console.log(alias_id);
+    AppModel.makeListObjectId(doc.following, function (arrayObjectId) {
 
-    });
+      Alias.find({_id: {$in: arrayObjectId}}).toArray(function (err, documents) {
+        if (!err) {
+          callback(documents)
+        } else {
+          callback({error: {message: [{msg: 'An unexpected error occured please try again latter', type: 'warning'}]}})
+        }
+
+      });
+    })
   })
 
 }
 
-AliasModel.isFollower = function (follower, following, callback) {
-  var Alias = AliasModel.getCollection();
-  Alias.findOne({'followers.id': aliasId}, function (err, doc) {
-    return callback(doc);
-  });
-}
 
 AliasModel.isFollowing = function (follower, following, callback) {
   var Alias = AliasModel.getCollection();
@@ -179,25 +246,45 @@ AliasModel.isFollowing = function (follower, following, callback) {
   });
 }
 
-AliasModel.addFollower = function (actionSenderId, actionTakerId, callback) {
-  var Alias = AliasModel.getCollection();
-  Alias.findAndModify({_id: new ObjectID(actionSenderId)}, [], {$push: {followers: actionTakerId}}, {new: true}, function (err, doc) {
-    return callback(doc);
-  });
-}
 
 AliasModel.addFollowing = function (aliasId, anotherAliasId, callback) {
   var Alias = AliasModel.getCollection();
-  Alias.findAndModify({_id: new ObjectID(aliasId)}, [], {$push: {following: anotherAliasId}}, {new: true}, function (err, doc) {
-    return callback(doc);
+  var notice = AppModel.db.collection('notifications');
+  Alias.findAndModify({_id: new ObjectID(aliasId)}, [], {$push: {following: anotherAliasId}}, {new: true}, function (err, doc1) {
+    Alias.findAndModify({_id: new ObjectID(anotherAliasId)}, [], {$inc: {followers: 1}}, {new: true}, function (err, doc) {
+      delete doc1.value.following;
+      delete doc1.value.config;
+      delete doc1.value.managers;
+      notice.update({$and: [{follower_admin_id: doc.value.admin}, {"alias._id": new ObjectID(aliasId)}]},
+        {
+          $setOnInsert: {
+            alias: doc1.value,
+            read: 0,
+            type: 'follow',
+            created_date: new Date(),
+            follower_admin_id: doc.value.admin
+          }
+        },
+        {upsert: true}, function (err, doc) {
+          if(doc && doc.result && doc.result.upserted && doc.result.upserted[0] && doc.result.upserted[0]._id){
+            notice.findOne({_id: new ObjectID(doc.result.upserted[0]._id)},function(err, doc){
+              return callback(doc)
+            })
+          } else if(err){
+            return callback(false)
+          } else {
+            return callback(true)
+          }
+        })
+    });
   });
 }
 
 AliasModel.updateProfile = function (condition, update, callback) {
   var Alias = AliasModel.getCollection();
   var Post = AppModel.db.collection('posts');
-  Validate.isValidUsername(update.username,function(valid,text, errMsg){
-    if(valid){
+  Validate.isValidUsername(update.username, function (valid, text, errMsg) {
+    if (valid) {
       Alias.findAndModify(condition, [], {$set: update}, {new: true}, function (err, rec) {
         if (!err) {
           var alias_data = rec.value;

@@ -5662,6 +5662,9 @@ body {
   body .btn:focus, body .navbar-default .navbar-nav li a.btn:focus, .navbar-default .navbar-nav li body a.btn:focus, body .btn:active:focus, body .navbar-default .navbar-nav li a.btn:active:focus, .navbar-default .navbar-nav li body a.btn:active:focus, body .btn.active:focus, body .navbar-default .navbar-nav li a.active.btn:focus, .navbar-default .navbar-nav li body a.active.btn:focus {
     outline: 0 none; }
 
+h2 {
+  margin-top: 0; }
+
 .no-radius {
   border-radius: 0px; }
 

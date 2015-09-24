@@ -56,7 +56,7 @@ var UploadVideoController = function ($scope, $modalInstance, $http, $rootScope,
     $scope.popUpAlerts.splice(index, 1);
   };
   if($rootScope.user && $rootScope.user.alias && $rootScope.user.alias.following){
-    $http.post('/api/users/get-followers',{followers:$rootScope.user.alias.following}).success(function(data){
+    $http.post('/api/users/get-following',{followers:$rootScope.user.alias.following}).success(function(data){
       if(data && !data.error){
         $scope.followers = data.response;
       }
@@ -118,7 +118,7 @@ var UploadImageController = function ($scope, FileUploader, $modalInstance, Sess
 
   $scope.postTitle = '';
   if($rootScope.user && $rootScope.user.alias && $rootScope.user.alias.following){
-    $http.post('/api/users/get-followers',{followers:$rootScope.user.alias.following}).success(function(data){
+    $http.post('/api/users/get-following',{followers:$rootScope.user.alias.following}).success(function(data){
       if(data && !data.error){
         $scope.followers = data.response;
       }

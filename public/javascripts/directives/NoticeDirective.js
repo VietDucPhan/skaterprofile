@@ -50,7 +50,7 @@ angular.module('App').directive('ngNotice', function ($location, Session, $http,
       }
 
     }
-
+    notice();
     $rootScope.$watch('notifications', function () {
       notice();
     })

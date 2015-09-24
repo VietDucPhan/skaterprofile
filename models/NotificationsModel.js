@@ -7,13 +7,14 @@ var ObjectID = require('mongodb').ObjectID;
 
 var NotificationsModel = module.exports = {};
 
-NotificationsModel.getAllUserNotification = function (alias_id, callback) {
+NotificationsModel.getAllUserNotification = function (alias_id, user_id, callback) {
   var notice = AppModel.db.collection('notifications');
   notice.find({
     $query: {
       $or: [
         {'post_data.posted_to_alias._id': new ObjectID(alias_id)},
-        {'post_data.posted_by_alias._id': new ObjectID(alias_id)}
+        {'post_data.posted_by_alias._id': new ObjectID(alias_id)},
+        {'follower_admin_id': new ObjectID(user_id)}
       ],
       $and: [
         {'alias._id': {$ne: new ObjectID(alias_id)}}
@@ -21,7 +22,6 @@ NotificationsModel.getAllUserNotification = function (alias_id, callback) {
     },
     $orderby: {_id: -1}
   }).toArray(function (err, docs) {
-    console.log(err);
     return callback(docs)
   })
 }
@@ -33,9 +33,10 @@ NotificationsModel.set_all_to_read = function(user_id, callback){
       $or:[
         {"post_data.posted_to_alias.admin": new ObjectID(user_id)},
         {"post_data.posted_by_alias.admin": new ObjectID(user_id)},
+        {'follower_admin_id': new ObjectID(user_id)}
       ],
     }
-    notice.update(query,{$set:{read:true}},{multi:true},function(err,res){
+    notice.update(query,{$set:{read:1}},{multi:true},function(err,res){
       return callback(res)
     })
   } else {

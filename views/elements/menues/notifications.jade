@@ -32,6 +32,16 @@ ul(role="menu", class="dropdown-menu notifications")
       div.col-xs-2
         img(ng-src="{{notice.post_data.source}}").img-responsive
 
+    div(ng-if="notice.type == 'follow'").row
+      div.col-xs-2
+        img(ng-src="{{notice.alias.picture.picture}}").img-responsive
+      div.col-xs-8
+        a(href="/{{notice.alias.username}}") {{notice.alias.name}}&nbsp;
+        | started to follow you
+        div.time-ago
+          abbr(title="{{notice.created_date | timeAgo:true}}") {{notice.created_date | timeAgo}}
+      div.col-xs-2
+
   li.divider-small.no-padding
   li.no-padding
     div.text-center

@@ -5,7 +5,6 @@ angular.module('App').factory('Session', function ($http, $interval, $rootScope,
   Session.set = function (data, callback) {
     //console.log(data);
     // $rootScope.$apply(function () {
-    var cache = $cacheFactory('user_data')
     localStorage.setItem('token', data.token);
     $http.defaults.headers.common.token = data.token;
     console.info('Logged in user:',data.response);

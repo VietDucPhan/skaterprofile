@@ -1,0 +1,9 @@
+div.row
+  div.col-sm-12
+    h1 Skateboarding tricks
+div.row
+  div(ng-repeat="trick in tricks",class="col-sm-6 col-md-3")
+    a(href="/{{trick.username}}").profile-picture
+      img(ng-src="{{trick.picture.picture}}", ng-if="trick.picture.picture")
+      span(ng-if="!trick.picture.picture", class="glyphicon glyphicon-picture")
+    a(href="/{{trick.username}}", class="btn username") {{trick.name}}

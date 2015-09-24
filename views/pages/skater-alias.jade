@@ -13,6 +13,9 @@ div.row.profile-container
     span(follow-button="", alias-id="{{aliasPage._id}}", show-name="false", show-follow-button="true").follow-button-container
     a(ng-if="editable",ng-href="/profile/{{aliasPage.username}}/edit" ,class="btn btn-default btn-xs glyphicon " +
     "glyphicon-wrench edit-alias")
+    h2 @{{aliasPage.username}}
+    a.btn.username {{aliasPage.followers}} followers
+    a.btn.username {{aliasPage.following}} following
 
 div.row
   div.col-md-4

@@ -73,7 +73,7 @@ UsersModel.getAllUserDataByUserId = function (UserId, callback) {
         if (response) {
           rec.alias = response;
         }
-        NotificationsModel.getAllUserNotification(rec.alias._id,function(notices){
+        NotificationsModel.getAllUserNotification(rec.alias._id,rec.alias.admin,function(notices){
           if(notices){
             rec.notifications = notices;
           }

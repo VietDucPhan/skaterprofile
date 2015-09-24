@@ -57,6 +57,20 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
           requireLogin: false
         }
       }).
+      when('/tricks', {
+        templateUrl: 'ang/pages/tricks',
+        controller: 'TricksController',
+        data: {
+          requireLogin: false
+        }
+      }).
+      when('/spots', {
+        templateUrl: 'ang/pages/spots',
+        controller: 'SpotsController',
+        data: {
+          requireLogin: false
+        }
+      }).
       when('/users/login', {
         templateUrl: 'ang/users/login',
         controller: 'LoginController',
@@ -344,6 +358,15 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
           break;
       }
 
+      $scope.aliasPage.following = $scope.aliasPage.following ? $scope.aliasPage.following.length : 0;
+      $scope.aliasPage.followers = $scope.aliasPage.followers ? $scope.aliasPage.followers : 0;
+      $rootScope.$on('increase_follower',function(status,flag){
+        if(flag){
+          $scope.aliasPage.followers += 1;
+        } else {
+          $scope.aliasPage.followers -= 1;
+        }
+      })
       $scope.aliasPage.chuckedPosts = [];
       if ($scope.aliasPage && $scope.aliasPage.posts) {
         $scope.aliasPage.chuckedPosts = chunk($scope.aliasPage.posts, 3);
@@ -579,6 +602,22 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
   $http.get('/api/alias/getAllCompanies').success(function (res) {
     if(res && !res.error){
       $scope.companies = res.response;
+    } else {
+      $rootScope.alerts = res.error.message;
+    }
+  })
+}).controller('SpotsController', function ($scope, $http, $rootScope) {
+  $http.get('/api/alias/getAllSpots').success(function (res) {
+    if(res && !res.error){
+      $scope.spots = res.response;
+    } else {
+      $rootScope.alerts = res.error.message;
+    }
+  })
+}).controller('TricksController', function ($scope, $http, $rootScope) {
+  $http.get('/api/alias/getAllTricks').success(function (res) {
+    if(res && !res.error){
+      $scope.tricks = res.response;
     } else {
       $rootScope.alerts = res.error.message;
     }

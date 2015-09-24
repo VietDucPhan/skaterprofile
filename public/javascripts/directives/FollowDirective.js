@@ -1,5 +1,5 @@
 //Main Menu Directive
-angular.module('App').directive('followButton', function ($location, Session, $http, $rootScope) {
+angular.module('App').directive('followButton', function ($location, Session, $http, $rootScope, Socket) {
   var followButton = {};
   followButton.restrict = 'A';
   followButton.template = '<button ng-if="showPicture" class="profile-picture "><img ng-src="{{picture}}"></button>' +
@@ -55,9 +55,15 @@ angular.module('App').directive('followButton', function ($location, Session, $h
           scope.followButtonName = 'error'
         } else if (res && res.status == 'following') {
           scope.followButtonName = 'following'
+          $rootScope.$broadcast('increase_follower',att.aliasId);
+          console.log(res);
+          if(res && res.response && res.response._id){
+            Socket.emit('notification', res.response)
+          }
           $rootScope.$broadcast('session_refresh',true);
         } else {
           scope.followButtonName = 'follow'
+          $rootScope.$broadcast('increase_follower',false);
           $rootScope.$broadcast('session_refresh',true);
         }
       }).error(function () {

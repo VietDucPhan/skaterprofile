@@ -80,7 +80,7 @@ PostsModel.comment = function (alias_id, post_id, message, callback) {
           if (res) {
             PostsModel.getPost(comment_data.post_id,function(doc){
               var notice = AppModel.db.collection('notifications');
-              notice.save({alias: data, post_data: doc, read: false, type: 'comment', created_date:new Date()}, function (err, doc) {
+              notice.save({alias: data, post_data: doc, read: 0, type: 'comment', created_date:new Date()}, function (err, doc) {
                 return callback(res.ops[0], doc.ops[0])
               })
             })
@@ -152,11 +152,11 @@ PostsModel.upVote = function (post_id, user_id, callback) {
             AliasModel.getAliasInfoForPost(user_id, function (alias) {
               notice.update({$and: [{"post_data._id": updatedDoc.value._id}, {"post_data.up_votes": user_id}]},
                 {
-                  $setOnInsert: {alias: alias, post_data: updatedDoc.value, read: false, type: 'like', created_date:new Date()}
+                  $setOnInsert: {alias: alias, post_data: updatedDoc.value, read: 0, type: 'like', created_date:new Date()}
                 },
                 {upsert: true}, function (err, doc) {
                   //console.info('doc post model', doc.result);
-                  if (doc.result.upserted) {
+                  if (doc && doc.result && doc.result.upserted) {
                     notice.findOne({_id: new ObjectID(doc.result.upserted[0]._id)}, function (err, doc) {
                       //console.info('doc post model', doc);
                       return callback(updatedDoc.value, doc)

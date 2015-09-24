@@ -1,0 +1,9 @@
+div.row
+  div.col-sm-12
+    h1 Skateboarding spots
+div.row
+  div(ng-repeat="spot in spots",class="col-sm-6 col-md-3")
+    a(href="/{{spot.username}}").profile-picture
+      img(ng-src="{{spot.picture.picture}}", ng-if="spot.picture.picture")
+      span(ng-if="!spot.picture.picture", class="glyphicon glyphicon-picture")
+    a(href="/{{spot.username}}", class="btn username") {{spot.name}}

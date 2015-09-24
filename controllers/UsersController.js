@@ -22,12 +22,12 @@ router.post('/refresh', function (req, res) {
 
 });
 
-router.post('/get-followers', function (req, res) {
+router.post('/get-following', function (req, res) {
   Session.decode(req.token, function (decoded) {
     Session.refresh(decoded, function (result) {
       if(decoded && decoded.data){
-        if(req.body.followers){
-          Alias.getFollowers(req.body.followers,function(data){
+        if(decoded.data && decoded.data.alias && decoded.data.alias._id){
+          Alias.getFollowing(decoded.data.alias._id,function(data){
             return res.json({response:data});
           })
         } else {

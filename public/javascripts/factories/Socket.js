@@ -20,10 +20,9 @@ angular.module('App').factory('Socket', function ($http, Session, $window, $root
       $rootScope.notifications.unshift(data)
     } else {
       $rootScope.notifications = [];
-      $rootScope.notifications.unshift(data)
+      $rootScope.notifications.push(data)
     }
-
-    $rootScope.$broadcast('notification','some data')
+    $rootScope.$broadcast('notification',data)
 
   })
 

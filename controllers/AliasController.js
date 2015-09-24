@@ -25,6 +25,12 @@ router.get('/getAllCompanies',function(req,res){
   })
 })
 
+router.get('/getAllTricks',function(req,res){
+  Alias.getAllTricks(function(data){
+    return res.json(data);
+  })
+})
+
 router.post('/edit-profile', function (req, res) {
   Session.decode(req.token, function (decoded) {
     if (decoded && decoded.data) {
@@ -189,9 +195,9 @@ router.post('/follow',function(req,res){
           if(!doc){
             Alias.addFollowing(decoded.data.alias._id,req.body.id,function(doc){
               if(doc){
-                return res.json({message:[{msg:'You successfully followed this one',type:'success'}],status:'following'});
+                return res.json({message:[{msg:'You successfully followed this one',type:'success'}],status:'following',response:doc});
               } else {
-                return res.json({error:{message:[{msg:'Something happened, please try again latter',type:'warning'}]}});
+                return res.json({error:{message:[{msg:'Something happened, please try again',type:'warning'}]}});
               }
             })
           } else {
