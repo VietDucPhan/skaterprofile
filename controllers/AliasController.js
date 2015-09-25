@@ -102,6 +102,18 @@ router.post('/edit-profile', function (req, res) {
   })
 });
 
+router.post('/get-manage-profiles',function(req,res){
+  Session.decode(req.token,function(decoded){
+    if(decoded && decoded.data){
+      Alias.get_managed_profile(decoded.data._id,function(docs){
+        return res.json({response:docs})
+      })
+    } else {
+      return res.json({error:{message:[{msg:'Session expired, please login again', type:'warning'}]},status:'session_expired'});
+    }
+  })
+})
+
 router.post('/isfollowing',function(req,res){
   Session.decode(req.token,function(decoded){
     if(decoded && decoded.data && decoded.data.alias){

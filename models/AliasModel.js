@@ -355,6 +355,13 @@ AliasModel.addAPost = function (condition, update, callback) {
   });
 }
 
+AliasModel.get_managed_profile = function(user_id, callback){
+  var alias = AliasModel.getCollection();
+  alias.find({$or:[{managers:new ObjectID(user_id)},{admin:new ObjectID(user_id)}]}).toArray(function(err,docs){
+    return callback(docs)
+  })
+}
+
 AliasModel.createAlias = function (data, callback) {
   async.waterfall([function (callback) {
     if (data._id) {

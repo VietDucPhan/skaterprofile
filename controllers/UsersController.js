@@ -430,10 +430,11 @@ router.post('/recovery', function (req, res) {
   Users.requestRecoveryCode({email: req.body.email, domain: req.protocol + '://' + req.headers.host},
     function (err) {
       if (err.length != 0) {
-        req.session.flash = err;
+        return res.json({error:{message:err}})
+      } else {
+        return res.json({message:[{msg:'An instruction email has been sent to ' + req.body.email + ', please follow' +
+        ' instrcution steps to recover your password. It might be late but it will come', type:'success'}]})
       }
-
-      res.redirect('/users/recovery');
     }
   );
 });

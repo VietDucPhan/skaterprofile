@@ -247,6 +247,14 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
         $scope.profile = data.response
       }
     })
+
+    $http.post('/api/alias/get-manage-profiles').success(function(response){
+      if(response && !response.error){
+        $scope.managed_profiles = response.response;
+      } else {
+        $rootScope.alerts = $rootScope.error.message;
+      }
+    })
   })();
   $scope.suggestUsername = function () {
     return $scope.profile.name
@@ -438,7 +446,7 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
   }
 
 }).controller('EditProfileController', function ($scope, $http, $routeParams, $rootScope, FileUploader, $window, Session) {
-  $scope.editProfileTemplate = '/ang/users/edit-skater'
+  $scope.editProfileTemplate = '/ang/users/edit-skater';
 
   $http.get('/api/alias/' + $routeParams.account).success(function (response) {
     if (response && response.error) {

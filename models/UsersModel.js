@@ -330,7 +330,7 @@ UsersModel.requestRecoveryCode = function (data, callback) {
     function (callback) {
       Validate.isEmail(data.email, function (flag, email) {
         if (!flag) {
-          error.push('Email is not valid');
+          error.push({msg:'Email is not valid', type:'warning'});
           callback(true, error, email);
         } else {
           callback(null, error, email);
@@ -344,7 +344,7 @@ UsersModel.requestRecoveryCode = function (data, callback) {
         {$set: {recovery: {code: resetCode, expire: expirationDate}}},
         function (err, count) {
           if (count.result.n == 0) {
-            error.push('Account not found');
+            error.push({msg:'Email not found', type:'warning'});
             callback(true, error);
           } else {
             callback(null, email, resetCode);

@@ -42,6 +42,8 @@ angular.module('App').directive('rightMenu', function (Auth, $modal, $rootScope,
       });
     }
 
+
+
   }
   rightMenu.template = '<ul class="nav navbar-nav navbar-right" ng-include="template()"/>';
   return rightMenu;
@@ -194,7 +196,7 @@ var SignUpController = function (Auth, $scope, $modalInstance, $rootScope, $loca
   };
 };
 
-var LoginController = function (Auth, $scope, $modalInstance, $rootScope) {
+var LoginController = function (Auth, $scope, $modalInstance, $rootScope, $modal) {
   $scope.loginSubmit = function (data) {
     Auth.login(data, function (msg) {
       if (msg.length > 0) {
@@ -203,10 +205,49 @@ var LoginController = function (Auth, $scope, $modalInstance, $rootScope) {
       $modalInstance.close();
     });
   }
+  $scope.recovery = function(){
+    $modalInstance.close();
+    $modal.open({
+      animation: true,
+      templateUrl: '/ang/users/recovery',
+      controller: RecoveryController
+    });
+  }
   $scope.cancel = function () {
     $modalInstance.dismiss('cancel');
   };
   $rootScope.closeLoginPopUpAlert = function (index) {
     $rootScope.popUpLoginAlerts.splice(index, 1);
+  };
+};
+
+var RecoveryController = function (Auth, $scope, $modalInstance, $rootScope, $modal, $http) {
+  $scope.login = function(){
+    $modalInstance.close();
+    $modal.open({
+      animation: true,
+      templateUrl: '/ang/users/login',
+      controller: LoginController
+    });
+  }
+
+  $scope.recovery = function(data){
+    $scope.data = {}
+    $rootScope.recoveryAlerts = [{msg:"Loading...",type:'warning'}]
+    $http.post('/api/users/recovery', data).success(function(res){
+      if(res && res.error){
+        $rootScope.recoveryAlerts = res.error.message
+      } else {
+        $rootScope.recoveryAlerts = res.message
+      }
+
+
+    })
+  }
+  $scope.cancel = function () {
+    $modalInstance.dismiss('cancel');
+  };
+  $rootScope.closeRecoveryAlerts = function (index) {
+    $rootScope.recoveryAlerts.splice(index, 1);
   };
 };

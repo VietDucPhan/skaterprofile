@@ -1,9 +1,15 @@
-extends ../layout
-
-block content
-  div(ng-view)
-    h1= title
-    form(method='post')
-      input(name='email')
-      br
-      button log in
+div.modal-header
+  button(ng-click="cancel()",type="button",class="close",data-dismiss="modal",aria-label="Close")
+    span(aria-hidden="true") &times;
+  h4.modal-title Recover password
+div(class="modal-body")
+  alert(ng-repeat="alert in recoveryAlerts",type="{{alert.type}}",close="closeRecoveryAlerts($index)") {{alert.msg}}
+  form(name="recover",method='post',novalidate)
+    div(class="form-group has-feedback",ng-class="recover.email.$invalid ? 'has-error' : 'has-success'" )
+      input(type="email",name='email',ng-model="data.email",required,class="form-control",placeholder="Email")
+      span(class="glyphicon form-control-feedback",aria-hidden="true",ng-class="recover.email.$invalid ? 'glyphicon-remove' : 'glyphicon-ok'",ng-show="recover.email.$dirty")
+    div.row
+      div.col-sm-6
+        button(ng-click="recovery(data)",ng-disabled="recover.$invalid").btn.btn-success Recover password
+      div.col-sm-6
+            

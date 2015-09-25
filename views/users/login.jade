@@ -13,4 +13,12 @@ div(class="modal-body")
       input(name='password',type='password',ng-model="data.password",required,minlength="6",class="form-control",
       placeholder="Password" )
       span(class="glyphicon form-control-feedback",aria-hidden="true",ng-class="login.password.$invalid ? 'glyphicon-remove' : 'glyphicon-ok'",ng-show="login.password.$dirty")
-    button(ng-click="loginSubmit(data)",ng-disabled="login.$invalid").btn.btn-success log in
+    div.row
+      div.col-sm-6
+        button(ng-click="loginSubmit(data)",ng-disabled="login.$invalid").btn.btn-success log in
+        |&nbsp;&nbsp;
+        input(type="checkbox", value='1', ng-model='data.remember')
+        | &nbsp;Keep me log in
+      div.col-sm-6
+        button(style="visibility:hidden").btn.btn-success fuck
+        a(href="#", ng-click="recovery()") Forgot your password?
