@@ -1,0 +1,22 @@
+div.modal-content()
+  form(name="report_form")
+    div.modal-header
+      h3.modal-title Help Us Understand What's Happening
+    div.modal-body
+      p(ng-if="content") {{content}}
+        div(ng-if="!content").radio
+          label
+            input(type="radio", name="report", value="It is not interesting", ng-model="data.message", required="")
+            |It is not interesting
+        div(ng-if="!content").radio
+          label
+            input(type="radio", name="report", value="I think it shouldn't be on SkaterProfile", ng-model="data.message")
+            |I think it shouldn't be on Facebook
+        div(ng-if="!content").radio
+          label
+            input(type="radio", name="report", value="It's spam",  ng-model="data.message")
+            |It's spam
+    // ngIf: fla
+    div.modal-footer
+      button.btn.btn-warning(type='button', ng-click='cancel()') Cancel
+      button.btn.btn-primary(type='button',ng-click="send(data)",ng-disabled="report_form_disable") Send

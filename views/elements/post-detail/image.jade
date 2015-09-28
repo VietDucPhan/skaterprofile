@@ -17,7 +17,7 @@ div.col-sm-8
               span(class="sr-only") Split button!
             ul(role="menu", aria-labelledby="split-button").dropdown-menu
               li
-                a(ng-href="#") Report
+                a(ng-href="#",ng-click="report_modal(postData._id)") Report
               li(ng-if="isDeletable").divider
               li(ng-if="isDeletable")
                 a(href="#",ng-click="delete(postData._id)") Delete

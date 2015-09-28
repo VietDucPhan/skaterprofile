@@ -57,6 +57,19 @@ var ModalPostDetailController = function (post_id, back_state, $scope, $http, $s
       }
     });
   }
+
+  $scope.report_modal = function (id) {
+    $modal.open({
+      animation: false,
+      templateUrl: '/ang/users/report_post',
+      controller: reportModalController,
+      resolve: {
+        id: function () {
+          return id;
+        }
+      }
+    });
+  }
   $scope.video_src = ''
   $modalInstance.result.then(function (selectedItem) {
     //$log.info('selectedItem',selectedItem);
@@ -116,6 +129,36 @@ var ModalPostDetailController = function (post_id, back_state, $scope, $http, $s
 
   })
 
+}
+
+var reportModalController = function (id, $scope, $modalInstance, $http, $modalStack, $timeout, $rootScope) {
+  $scope.cancel = function () {
+    $modalInstance.dismiss('cancel');
+  };
+  $scope.data = {
+    message:'It is not interesting'
+  }
+  $scope.send = function (data) {
+    var data_tobe_sent = data;
+    data_tobe_sent.post_id = id;
+    $scope.data = {}
+
+    $http.post('/api/posts/report', data_tobe_sent).success(function (data) {
+      if (data && !data.error) {
+        $scope.content = 'Thank you for taking the time to report something that you feel may violate our Community Standards.';
+
+        $timeout(function () {
+          $modalStack.dismissAll()
+        }, 1300);
+      } else {
+        $scope.content = data.error.message[0].msg;
+        $timeout(function () {
+          $modalInstance.dismiss('cancel');
+        }, 1300);
+
+      }
+    })
+  }
 }
 
 var deleteModalController = function (id, $scope, $modalInstance, $http, $modalStack, $timeout, $rootScope) {

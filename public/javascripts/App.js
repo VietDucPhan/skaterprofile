@@ -106,6 +106,13 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
           requireLogin: false
         }
       }).
+      when('/users/email-reset-password/:id', {
+        templateUrl: 'ang/users/email-reset-password',
+        controller: 'ResetpasswordController',
+        data: {
+          requireLogin: false
+        }
+      }).
       when('/profile/:account/edit', {
         templateUrl: 'ang/users/edit-profile',
         controller: 'EditProfileController',
@@ -630,6 +637,28 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
       $rootScope.alerts = res.error.message;
     }
   })
+}).controller('ResetpasswordController', function ($scope, $http, $rootScope, $routeParams) {
+  $scope.reset_code = '5b817e42_3e85_b699_b067_9af0761f85f2';
+  $scope.data = {
+    code:$routeParams.id
+  }
+  $scope.reset = function(data){
+    if (data.password.length < 6 || data.password.length > 24) {
+      $rootScope.alerts = [{msg: 'Passwords must greater than 6 and less than 24 characters', type: 'warning'}];
+    } else if (data.password !== data.repassword) {
+      $rootScope.alerts = [{msg: 'Passwords not matched', type: 'warning'}];
+    } else {
+      $http.post('/api/users/email-reset-password', data).success(function (res) {
+        if (res && res.error) {
+          $rootScope.alerts = res.error.message;
+        } else {
+          $rootScope.alerts = res.message;
+        }
+      }).error(function () {
+        $rootScope.alerts = [{msg: 'An unexpected error happened, please try again latter', type: 'danger'}];
+      });
+    }
+  }
 }).filter('timeAgo', function ($interval, $rootScope) {
   // trigger digest every 60 seconds
 

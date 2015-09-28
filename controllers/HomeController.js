@@ -13,6 +13,11 @@ router.get('/users/activate', function(req, res) {
 router.get('/users/login', function(req, res) {
   res.render('layout');
 });
+
+/* GET home page. */
+router.get('/users/email-reset-password/:id', function(req, res) {
+  res.render('layout');
+});
 /* GET home page. */
 router.get('/users/setting/:param', function(req, res) {
   res.render('layout');

@@ -19,7 +19,7 @@ div(ng-repeat="post in posts",class="col-sm-{{postClass}}").show-posts-detail
               span(class="sr-only") Split button!
             ul(role="menu", aria-labelledby="split-button").dropdown-menu
               li
-                a(ng-href="#") Report
+                a(ng-href="#",ng-click="report_modal(post._id)") Report
               li(ng-if="isDeletable").divider
               li(ng-if="alias._id == post.posted_by_alias._id")
                 a(href="#",ng-click="delete(post._id)") Delete

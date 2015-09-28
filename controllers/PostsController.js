@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var config = require('../config')
 var PostsModel = require('../models/PostsModel')
+var ReportModel = require('../models/ReportModel')
 var Session = require('../lib/Session');
 
 router.post('/get', function (req, res) {
@@ -35,6 +36,22 @@ router.post('/comment', function (req, res) {
       }
       PostsModel.comment(alias_id, req.body.post_id, req.body.message, function (response,notice) {
         return res.json({response:response,notice:notice});
+      })
+    } else {
+      return res.json({error: {message: [{msg: 'Please login first', type: 'warning'}]}});
+    }
+  });
+})
+
+router.post('/report', function (req, res) {
+  Session.decode(req.token, function (decoded) {
+    if (decoded && decoded.data) {
+      ReportModel.add({post_id:req.body.post_id, user_report_id: new ObjectID(decoded.data._id), type:'post'}, function(result){
+        if(result){
+          return res.json({message: [{msg: 'Thank you for your report', type: 'success'}]});
+        } else {
+          return res.json({error: {message: [{msg: 'An unexpected error happened please try again latter', type: 'warning'}]}});
+        }
       })
     } else {
       return res.json({error: {message: [{msg: 'Please login first', type: 'warning'}]}});

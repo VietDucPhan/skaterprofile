@@ -1,4 +1,4 @@
-table.head-wrap(bgcolor='#FFFFFF')
+table.head-wrap(bgcolor='#f1f1f1')
   table.body-wrap
     tbody
       tr
@@ -9,14 +9,11 @@ table.head-wrap(bgcolor='#FFFFFF')
               tbody
                 tr
                   td
-                    h3 Recovery password for SkaterProfile,
+                    h4 We received a request to reset the password for your account.
                     p.lead
-                      | Follow the instruction bellow to recover password
-                    //p
-                      img(src='http://placehold.it/600x300')
-                    p.callout
-                      | To recover your password&nbsp;
-                      a(href=recovery_url) Click Here! &raquo;
+                      | If you requested a reset password, click the button below. If you didn't make this request, please ignore this email.
+                    p
+                      a(href=recovery_url).btn Reset password
         td
   table.footer-wrap
     tbody
@@ -30,9 +27,9 @@ table.head-wrap(bgcolor='#FFFFFF')
                   td(align='center')
                     p
                       a(href='#') Terms
-                      |  |
+                      | |&nbsp;
                       a(href='#') Privacy
-                      |  |
+                      | |&nbsp;
                       a(href='#')
                         unsubscribe Unsubscribe
         td

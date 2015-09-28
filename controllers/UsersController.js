@@ -400,25 +400,17 @@ router.post('/login', function (req, res) {
   });
 });
 
-
-/**
- * Change password with provided code
- */
-router.get('/email-reset-password/:code', function (req, res) {
-  res.render('users/email-reset-password', {code: req.params.code});
-});
-router.post('/email-reset-password/:code', function (req, res) {
+router.post('/email-reset-password', function (req, res) {
+  console.log(req.body);
   Users.resetPassByRecoveryCode({
     code: req.body.code,
     password: req.body.password,
     repassword: req.body.repassword
   }, function (err) {
     if (err.length != 0) {
-      req.session.flash = err;
-      res.redirect('/users/email-reset-password/' + req.body.code);
+      return res.json({error:{message:[{msg:'An unexpected error happened please try again', type:'warning'}]}});
     } else {
-      req.session.flash = {template: 'success', message: ['You successfully changed password']};
-      res.redirect('/users/login');
+      return res.json({error:{message:[{msg:'You can now login with new password', type:'success'}]}});
     }
   });
 });
@@ -433,7 +425,7 @@ router.post('/recovery', function (req, res) {
         return res.json({error:{message:err}})
       } else {
         return res.json({message:[{msg:'An instruction email has been sent to ' + req.body.email + ', please follow' +
-        ' instrcution steps to recover your password. It might be late but it will come', type:'success'}]})
+        ' instruction  steps to recover your password. It might be late but it will come', type:'success'}]})
       }
     }
   );
