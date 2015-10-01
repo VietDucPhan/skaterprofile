@@ -386,6 +386,9 @@ router.post('/login', function (req, res) {
     if (err.length == 0) {
       respond.success = true;
       Users.getAllUserDataByUserId(rec._id,function(rec){
+        if(req.body.remember){
+          rec.remember = true;
+        }
         Session.encode(rec, function (token) {
           respond.token = token;
           respond.response = rec;
@@ -401,7 +404,6 @@ router.post('/login', function (req, res) {
 });
 
 router.post('/email-reset-password', function (req, res) {
-  console.log(req.body);
   Users.resetPassByRecoveryCode({
     code: req.body.code,
     password: req.body.password,

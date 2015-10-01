@@ -149,11 +149,23 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
       });
     $locationProvider.html5Mode(true);
   }
-]).run(function ($rootScope, Auth, $window, Session, $http, $interval, cfpLoadingBar, $location, $route) {
+]).run(function ($rootScope, Auth, $window, Session, $http, $interval, cfpLoadingBar, $location, $route, $modal) {
   $rootScope.$on('session_refresh', function (e) {
     Session._getNewToken();
   })
   var original = $location.path;
+  $rootScope.report_modal = function (id) {
+    $modal.open({
+      animation: false,
+      templateUrl: '/ang/users/report_post',
+      controller: reportModalController,
+      resolve: {
+        id: function () {
+          return id;
+        }
+      }
+    });
+  }
   $location.path = function (path, reload) {
     if (reload === false) {
       var lastRoute = $route.current;
@@ -213,6 +225,9 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
   $scope.logout = function () {
     return Auth.logout();
   }
+
+
+
 }).controller('DashboardController', function ($scope, $http, $rootScope, $routeParams, $location, Facebook) {
   $rootScope.head = {
     title: 'Skater Profile',

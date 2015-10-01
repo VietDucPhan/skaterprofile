@@ -5879,8 +5879,6 @@ form .error {
     .show-posts-detail .post-container .post-detail-container blockquote {
       font-size: 15px;
       margin: 0; }
-    .show-posts-detail .post-container .post-detail-container .vote-buttons {
-      float: right; }
 .show-posts-detail .post-image-container {
   position: relative;
   text-align: center; }

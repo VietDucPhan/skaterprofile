@@ -1,10 +1,10 @@
 //
    Created by Administrator on 8/5/2015.
 div(ng-repeat="post in posts",class="col-sm-{{postClass}}").show-posts-detail
-  div(class="post-container")
+  div(class="post-container ")
     div.post-detail
       div.row
-        div.col-xs-8
+        div.col-xs-10
           a(ng-if="post.posted_by_alias.picture.picture",class="profile-picture",href="/{{post.posted_by_alias.username}}", ng-click="dismiss()")
             img(ng-src="{{post.posted_by_alias.picture.picture}}")
           a(ng-click="dismiss()",class="btn username", href="/{{post.posted_by_alias.username}}") {{post.posted_by_alias.name}}
@@ -12,7 +12,7 @@ div(ng-repeat="post in posts",class="col-sm-{{postClass}}").show-posts-detail
           a(ng-if="post.posted_to_alias.picture.picture && post.posted_by_alias._id != post.posted_to_alias._id",class="profile-picture",href="/{{post.posted_to_alias.username}}", ng-click="dismiss()")
             img(ng-src="{{post.posted_to_alias.picture.picture}}")
           a(ng-if="post.posted_by_alias._id != post.posted_to_alias._id", ng-click="dismiss()",class="btn username", href="/{{post.posted_to_alias.username}}") {{post.posted_to_alias.name}}
-        div.col-xs-4
+        div.col-xs-2
           div(dropdown='',class='pull-right').btn-group
             button(class="btn btn-default dropdown-toggle no-border", dropdown-toggle="", data-toggle="dropdown", aria-haspopup="true", aria-expanded="false")
               span.caret
@@ -23,7 +23,7 @@ div(ng-repeat="post in posts",class="col-sm-{{postClass}}").show-posts-detail
               li(ng-if="isDeletable").divider
               li(ng-if="alias._id == post.posted_by_alias._id")
                 a(href="#",ng-click="delete(post._id)") Delete
-    a(href="/post/{{post._id}}",class="post-image-container",post-detail="{{post._id}}",back-state='{{back_state}}')
+    a(href="/post/{{post._id}}",class="post-image-container",post-detail="{{post._id}}",back-state='{{back_state}}',change-page='{{change_page}}')
       span(ng-if="post.type != 'facebook'", class="glyphicon glyphicon-play video-icon")
       img(ng-src="{{post.source}}",class="post-image img-responsive")
 
@@ -36,4 +36,9 @@ div(ng-repeat="post in posts",class="col-sm-{{postClass}}").show-posts-detail
             p {{post.name}}
 
         div.col-sm-4
-          div(vote-buttons='{{post._id}}', up-votes="post.up_votes", down-votes="post.down_votes").vote-buttons
+          div(vote-buttons='{{post._id}}', up-votes="post.up_votes", down-votes="post.down_votes").vote-buttons.pull-right
+
+div.row
+  div.col-sm-12
+    div.col-sm-12
+      a(ng-click="show_more()").btn.btn-success {{load_post_text}}

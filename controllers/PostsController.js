@@ -4,15 +4,16 @@ var config = require('../config')
 var PostsModel = require('../models/PostsModel')
 var ReportModel = require('../models/ReportModel')
 var Session = require('../lib/Session');
+var ObjectID = require('mongodb').ObjectID;
 
 router.post('/get', function (req, res) {
   Session.decode(req.token, function (decoded) {
     if (decoded && decoded.data && decoded.data.alias && decoded.data.alias._id) {
       req.body.alias_id = decoded.data.alias._id;
     }
-    PostsModel.getAllPostsByCondition(req.body, function (data) {
+    PostsModel.getAllPostsByCondition(req.body, function (data, length) {
       if (data) {
-        return res.json({response: data});
+        return res.json({response: data, response_length:length});
       } else {
         return res.json({
           error: {
@@ -46,7 +47,7 @@ router.post('/comment', function (req, res) {
 router.post('/report', function (req, res) {
   Session.decode(req.token, function (decoded) {
     if (decoded && decoded.data) {
-      ReportModel.add({post_id:req.body.post_id, user_report_id: new ObjectID(decoded.data._id), type:'post'}, function(result){
+      ReportModel.add({post_id:req.body.post_id, user_report_id: new ObjectID(decoded.data._id), type:'post', message:req.body.message}, function(result){
         if(result){
           return res.json({message: [{msg: 'Thank you for your report', type: 'success'}]});
         } else {

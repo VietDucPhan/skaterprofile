@@ -1,4 +1,4 @@
-div.col-sm-8
+div.col-sm-9
   div.post-detail-container
     div.post-detail
       div.row
@@ -37,7 +37,7 @@ div.col-sm-8
       div.row
         div.col-sm-12
           ul(class="media-list")
-            li(class="media", ng-repeat="comment in postData.comments")
+            li(class="media", ng-repeat="comment in postData.comments", id="{{comment._id}}")
               div(class="media-left")
                 a(ng-if="comment.author.picture.picture",class="profile-picture",href="/{{comment.author.username}}")
                   img(ng-src="{{comment.author.picture.picture}}", ng-click="dismiss()")
@@ -50,4 +50,5 @@ div.col-sm-8
       div.row
         div.col-sm-12
             div(comment-box="{{postData._id}}").input-group
-div.col-sm-4
+div.col-sm-3
+  div(show-posts="",hot="true", change-page = 'true',side-show-posts = 'true',class="show-posts-container row")

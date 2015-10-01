@@ -1,34 +1,39 @@
 /**
  * Created by Administrator on 8/5/2015.
  */
-angular.module('App').directive('postDetail', function ($http, $rootScope, $modal, $location) {
+angular.module('App').directive('postDetail', function ($http, $rootScope, $modal, $location, $modalStack ) {
   var postDetail = {};
   postDetail.restrict = 'A';
   postDetail.scope = {
-    backState: '@backState'
+    backState: '@backState',
+    changePage: '@changePage'
   }
   postDetail.link = function (scope, elem, att) {
     var post_id = att.postDetail;
     var back_state = scope.backState || '/';
     elem.on('click', function (e) {
       if (post_id && e.which === 1) {
-
-        $location.path('/post/' + post_id, false);
-
-        $modal.open({
-          animation: false,
-          templateUrl: '/ang/pages/post-detail',
-          controller: ModalPostDetailController,
-          windowClass: 'post-detail-modal',
-          resolve: {
-            post_id: function () {
-              return post_id;
-            },
-            back_state: function () {
-              return back_state;
+        if(scope.changePage == 'true'){
+          $modalStack.dismissAll();
+          $location.path('/post/' + post_id,true);
+        } else {
+          $location.path('/post/' + post_id, false);
+          $modal.open({
+            animation: false,
+            templateUrl: '/ang/pages/post-detail',
+            controller: ModalPostDetailController,
+            windowClass: 'post-detail-modal',
+            resolve: {
+              post_id: function () {
+                return post_id;
+              },
+              back_state: function () {
+                return back_state;
+              }
             }
-          }
-        });
+          });
+        }
+
 
       }
     })
@@ -58,18 +63,7 @@ var ModalPostDetailController = function (post_id, back_state, $scope, $http, $s
     });
   }
 
-  $scope.report_modal = function (id) {
-    $modal.open({
-      animation: false,
-      templateUrl: '/ang/users/report_post',
-      controller: reportModalController,
-      resolve: {
-        id: function () {
-          return id;
-        }
-      }
-    });
-  }
+
   $scope.video_src = ''
   $modalInstance.result.then(function (selectedItem) {
     //$log.info('selectedItem',selectedItem);
@@ -141,7 +135,6 @@ var reportModalController = function (id, $scope, $modalInstance, $http, $modalS
   $scope.send = function (data) {
     var data_tobe_sent = data;
     data_tobe_sent.post_id = id;
-    $scope.data = {}
 
     $http.post('/api/posts/report', data_tobe_sent).success(function (data) {
       if (data && !data.error) {

@@ -17,7 +17,8 @@ ReportModel.add = function (data, callback) {
   var report = ReportModel.getCollection();
   data.created_date = new Date();
   report.insert(data,[],function(err){
-    if(err){
+    console.log(err)
+    if(!err){
       return callback(true)
     } else {
       return callback(false)
