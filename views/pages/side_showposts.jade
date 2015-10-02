@@ -2,9 +2,16 @@
    Created by Administrator on 8/5/2015.
 div(ng-repeat="post in posts",class="col-sm-{{postClass}}").show-posts-detail
   div(class="post-container")
-    div.post-detail
-      div.time-ago
-        abbr(title="{{post.created_date | timeAgo:true}}") {{post.created_date | timeAgo}}
     a(href="/post/{{post._id}}",class="post-image-container",post-detail="{{post._id}}",back-state='{{back_state}}',change-page='{{change_page}}')
       span(ng-if="post.type != 'facebook'", class="glyphicon glyphicon-play video-icon")
       img(ng-src="{{post.source}}",class="post-image img-responsive")
+    div.post-detail
+      h3.show-post-title
+        a(href="/post/{{post._id}}", ng-bind-html="post.name")
+      div.show-post-detail
+        |by&nbsp;
+        a(ng-click="dismiss()", href="/{{post.posted_by_alias.username}}") {{post.posted_by_alias.name}}&nbsp;
+        span(ng-if="post.posted_by_alias._id != post.posted_to_alias._id") to&nbsp;
+        a(ng-if="post.posted_by_alias._id != post.posted_to_alias._id", ng-click="dismiss()",href="/{{post.posted_to_alias.username}}") {{post.posted_to_alias.name}}
+        div.time-ago
+          abbr(title="{{post.created_date | timeAgo:true}}") {{post.created_date | timeAgo}}

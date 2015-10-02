@@ -267,6 +267,20 @@ form{
 .show-posts-detail{
   .post-detail{
     padding:7px 10px;
+    .show-post-title{
+      margin:0;
+      font-size:16px;
+    }
+    .show-post-detail{
+      font-size:13px;
+      color:#ccc;
+      a{
+        color:#ccc;
+        &:hover{
+          color:#337ab7;
+        }
+      }
+    }
     .btn{
       margin:0;
     }
@@ -350,6 +364,20 @@ form{
 }
 .post-detail-container{
   background-color: white;
+  .show-post-title{
+    margin:0;
+    font-size:16px;
+  }
+  .show-post-detail{
+    font-size:13px;
+    color:#ccc;
+    a{
+      color:#ccc;
+      &:hover{
+        color:#337ab7;
+      }
+    }
+  }
   .username{
     border:0px;
     color:#333333;
@@ -379,10 +407,11 @@ form{
   .post-title{
     padding:7px 10px;
     h1{
-      margin:0;
-      font-size:15px;
+      margin-top:0;
+      font-size:20px;
     }
     blockquote{
+      font-size:14px;
       margin:0;
     }
   }

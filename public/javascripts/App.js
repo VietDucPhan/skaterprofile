@@ -572,7 +572,7 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
       $scope.owned_post = data.posted_by_alias == data.posted_to_alias;
       $scope.isDeletable = false;
       $rootScope.head = {
-        title: 'Post detail | Skater Profile',
+        title: data.name + ' | Skater Profile',
         metas: [
           {
             name: 'keywords',
@@ -591,6 +591,9 @@ var App = angular.module('App', ['ngRoute', 'ui.bootstrap', 'angular-loading-bar
         $scope.post_detail_url = '/ang/elements/post-detail/video';
       }
 
+      if($scope.postData.desc){
+        $scope.postData.desc = $scope.postData.desc.replace(/(?:\r\n|\r|\n)/g, "<br />")
+      }
 
       switch ($scope.postData.type) {
         case 'youtube' :

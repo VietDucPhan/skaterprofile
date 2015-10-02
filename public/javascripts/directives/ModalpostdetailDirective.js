@@ -101,6 +101,11 @@ var ModalPostDetailController = function (post_id, back_state, $scope, $http, $s
         $scope.isDeletable = true;
       }
 
+      if($scope.postData.desc){
+        $scope.postData.desc = $scope.postData.desc.replace(/(?:\r\n|\r|\n)/g, "<br />")
+      }
+
+
       if ($scope.postData && $scope.postData.type != 'facebook') {
         $scope.post_detail_url = '/ang/elements/post-detail/video';
       } else {
@@ -109,7 +114,7 @@ var ModalPostDetailController = function (post_id, back_state, $scope, $http, $s
 
       switch ($scope.postData.type) {
         case 'youtube' :
-          $scope.video_src = $sce.trustAsResourceUrl("https://www.youtube.com/embed/" + $scope.postData.video_id + "?rel=0&amp;controls=0&amp;showinfo=0")
+          $scope.video_src = $sce.trustAsResourceUrl("https://www.youtube.com/embed/" + $scope.postData.video_id + "?rel=0&amp;showinfo=0")
           break;
         case 'vimeo' :
           $scope.video_src = $sce.trustAsResourceUrl("https://player.vimeo.com/video/" + $scope.postData.video_id)

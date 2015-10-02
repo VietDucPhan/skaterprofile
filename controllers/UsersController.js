@@ -81,7 +81,12 @@ router.post('/change-password', function (req, res) {
 router.post('/post-image',function(req,res){
   Session.decode(req.token, function (decoded) {
     if(decoded && !decoded.tokenExp){
-      var msg = req.headers.desc ? req.headers.desc : 'Untitle';
+      var msg = 'Untitle'
+      if(req.headers.title){
+        msg = req.headers.title
+      } else if(req.headers.desc){
+        msg = req.headers.desc
+      }
       var to_alias = ObjectID.isValid(req.headers.to_alias) ? new ObjectID(req.headers.to_alias) : null;
       var by_user = new ObjectID(decoded.data._id);
       var by_alias = null;
@@ -110,7 +115,8 @@ router.post('/post-image',function(req,res){
                           fbPostResponse.posted_to_alias = doc;
                           Alias.getAliasInfoForPost(by_alias,function(doc){
                             fbPostResponse.posted_by_alias = doc;
-                            fbPostResponse.name = req.headers.desc;
+                            fbPostResponse.name = req.headers.title;
+                            fbPostResponse.desc = req.headers.desc;
                             Users.postAPhoto(fbPostResponse,function(databaseResponse){
                               if(databaseResponse && databaseResponse.error){
                                 return res.json(databaseResponse)
@@ -159,7 +165,8 @@ router.post('/post-video',function(req,res){
                 video_id:videoId,
                 url:req.body.video,
                 type:type,
-                name:req.body.desc,
+                name:req.body.title,
+                desc:req.body.desc,
                 posted_by_user:new ObjectID(decoded.data._id),
                 posted_to_alias:to_alias,
                 source:videoImage

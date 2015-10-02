@@ -141,6 +141,7 @@ var UploadImageController = function ($scope, FileUploader, $modalInstance, Sess
   };
 
   postImage.onBeforeUploadItem = function (item) {
+    item.headers.title = $scope.title;
     item.headers.desc = $scope.desc;
     item.headers.to_alias = $scope.to_alias;
   }

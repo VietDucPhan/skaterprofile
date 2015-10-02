@@ -3,13 +3,7 @@ div.col-sm-9
     div.post-detail
       div.row
         div.col-xs-8
-          a(ng-if="postData.posted_by_alias.picture.picture",class="profile-picture",href="/{{postData.posted_by_alias.username}}")
-            img(ng-src="{{postData.posted_by_alias.picture.picture}}")
-          a(ng-click="dismiss()",class="btn username", href="/{{postData.posted_by_alias.username}}") {{postData.posted_by_alias.name}}
-          span(ng-if="postData.posted_by_alias._id != postData.posted_to_alias._id") > &nbsp;
-          a(ng-if="postData.posted_to_alias.picture.picture && postData.posted_by_alias._id != postData.posted_to_alias._id",class="profile-picture",href="/{{postData.posted_to_alias.username}}")
-            img(ng-src="{{postData.posted_to_alias.picture.picture}}")
-          a(ng-if="postData.posted_by_alias._id != postData.posted_to_alias._id", ng-click="dismiss()",class="btn username", href="/{{postData.posted_to_alias.username}}") {{postData.posted_to_alias.name}}
+          
         div.col-xs-4
           div(dropdown='',class='pull-right').btn-group
             button(class="btn btn-default dropdown-toggle no-border", dropdown-toggle="", data-toggle="dropdown", aria-haspopup="true", aria-expanded="false")
@@ -26,12 +20,19 @@ div.col-sm-9
     div.row
       div.post-title
         div.col-sm-9.post-title
-          div.time-ago
-            abbr(title="{{postData.created_date | timeAgo:true}}") {{postData.created_date | timeAgo}}
-          blockquote(ng-if="postData.name")
-            h1 {{postData.name}}
+          h1(ng-bind-html="postData.name")
+          div.show-post-detail
+            |by&nbsp;
+            a(ng-click="dismiss()", href="/{{postData.posted_by_alias.username}}") {{postData.posted_by_alias.name}}&nbsp;
+            span(ng-if="postData.posted_by_alias._id != postData.posted_to_alias._id") to&nbsp;
+            a(ng-if="postData.posted_by_alias._id != postData.posted_to_alias._id", ng-click="dismiss()",href="/{{postData.posted_to_alias.username}}") {{postData.posted_to_alias.name}}
+            div.time-ago
+              abbr(title="{{postData.created_date | timeAgo:true}}") {{postData.created_date | timeAgo}}
         div.col-sm-3.post-title
           div(vote-buttons='{{postData._id}}', up-votes="postData.up_votes", down-votes="postData.down_votes").vote-buttons
+      div.post-title
+        div.col-sm-12
+          blockquote(ng-if="postData.desc", ng-bind-html="postData.desc")
   div.post-comment-section
     div.post-comment-form
       div.row

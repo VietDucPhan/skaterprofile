@@ -14,11 +14,11 @@ div(class="modal-body")
       input(name="filePost",type="file", class="form-control", id="postImage", ng-model="uploadImageForm.file",
       nv-file-select="",required,
       uploader="postImage",valid-file="")
+    div(class='form-group')
+      span(class="error", ng-show="uploadImageForm.title.$error.maxlength") Too long!
+      input(name="title",type="text", class="form-control",ng-maxlength="50", ng-model="title",required ,placeholder="Title (Max length: 50 characters)")
     div.form-group
-      span(class="error", ng-show="uploadImageForm.postDesc.$error.maxlength") Too long!
-      textarea(name="postDesc",class="form-control",ng-maxlength="200",placeholder="Description (Optional) (Max " +
-      "length: " +
-      "200)",ng-model="desc", rows="6")
+      textarea(name="postDesc",class="form-control",placeholder="Description ",ng-model="desc", rows="6")
     div.form-group
       input(class="form-control no-radius", type='text', ng-model="search", placeholder='Search or choose from bellow')
       ul().list-followers

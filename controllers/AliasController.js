@@ -31,6 +31,12 @@ router.get('/getAllTricks',function(req,res){
   })
 })
 
+router.get('/getAllSpots',function(req,res){
+  Alias.getAllSpots(function(data){
+    return res.json(data);
+  })
+})
+
 router.post('/edit-profile', function (req, res) {
   Session.decode(req.token, function (decoded) {
     if (decoded && decoded.data) {

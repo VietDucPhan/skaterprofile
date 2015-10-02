@@ -5851,6 +5851,16 @@ form .error {
 
 .show-posts-detail .post-detail {
   padding: 7px 10px; }
+  .show-posts-detail .post-detail .show-post-title {
+    margin: 0;
+    font-size: 16px; }
+  .show-posts-detail .post-detail .show-post-detail {
+    font-size: 13px;
+    color: #ccc; }
+    .show-posts-detail .post-detail .show-post-detail a {
+      color: #ccc; }
+      .show-posts-detail .post-detail .show-post-detail a:hover {
+        color: #337ab7; }
   .show-posts-detail .post-detail .btn, .show-posts-detail .post-detail .navbar-default .navbar-nav li a.btn, .navbar-default .navbar-nav li .show-posts-detail .post-detail a.btn {
     margin: 0; }
 .show-posts-detail .username {
@@ -5905,6 +5915,16 @@ form .error {
 
 .post-detail-container {
   background-color: white; }
+  .post-detail-container .show-post-title {
+    margin: 0;
+    font-size: 16px; }
+  .post-detail-container .show-post-detail {
+    font-size: 13px;
+    color: #ccc; }
+    .post-detail-container .show-post-detail a {
+      color: #ccc; }
+      .post-detail-container .show-post-detail a:hover {
+        color: #337ab7; }
   .post-detail-container .username {
     border: 0px;
     color: #333333;
@@ -5926,9 +5946,10 @@ form .error {
   .post-detail-container .post-title {
     padding: 7px 10px; }
     .post-detail-container .post-title h1 {
-      margin: 0;
-      font-size: 15px; }
+      margin-top: 0;
+      font-size: 20px; }
     .post-detail-container .post-title blockquote {
+      font-size: 14px;
       margin: 0; }
 
 .align-right {
