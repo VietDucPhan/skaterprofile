@@ -15,7 +15,7 @@ angular.module('App').factory('Session', function ($http, $interval, $rootScope,
     if (data && data.response) {
       $rootScope.user = data.response;
     }
-    if (data && data.response && data.response.alias) {
+    if (data && data.response && data.response.alias && data.response.alias._id ) {
       $rootScope.alias = data.response.alias;
     }
     if (data && data.response) {
